@@ -486,9 +486,9 @@ function highlightRef() {
             var limits = e.target.getAttribute("chunk-group").split("-").map(function(element) {
                 return parseInt(element, 10) - 1;
             });
-            $('div[data-verse^="r"]').css('background-color', '');
+            $('div[data-verse^="r"]').css({ "background-color": "", "margin-top": "10px" });
             for (j = limits[0]; j <= limits[1]; j++) {
-                $('div[data-verse="r' + (j + 1) + '"]').css('background-color', '#b3ffa8');
+                $('div[data-verse="r' + (j + 1) + '"]').css({ "background-color": "#b3ffa8", "padding-left": "10px", "padding-right": "10px", "border-radius": "0.5em"});
             }
         });
     }
