@@ -24,10 +24,6 @@ var updateFeed = 'http://localhost:3000/releases/win32/0.0.2/Autographa';
 
 autoUpdater.setFeedURL(updateFeed);
 
-console.log(app.getPath('userData'))
-
-
-
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win;
@@ -70,30 +66,31 @@ function createWindow() {
     });
 }
 
-var dbSetup = new Promise(
-    function (resolve, reject) {
-	// Setup database.
-	var dbUtil = require(`${__dirname}/app/util/DbUtil.js`);
-	dbUtil.setupTargetDb
-	    .then((response) => {
-		console.log(response);
-		return dbUtil.setupRefDb;
-	    })
-	    .then((response) => {
-		console.log(response);
-		resolve(response);
-	    })
-	    .catch((err) => {
-		console.log('Error while DB setup. ' + err);
-		reject(err);
-	    });
-    });
+// var dbSetup = 
 
 function preProcess() {
     handleUpdates
      .then((response) => {
 
-         return dbSetup;
+         //return dbSetup;
+         return new Promise(
+        function (resolve, reject) {
+        // Setup database.
+        var dbUtil = require(`${__dirname}/app/util/DbUtil.js`);
+        dbUtil.setupTargetDb
+            .then((response) => {
+            console.log(response);
+            return dbUtil.setupRefDb;
+            })
+            .then((response) => {
+            console.log(response);
+            resolve(response);
+            })
+            .catch((err) => {
+            console.log('Error while DB setup. ' + err);
+            reject(err);
+            });
+        });
      })
      .then((response) => {
         // copyFolderRecursiveSync(`${__dirname}/db`, app.getPath('userData'));
@@ -187,12 +184,14 @@ function copyFolderRecursiveSync( source, target ) {
 var handleUpdates = new Promise(
     function (resolve, reject) {
     // If DB does not exist in the application dir
-    if(!fs.existsSync(`${__dirname}/db`)){
+    if(!fs.existsSync(path.join(`${__dirname}`, 'db'))){
         if(fs.existsSync(app.getPath('userData')+'/db')){
-            copyFolderRecursiveSync((app.getPath('userData')+'/db'), `${__dirname}/db`);
+            copyFolderRecursiveSync((app.getPath('userData')+'/db'), path.join(`${__dirname}`));
         }else{
+            console.log("resolve")
             resolve('new installation');
         }
+
     }
     // Check if backup location has DB folder.
     // If yes. Copy db from Backup to installation folder.
@@ -213,8 +212,8 @@ var handleUpdates = new Promise(
     autoUpdater.on('update-downloaded', () => {
         console.info('update downloaded.');
          // If DB folder exists then back-up DB here and if successful.
-        if(fs.existsSync(`${__dirname}/db`)){
-            copyFolderRecursiveSync(`${__dirname}/db`, app.getPath('userData'));
+        if(fs.existsSync(path.join(`${__dirname}`, 'db'))){
+            copyFolderRecursiveSync(path.join(`${__dirname}`, 'db'), app.getPath('userData'));
             dbBackedUp = true;
         }
         // then (after backing up folders)
