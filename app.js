@@ -1,6 +1,6 @@
 const electron = require('electron');
 const session = require('electron').session;
-if(require('electron-squirrel-startup')) return;
+ if(require('electron-squirrel-startup')) return;
 
 // Module to control application life.
 const {app} = electron
@@ -11,103 +11,22 @@ const autoUpdater = require('electron').autoUpdater;
 const appVersion = require('./package.json').version;
 const os = require('os').platform();
 
+const fs = require('fs');
+const path = require('path');
+
+// this should be placed at top of main.js to handle setup events quickly
+// if (handleSquirrelEvent()) {
+//   // squirrel event handled and app will exit in 1000ms, so don't do anything else
+//   return;
+// }
+
 var updateFeed = 'http://localhost:3000/releases/win32/0.0.2/Autographa';
 
 autoUpdater.setFeedURL(updateFeed);
-autoUpdater.checkForUpdates();
-// autoUpdater.quitAndInstall();
 
-// autoUpdater.on('error', (e) => {
-//     console.error(e.message)
-//   });
-
-//   autoUpdater.on('checking-for-update', () => {
-//     console.info('Checking for update...')
-//   });
-
-//   autoUpdater.on('update-available', () => {
-//     console.info('Found available update!')
-//   });
-
-//   autoUpdater.on('update-not-available', () => {
-//     console.info('There are no updates available.')
-//   });
-
-  autoUpdater.on('update-downloaded', () => {
-    console.info('update downloaded.');
-    autoUpdater.quitAndInstall();
-  });
+console.log(app.getPath('userData'))
 
 
-
-
-// this should be placed at top of main.js to handle setup events quickly
-if (handleSquirrelEvent()) {
-  // squirrel event handled and app will exit in 1000ms, so don't do anything else
-  return;
-}
-
-function handleSquirrelEvent() {
-  if (process.argv.length === 1) {
-    return false;
-  }
-
-  const ChildProcess = require('child_process');
-  const path = require('path');
-
-  const appFolder = path.resolve(process.execPath, '..');
-  const rootAtomFolder = path.resolve(appFolder, '..');
-  const updateDotExe = path.resolve(path.join(rootAtomFolder, 'Setup.exe'));
-  const exeName = path.basename(process.execPath);
-
-  const spawn = function(command, args) {
-    let spawnedProcess, error;
-
-    try {
-      spawnedProcess = ChildProcess.spawn(command, args, {detached: true});
-    } catch (error) {}
-
-    return spawnedProcess;
-  };
-
-  const spawnUpdate = function(args) {
-    return spawn(updateDotExe, args);
-  };
-
-  const squirrelEvent = process.argv[1];
-  switch (squirrelEvent) {
-    case '--squirrel-install':
-    case '--squirrel-updated':
-      // Optionally do things such as:
-      // - Add your .exe to the PATH
-      // - Write to the registry for things like file associations and
-      //   explorer context menus
-
-      // Install desktop and start menu shortcuts
-      spawnUpdate(['--createShortcut', exeName]);
-
-      setTimeout(app.quit, 1000);
-      return true;
-
-    case '--squirrel-uninstall':
-      // Undo anything you did in the --squirrel-install and
-      // --squirrel-updated handlers
-
-      // Remove desktop and start menu shortcuts
-      spawnUpdate(['--removeShortcut', exeName]);
-
-      setTimeout(app.quit, 1000);
-      return true;
-
-    case '--squirrel-obsolete':
-      // This is called on the outgoing version of your app before
-      // we update to the new version - it's the opposite of
-      // --squirrel-updated
-
-      app.quit();
-      return true;
-  }
-};
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -133,8 +52,10 @@ function createWindow() {
     win.once('ready-to-show', () => {
 	// Open the DevTools.
 	//win.webContents.openDevTools();	
-	win.maximize();
+        win.maximize();
         win.show();
+
+
     });
 
     // Emitted when the window is closed.
@@ -169,13 +90,26 @@ var dbSetup = new Promise(
     });
 
 function preProcess() {
-    dbSetup
-	.then((response) => {
-	    createWindow();
-	})
-	.catch((err) => {
-	    console.log('Error while App intialization.' + err);
-	});
+    handleUpdates
+     .then((response) => {
+
+         return dbSetup;
+     })
+     .then((response) => {
+        // copyFolderRecursiveSync(`${__dirname}/db`, app.getPath('userData'));
+        createWindow();
+     })
+     .catch((err) => {
+         console.log('Error while App intialization.' + err);
+     });
+ //    dbSetup
+	// .then((response) => {
+	//     createWindow();
+ //        copyFolderRecursiveSync(`${__dirname}/db`, app.getPath('userData'));
+	// })
+	// .catch((err) => {
+	//     console.log('Error while App intialization.' + err);
+	// });
 }
 
 // This method will be called when Electron has finished
@@ -212,3 +146,85 @@ app.on('activate', () => {
     }
 });
 
+
+function copyFileSync( source, target ) {
+
+    var targetFile = target;
+
+    //if target is a directory a new file with the same name will be created
+    if ( fs.existsSync( target ) ) {
+        if ( fs.lstatSync( target ).isDirectory() ) {
+            targetFile = path.join( target, path.basename( source ) );
+        }
+    }
+
+    fs.writeFileSync(targetFile, fs.readFileSync(source));
+}
+
+function copyFolderRecursiveSync( source, target ) {
+    var files = [];
+
+    //check if folder needs to be created or integrated
+    var targetFolder = path.join( target, path.basename( source ) );
+    if ( !fs.existsSync( targetFolder ) ) {
+        fs.mkdirSync( targetFolder );
+    }
+
+    //copy
+    if ( fs.existsSync( source ) && fs.lstatSync( source ).isDirectory() ) {
+        files = fs.readdirSync( source );
+        files.forEach( function ( file ) {
+            var curSource = path.join( source, file );
+            if ( fs.lstatSync( curSource ).isDirectory() ) {
+                copyFolderRecursiveSync( curSource, targetFolder );
+            } else {
+                copyFileSync( curSource, targetFolder );
+            }
+        } );
+    }
+}
+
+var handleUpdates = new Promise(
+    function (resolve, reject) {
+    // If DB does not exist in the application dir
+    if(!fs.existsSync(`${__dirname}/db`)){
+        if(fs.existsSync(app.getPath('userData')+'/db')){
+            copyFolderRecursiveSync((app.getPath('userData')+'/db'), `${__dirname}/db`);
+        }else{
+            resolve('new installation');
+        }
+    }
+    // Check if backup location has DB folder.
+    // If yes. Copy db from Backup to installation folder.
+    // then
+    var dbBackedUp = false;
+    autoUpdater.checkForUpdates();
+    autoUpdater.on('update-available', () => {
+        console.info('Found available update!')
+        // Check if DB folder does not exist then.
+            // resolve('Updates available now.'); 
+    });
+
+    autoUpdater.on('update-not-available', () => {
+        console.info('There are no updates available.')
+        resolve('No updates available now.');
+    });
+
+    autoUpdater.on('update-downloaded', () => {
+        console.info('update downloaded.');
+         // If DB folder exists then back-up DB here and if successful.
+        if(fs.existsSync(`${__dirname}/db`)){
+            copyFolderRecursiveSync(`${__dirname}/db`, app.getPath('userData'));
+            dbBackedUp = true;
+        }
+        // then (after backing up folders)
+        if(dbBackedUp) {
+            autoUpdater.quitAndInstall();
+        }
+    });
+    
+    autoUpdater.on('error', (e) => {
+        console.error(e.message)
+        reject('Error doing update.');
+    });
+    });
