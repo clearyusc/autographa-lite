@@ -486,10 +486,13 @@ function highlightRef() {
             var limits = e.target.getAttribute("chunk-group").split("-").map(function(element) {
                 return parseInt(element, 10) - 1;
             });
-            $('div[data-verse^="r"]').css({ "background-color": "", "margin-top": "10px" });
+            $('div[data-verse^="r"]').css({ "background-color": "", "padding-left": "", "padding-right": ""});
             for (j = limits[0]; j <= limits[1]; j++) {
-                $('div[data-verse="r' + (j + 1) + '"]').css({ "background-color": "#b3ffa8", "padding-left": "10px", "padding-right": "10px", "border-radius": "0.5em"});
+                $('div[data-verse="r' + (j + 1) + '"]').css({ "background-color": "#b3ffa8", "padding-left": "10px", "padding-right": "10px"});
             }
+            $('div[data-verse="r' + (limits[0] + 1) + '"]').css({"border-radius": "10px 10px 0px 0px"});
+            $('div[data-verse="r' + (limits[1] + 1) + '"]').css({"border-radius": "0px 0px 10px 10px"});
+            
         });
     }
 }
