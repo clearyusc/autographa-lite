@@ -1,4 +1,3 @@
-
 const electron = require('electron');
 const session = require('electron').session;
 // if(require('electron-squirrel-startup')) return;
@@ -73,7 +72,54 @@ function createWindow() {
 // var dbSetup = 
 
 function preProcess() {
-    handleUpdates
+
+    return new Promise(
+    function (resolve, reject) {
+    // If DB does not exist in the application dir
+        if(!fs.existsSync(path.join(`${__dirname}`, 'db'))){
+            if(fs.existsSync(app.getPath('userData')+'/db')){
+                copyFolderRecursiveSync((app.getPath('userData')+'/db'), path.join(`${__dirname}`));
+            }else{
+                console.log("resolve")
+                resolve('new installation');
+            }
+
+        }
+        // Check if backup location has DB folder.
+        // If yes. Copy db from Backup to installation folder.
+        // then
+       
+        autoUpdater.checkForUpdates();
+        autoUpdater.on('update-available', () => {
+            console.info('Found available update!')
+            // Check if DB folder does not exist then.
+                // resolve('Updates available now.'); 
+        });
+
+        autoUpdater.on('update-not-available', () => {
+            console.info('There are no updates available.')
+            resolve('No updates available now.');
+        });
+
+        autoUpdater.on('update-downloaded', () => {
+            console.info('update downloaded.');
+             // If DB folder exists then back-up DB here and if successful.
+            if(fs.existsSync(path.join(`${__dirname}`, 'db'))){
+                copyFolderRecursiveSync(path.join(`${__dirname}`, 'db'), app.getPath('userData'));
+                dbBackedUp = true;
+            }
+	    resolve('updates available.');
+            // then (after backing up folders)
+            // if(dbBackedUp) {
+            //     autoUpdater.quitAndInstall();
+            // }
+        });
+        
+        autoUpdater.on('error', (e) => {
+            console.error(e.message)
+            reject('Error doing update.');
+        });
+    })
      .then((response) => {
         
          //return dbSetup;
@@ -163,51 +209,3 @@ function copyFolderRecursiveSync( source, target ) {
         } );
     }
 }
-
-var handleUpdates = new Promise(
-    function (resolve, reject) {
-    // If DB does not exist in the application dir
-        if(!fs.existsSync(path.join(`${__dirname}`, 'db'))){
-            if(fs.existsSync(app.getPath('userData')+'/db')){
-                copyFolderRecursiveSync((app.getPath('userData')+'/db'), path.join(`${__dirname}`));
-            }else{
-                console.log("resolve")
-                resolve('new installation');
-            }
-
-        }
-        // Check if backup location has DB folder.
-        // If yes. Copy db from Backup to installation folder.
-        // then
-       
-        autoUpdater.checkForUpdates();
-        autoUpdater.on('update-available', () => {
-            console.info('Found available update!')
-            // Check if DB folder does not exist then.
-                // resolve('Updates available now.'); 
-        });
-
-        autoUpdater.on('update-not-available', () => {
-            console.info('There are no updates available.')
-            resolve('No updates available now.');
-        });
-
-        autoUpdater.on('update-downloaded', () => {
-            console.info('update downloaded.');
-             // If DB folder exists then back-up DB here and if successful.
-            if(fs.existsSync(path.join(`${__dirname}`, 'db'))){
-                copyFolderRecursiveSync(path.join(`${__dirname}`, 'db'), app.getPath('userData'));
-                dbBackedUp = true;
-            }
-            return
-            // then (after backing up folders)
-            // if(dbBackedUp) {
-            //     autoUpdater.quitAndInstall();
-            // }
-        });
-        
-        autoUpdater.on('error', (e) => {
-            console.error(e.message)
-            reject('Error doing update.');
-        });
-    });
