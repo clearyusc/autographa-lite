@@ -7,6 +7,7 @@ const ipc = require('electron').ipcMain
 var dbBackedUp = false;
 const fs = require('fs');
 const path = require('path');
+
 // const autrequire('electron').autoUpdater
 
 
@@ -152,43 +153,54 @@ function addUpdateMenuItems (items, position) {
                 message: 'There is an update available, do you want to restart and install it now?'
               });
               if (updateNow === 0) {
-                if(fs.existsSync(path.join(`${__dirname}`, 'db'))){
-                  copyFolderRecursiveSync(path.join(`${__dirname}`, 'db'), app.getPath('userData'));
-                  dbBackedUp = true;
-                }
-                if(dbBackedUp){
-                 try {
-                    require('./auto-updater')({
-                      url: 'http://localhost:3000/releases/win32/0.0.2/Autographa',
-                      version: app.getVersion()
-                    });
-                    focusedWindow.hide();
+                  const refDb = require(`${__dirname}/app/util/data-provider`).referenceDb();
+                  const targetDb = require(`${__dirname}/app/util/data-provider`).targetDb();
+                  refDb.close().then(function(response){
+                    return targetDb.close();
+                  })
+                  .then(function(){
+                    if(fs.existsSync(path.join(`${__dirname}`, 'db'))){
+                      copyFolderRecursiveSync(path.join(`${__dirname}`, 'db'), path.join(app.getPath('userData')));
+                      var ds = (new Date()).toISOString().replace(/[^0-9]/g, "");
+                      copyFolderRecursiveSync(path.join(`${__dirname}`, 'db'), path.join(app.getPath('userData'), "db_backup_"+ds));
+                      try {
+                        require('./auto-updater')({
+                          url: 'http://localhost:3000/releases/win32/0.0.2/Autographa',
+                          version: app.getVersion()
+                        });
+                        focusedWindow.hide();
 
-                    // ipc.on('update-downloaded', (autoUpdater) => {
-                    //   // Elegant solution: display unobtrusive notification messages
-                    //   focusedWindow.webContents.send('update-downloaded')
-                    //   ipc.on('update-and-restart', () => {
-                    //     autoUpdater.quitAndInstall()
-                    //   });
-                    //   // Basic solution: display a message box to the user
-                    //   // var updateNow = dialog.showMessageBox(mainWindow, {
-                    //   //   type: 'question',
-                    //   //   buttons: ['Yes', 'No'],
-                    //   //   defaultId: 0,
-                    //   //   cancelId: 1,
-                    //   //   title: 'Update available',
-                    //   //   message: 'There is an update available, do you want to restart and install it now?'
-                    //   // })
-                    //   //
-                    //   // if (updateNow === 0) {
-                    //   //   autoUpdater.quitAndInstall()
-                    //   // }
-                    // });
-                  } catch (e) {
-                    console.error(e.message)
-                    dialog.showErrorBox('Update Error', e.message)
-                  }
-                }
+                        // ipc.on('update-downloaded', (autoUpdater) => {
+                        //   // Elegant solution: display unobtrusive notification messages
+                        //   focusedWindow.webContents.send('update-downloaded')
+                        //   ipc.on('update-and-restart', () => {
+                        //     autoUpdater.quitAndInstall()
+                        //   });
+                        //   // Basic solution: display a message box to the user
+                        //   // var updateNow = dialog.showMessageBox(mainWindow, {
+                        //   //   type: 'question',
+                        //   //   buttons: ['Yes', 'No'],
+                        //   //   defaultId: 0,
+                        //   //   cancelId: 1,
+                        //   //   title: 'Update available',
+                        //   //   message: 'There is an update available, do you want to restart and install it now?'
+                        //   // })
+                        //   //
+                        //   // if (updateNow === 0) {
+                        //   //   autoUpdater.quitAndInstall()
+                        //   // }
+                        // });
+                      } catch (e) {
+                        console.error(e.message)
+                        dialog.showErrorBox('Update Error', e.message)
+                      }
+                    }
+                  })
+                // if(fs.existsSync(path.join(`${__dirname}`, 'db'))){
+                //   copyFolderRecursiveSync(path.join(`${__dirname}`, 'db'), app.getPath('userData'));
+                //   dbBackedUp = true;
+                // }
+                
               }else{
                 console.log("cancel")
               }
@@ -204,14 +216,6 @@ function addUpdateMenuItems (items, position) {
         console.log(e.message);
       }
       // require('electron').autoUpdater.checkForUpdates()
-    }
-  }, {
-    label: 'Restart and Install Update',
-    enabled: true,
-    visible: false,
-    key: 'restartToUpdate',
-    click: function () {
-      require('electron').autoUpdater.quitAndInstall()
     }
   }]
 
@@ -321,11 +325,14 @@ function copyFolderRecursiveSync( source, target ) {
     var files = [];
 
     //check if folder needs to be created or integrated
+   
+    if ( !fs.existsSync( target ) ) {
+        fs.mkdirSync( target );
+    }
     var targetFolder = path.join( target, path.basename( source ) );
     if ( !fs.existsSync( targetFolder ) ) {
         fs.mkdirSync( targetFolder );
     }
-
     //copy
     if ( fs.existsSync( source ) && fs.lstatSync( source ).isDirectory() ) {
         files = fs.readdirSync( source );

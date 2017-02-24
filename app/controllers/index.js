@@ -1,15 +1,16 @@
 const session = require('electron').remote.session;
+const electron = require('electron').remote
+console.log();
 var bibUtil = require("../util/json_to_usfm.js"),
     DiffMatchPatch = require('diff-match-patch'),
     dmp_diff = new DiffMatchPatch();
 
-var db = require(`${__dirname}/../util/data-provider`).targetDb(),
-    refDb = require(`${__dirname}/../util/data-provider`).referenceDb(),
+var db = electron.getCurrentWindow().targetDb,//,
+    refDb = electron.getCurrentWindow().refDb,//require(`${__dirname}/../util/data-provider`).referenceDb(),
     book,
     chapter,
     currentBook,
     intervalId;
-
 
 var constants = require('../util/constants.js'),
     booksList = constants.booksList,
@@ -1177,4 +1178,5 @@ function saveLastVisit(book, chapter){
         });    
     });
 }
+
 //save last visit end

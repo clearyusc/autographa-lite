@@ -33,7 +33,6 @@ function createWindow() {
 
     // and load the index.html of the app.
     win.loadURL(`file:${__dirname}/app/views/index.html`);
-
     //loading window gracefully
     win.once('ready-to-show', () => {
 	// Open the DevTools.
@@ -60,6 +59,7 @@ function preProcess() {
     function (resolve, reject) {
     // If DB does not exist in the application dir
         if(!fs.existsSync(path.join(`${__dirname}`, 'db'))){
+          console.log("check")
             if(fs.existsSync(app.getPath('userData')+'/db')){
                 copyFolderRecursiveSync((app.getPath('userData')+'/db'), path.join(`${__dirname}`));
             }else{
@@ -69,6 +69,8 @@ function preProcess() {
             }
 
         }
+        console.log("test")
+
         // check update available 
         autoUpdater.initialize();
           var http = require("http");
@@ -167,6 +169,8 @@ function preProcess() {
      })
      .then((response) => {
         createWindow();
+        win.refDb = require(`${__dirname}/app/util/data-provider`).referenceDb();
+        win.targetDb =  require(`${__dirname}/app/util/data-provider`).targetDb();
      })
      .catch((err) => {
          console.log('Error while App intialization.' + err);
@@ -229,7 +233,7 @@ function copyFolderRecursiveSync( source, target ) {
             } else {
                 copyFileSync( curSource, targetFolder );
             }
+            return
         } );
     }
 }
-
