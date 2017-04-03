@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "ProductName": "Autographa Lite",
   "description": "A Bible translation editor for everyone.",
-  "main": "app.js",
+  "main": "main.js",
   "scripts": {
     "start": "electron .",
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -36,7 +36,13 @@
     "electron-squirrel-startup": "^1.0.0",
     "pouchdb-adapter-leveldb": "^6.1.0",
     "pouchdb-core": "^6.1.0",
-    "pouchdb-quick-search": "^1.2.0"
+    "pouchdb-quick-search": "^1.2.0",
+    "react": "15.1.0",
+    "react-dom": "15.1.0",
+    "babel-cli": "^6.11.4",
+    "babel-core": "^6.13.2",
+    "babel-preset-react": "^6.11.0",
+    "babel-register": "^6.11.6"
   },
   "devDependencies": {
     "electron": "1.4.12",
