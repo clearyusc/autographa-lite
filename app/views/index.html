@@ -54,7 +54,18 @@
 <!--         <script src="../controllers/index.js"></script>
  -->        <script>
           if (window.module) module = window.module;
-        </script>        
+        </script>  
+        <script>
+        //  $("#fontSlider").slider();
+        // $("#fontSlider").on("slide", function(slideEvt) {
+        //     console.log("hi");
+        // $("#fontSliderSliderVal").text(slideEvt.value);
+        // });
+        var slider = new Slider("#fontSlider");
+        slider.on("slide", function(slideEvt) {
+        $("#fontSliderSliderVal").text(slideEvt.value);
+});
+         </script>       
     </body>
 
 </html>
