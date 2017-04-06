@@ -42,15 +42,14 @@ var stringReplace = require('../util/string_replace.js'),
     removeReferenceLink = '',
     ref_select = '';
 
-
-
-
+ $(document).ready(function(){
 document.getElementById("save-btn").addEventListener("click", function(e) {
     var verses = currentBook.chapters[parseInt(chapter, 10) - 1].verses;
     verses.forEach(function(verse, index) {
         var vId = 'v' + (index + 1);
         verse.verse = document.getElementById(vId).textContent;
     });
+
     currentBook.chapters[parseInt(chapter, 10) - 1].verses = verses;
     db.get(currentBook._id).then(function(doc) {
         doc.chapters[parseInt(chapter, 10) - 1].verses = verses;
@@ -62,6 +61,7 @@ document.getElementById("save-btn").addEventListener("click", function(e) {
     }).catch(function(err) {
         console.log('Error: While retrieving document. ' + err);
     });
+});
 });
 
 function createVerseInputs(verses, chunks, chapter) {
@@ -777,7 +777,6 @@ function getBookList() {
             });
         }
     });
-
 }
 // get book chapter list in popup
 function getBookChapterList(bookId) {

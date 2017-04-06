@@ -38,6 +38,7 @@
     "babel-register": "^6.11.6",
     "diff-match-patch": "^1.0.0",
     "electron-squirrel-startup": "^1.0.0",
+    "jquery": "2.2.4",
     "pouchdb-adapter-leveldb": "^6.1.0",
     "pouchdb-core": "^6.1.0",
     "pouchdb-quick-search": "^1.2.0",

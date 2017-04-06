@@ -44,15 +44,18 @@
             module = undefined;
         }
         </script>
-        <script src="../assets/javascript/vendor/jquery.min.js"></script>
+            <script> window.jQuery = window.$ = require('jquery');</script>
+
+<!--    <script src="../assets/javascript/vendor/jquery.min.js"></script> -->        
         <script src="../assets/javascript/vendor/bootstrap.min.js"></script>
+
         <!-- <script src="../assets/javascript/vendor/bootstrap-switch.js"></script> -->
         <!-- Material design js -->
         <script src="../assets/javascript/vendor/material.min.js"></script>
         <!-- stider js -->
         <script src="../assets/javascript/vendor/bootstrap-slider.js"></script>
-<!--         <script src="../controllers/index.js"></script>
- -->        <script>
+        <script src="../controllers/index.js"></script>
+        <script>
           if (window.module) module = window.module;
         </script>  
         <script>
