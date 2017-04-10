@@ -35,6 +35,7 @@ class Navbar extends React.Component
 
   openpopupBooks() {
     this.setState({ showModalBooks:true });
+    getBookChapterList();
   }
     
 
@@ -59,21 +60,21 @@ class Navbar extends React.Component
           </Modal.Header>
           <Modal.Body>
            <Tabs defaultActiveKey={8} animation={false} id="noanim-tab-example">
-            <Tab eventKey={8} title="Books" id="chapterTab">
+            <Tab eventKey={8} title="Books">
             <div className="wrap-center">
-                                        <div class="btn-group" role="group" aria-label="...">
+                                        <div className="btn-group" role="group" aria-label="...">
                                             <button className="btn btn-primary" type="button" id="allBooksBtn" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="All">ALL</button>
                                             <button className="btn btn-primary" type="button" id="otBooksBtn" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Old Testament">OT</button>
                                             <button className="btn btn-primary" type="button" id="ntBooksBtn" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="New Testament">NT</button>
                                         </div>
-                                    </div>
+            </div>
                                 <div className="row books-li" id="bookdata">
                                     <ul id="books-pane">
-                                        <li><a id="b1" href="javascript:setBookName('b1')">Genesis</a></li>
+                                       {/* <li><a id="b1" href="javascript:setBookName('b1')">Genesis</a></li>
                                         <li><a id="b2" href="javascript:setBookName('b2')">Exodus</a></li>
                                         <li><a id="b3" href="javascript:setBookName('b3')">Leviticus</a></li>
                                         <li><a id="b4" href="javascript:setBookName('b4')">Numbers</a></li>
-                                        <li><a id="b5" href="javascript:setBookName('b5')" className="link-active">Deuteronomy</a></li>
+                                        <li><a id="b5" href="javascript:setBookName('b5')" class="link-active">Deuteronomy</a></li>
                                         <li><a id="b6" href="javascript:setBookName('b6')">Joshua</a></li>
                                         <li><a id="b7" href="javascript:setBookName('b7')">Judges</a></li>
                                         <li><a id="b8" href="javascript:setBookName('b8')">Ruth</a></li>
@@ -134,7 +135,7 @@ class Navbar extends React.Component
                                         <li><a id="b63" href="javascript:setBookName('b63')">2 John</a></li>
                                         <li><a id="b64" href="javascript:setBookName('b64')">3 John</a></li>
                                         <li><a id="b65" href="javascript:setBookName('b65')">Jude</a></li>
-                                        <li><a id="b66" href="javascript:setBookName('b66')">Revelation</a></li>
+                                        <li><a id="b66" href="javascript:setBookName('b66')">Revelation</a></li>*/}
                                     </ul>
                                     </div>
                             <div className= "clearfix"></div>
@@ -449,7 +450,7 @@ class Navbar extends React.Component
                                 </a>
                             </li>
                             <li>
-                                <a eventKey={0} onClick={() => this.open()} href="#" data-target="#aboutmodal" data-toggle="tooltip" data-placement="bottom" title="About" id="btnAbout"><i className="fa fa-info fa-2x"></i></a>
+                                <a eventKey={0} onClick={() => {this.open(); this.getBookChapterList()}} href="#" data-target="#aboutmodal" data-toggle="tooltip" data-placement="bottom" title="About" id="btnAbout"><i className="fa fa-info fa-2x"></i></a>
                             </li>
                             <li><a eventKey={1} onClick={() => this.openpopup()} href="javascript:;" id="btnSettings" data-target="#bannerformmodal" data-toggle="tooltip" data-placement="bottom" title="Settings"><i className="fa fa-cog fa-2x"></i></a></li>
                         </ul>

@@ -759,7 +759,9 @@ function onBookSelect(bookId) {
     });
 }
 
+
 function getBookList() {
+    console.log("hi");
     createBooksList(66);
     $("#bookChapTabModal").modal('toggle');
     session.defaultSession.cookies.get({ url: 'http://book.autographa.com' }, (error, cookie) => {
@@ -779,7 +781,9 @@ function getBookList() {
     });
 }
 // get book chapter list in popup
+// $(document).ready(function(){
 function getBookChapterList(bookId) {
+    console.log("hi");
     db.get(bookId).then(function(doc) {
         createChaptersList(doc.chapters.length);
         createBooksList(66);
@@ -793,6 +797,7 @@ function getBookChapterList(bookId) {
         console.log('Error: While retrieving document. ' + err);
     });
 }
+// });
 //end book chapter list
 
 function closeModal(modal) {
@@ -1842,7 +1847,7 @@ $(document).on('show.bs.modal', '#bannerformmodal', function() {
 });
 
 $(document).ready(function(){
-$("#chapterTab").click(function() {
+$("#books-pane ul").click(function() {
     session.defaultSession.cookies.get({ url: 'http://chapter.autographa.com' }, (error, cookie) => {
         if (cookie.length > 0) {
             chapter = cookie[0].value;
