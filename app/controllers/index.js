@@ -873,6 +873,7 @@ $("#allBooksBtn").on("click", function() {
     getBooksByLimit(allBookStart, allBookEnd);
 });
 
+$(document).ready(function(){
 function getBooksByLimit(start, booksLength) {
     document.getElementById('books-pane').innerHTML = "";
     for (var i = start; i <= booksLength; i++) {
@@ -887,6 +888,7 @@ function getBooksByLimit(start, booksLength) {
     }
     $("#b"+currentBook._id).addClass('link-active')
 }
+});
 
 function saveReferenceLayout(layout) {
     refDb.get('targetReferenceLayout').then(function(doc) {
@@ -1839,6 +1841,7 @@ $(document).on('show.bs.modal', '#bannerformmodal', function() {
     buildReferenceList();
 });
 
+$(document).ready(function(){
 $("#chapterTab").click(function() {
     session.defaultSession.cookies.get({ url: 'http://chapter.autographa.com' }, (error, cookie) => {
         if (cookie.length > 0) {
@@ -1848,7 +1851,8 @@ $("#chapterTab").click(function() {
             
         }
     });
-})
+});
+});
 function escapeRegExp(str) {
   return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
 }
