@@ -783,7 +783,6 @@ function getBookList() {
 // get book chapter list in popup
 // $(document).ready(function(){
 function getBookChapterList(bookId) {
-    console.log("hi");
     db.get(bookId).then(function(doc) {
         createChaptersList(doc.chapters.length);
         createBooksList(66);
