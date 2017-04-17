@@ -29,21 +29,31 @@ class Navbar extends React.Component
     } 
 
   close() {
-    this.setState({ showModal: false,showModalSettings:false,showModalBooks:false });
+    this.setState({ 
+        showModal: false,
+        showModalSettings:false,
+        showModalBooks:false 
+    });
   }
 
   open() {
-    this.setState({ showModal: true });
+    this.setState({ 
+        showModal: true 
+    });
   } 
 
   openpopup() {
-    this.setState({ showModalSettings: true });
+    this.setState({ 
+        showModalSettings: true 
+    });
   }
 
   openpopupBooks() {
-    this.setState({ showModalBooks:true });
-    // getBookList();
+    this.setState({ 
+        showModalBooks:true 
+    });
   }
+
   componentDidMount() {
       console.log('Component DID MOUNT!')
 
@@ -62,7 +72,10 @@ class Navbar extends React.Component
     //     wow.
     //   </Tooltip>
     // );
-    let close = () => this.setState({showModal:false,showModalSettings:false,showModalBooks:false});
+     let close = () => this.setState({showModal:false,
+                                      showModalSettings:false,
+                                      showModalBooks:false
+                                  });
         return(
     <div>
         <Modal show={this.state.showModalBooks} onHide={close}>
@@ -81,11 +94,78 @@ class Navbar extends React.Component
             </div>
                                 <div className="row books-li" id="bookdata">
                                     <ul id="books-pane">
+                                        {/*<li><a id="b1" href="javascript:setBookName('b1')" class="link-active">Genesis</a></li>
+                                        <li><a id="b2" href="javascript:setBookName('b2')">Exodus</a></li>
+                                        <li><a id="b3" href="javascript:setBookName('b3')">Leviticus</a></li>
+                                        <li><a id="b4" href="javascript:setBookName('b4')">Numbers</a></li>
+                                        <li><a id="b5" href="javascript:setBookName('b5')">Deuteronomy</a></li>
+                                        <li><a id="b6" href="javascript:setBookName('b6')">Joshua</a></li>
+                                        <li><a id="b7" href="javascript:setBookName('b7')">Judges</a></li>
+                                        <li><a id="b8" href="javascript:setBookName('b8')">Ruth</a></li>
+                                        <li><a id="b9" href="javascript:setBookName('b9')">1 Samuel</a></li>
+                                        <li><a id="b10" href="javascript:setBookName('b10')">2 Samuel</a></li>
+                                        <li><a id="b11" href="javascript:setBookName('b11')">1 Kings</a></li>
+                                        <li><a id="b12" href="javascript:setBookName('b12')">2 Kings</a></li>
+                                        <li><a id="b13" href="javascript:setBookName('b13')">1 Chronicles</a></li>
+                                        <li><a id="b14" href="javascript:setBookName('b14')">2 Chronicles</a></li>
+                                        <li><a id="b15" href="javascript:setBookName('b15')">Ezra</a></li>
+                                        <li><a id="b16" href="javascript:setBookName('b16')">Nehemiah</a></li>
+                                        <li><a id="b17" href="javascript:setBookName('b17')">Esther</a></li>
+                                        <li><a id="b18" href="javascript:setBookName('b18')">Job</a></li>
+                                        <li><a id="b19" href="javascript:setBookName('b19')">Psalms</a></li>
+                                        <li><a id="b20" href="javascript:setBookName('b20')">Proverbs</a></li>
+                                        <li><a id="b21" href="javascript:setBookName('b21')">Ecclesiastes</a></li>
+                                        <li><a id="b22" href="javascript:setBookName('b22')">Song of Solomon</a></li>
+                                        <li><a id="b23" href="javascript:setBookName('b23')">Isaiah</a></li>
+                                        <li><a id="b24" href="javascript:setBookName('b24')">Jeremiah</a></li>
+                                        <li><a id="b25" href="javascript:setBookName('b25')">Lamentations</a></li>
+                                        <li><a id="b26" href="javascript:setBookName('b26')">Ezekiel</a></li>
+                                        <li><a id="b27" href="javascript:setBookName('b27')">Daniel</a></li>
+                                        <li><a id="b28" href="javascript:setBookName('b28')">Hosea</a></li>
+                                        <li><a id="b29" href="javascript:setBookName('b29')">Joel</a></li>
+                                        <li><a id="b30" href="javascript:setBookName('b30')">Amos</a></li>
+                                        <li><a id="b31" href="javascript:setBookName('b31')">Obadiah</a></li>
+                                        <li><a id="b32" href="javascript:setBookName('b32')">Jonah</a></li>
+                                        <li><a id="b33" href="javascript:setBookName('b33')">Micah</a></li>
+                                        <li><a id="b34" href="javascript:setBookName('b34')">Nahum</a></li>
+                                        <li><a id="b35" href="javascript:setBookName('b35')">Habakkuk</a></li>
+                                        <li><a id="b36" href="javascript:setBookName('b36')">Zephaniah</a></li>
+                                        <li><a id="b37" href="javascript:setBookName('b37')">Haggai</a></li>
+                                        <li><a id="b38" href="javascript:setBookName('b38')">Zechariah</a></li>
+                                        <li><a id="b39" href="javascript:setBookName('b39')">Malachi</a></li>
+                                        <li><a id="b40" href="javascript:setBookName('b40')">Matthew</a></li>
+                                        <li><a id="b41" href="javascript:setBookName('b41')">Mark</a></li>
+                                        <li><a id="b42" href="javascript:setBookName('b42')">Luke</a></li>
+                                        <li><a id="b43" href="javascript:setBookName('b43')">John</a></li>
+                                        <li><a id="b44" href="javascript:setBookName('b44')">Acts</a></li>
+                                        <li><a id="b45" href="javascript:setBookName('b45')">Romans</a></li>
+                                        <li><a id="b46" href="javascript:setBookName('b46')">1 Corinthians</a></li>
+                                        <li><a id="b47" href="javascript:setBookName('b47')">2 Corinthians</a></li>
+                                        <li><a id="b48" href="javascript:setBookName('b48')">Galatians</a></li>
+                                        <li><a id="b49" href="javascript:setBookName('b49')">Ephesians</a></li>
+                                        <li><a id="b50" href="javascript:setBookName('b50')">Philippians</a></li>
+                                        <li><a id="b51" href="javascript:setBookName('b51')">Colossians</a></li>
+                                        <li><a id="b52" href="javascript:setBookName('b52')">1 Thessalonians</a></li>
+                                        <li><a id="b53" href="javascript:setBookName('b53')">2 Thessalonians</a></li>
+                                        <li><a id="b54" href="javascript:setBookName('b54')">1 Timothy</a></li>
+                                        <li><a id="b55" href="javascript:setBookName('b55')">2 Timothy</a></li>
+                                        <li><a id="b56" href="javascript:setBookName('b56')">Titus</a></li>
+                                        <li><a id="b57" href="javascript:setBookName('b57')">Philemon</a></li>
+                                        <li><a id="b58" href="javascript:setBookName('b58')">Hebrews</a></li>
+                                        <li><a id="b59" href="javascript:setBookName('b59')">James</a></li>
+                                        <li><a id="b60" href="javascript:setBookName('b60')">1 Peter</a></li>
+                                        <li><a id="b61" href="javascript:setBookName('b61')">2 Peter</a></li>
+                                        <li><a id="b62" href="javascript:setBookName('b62')">1 John</a></li>
+                                        <li><a id="b63" href="javascript:setBookName('b63')">2 John</a></li>
+                                        <li><a id="b64" href="javascript:setBookName('b64')">3 John</a></li>
+                                        <li><a id="b65" href="javascript:setBookName('b65')">Jude</a></li>
+                                        <li><a id="b66" href="javascript:setBookName('b66')">Revelation</a></li>
+                                    </ul>*/}
                                         {this.state.data.map(function(result) {
                                            return <BookList result={result}/>;
                                         })}
                                     </ul>
-                                    </div>
+                                </div>
                             <div className= "clearfix"></div>
             </Tab>
             <Tab eventKey={9} title="Chapters">
@@ -115,7 +195,7 @@ class Navbar extends React.Component
                         <li><a id="c22" href="javascript:setChapter('22')">22</a></li>
                         <li><a id="c23" href="javascript:setChapter('23')">23</a></li>
                         <li><a id="c24" href="javascript:setChapter('24')">24</a></li>
-                        <li><a id="c25" href="javascript:setChapter('25')">25</a></li>
+                        <li><a id="c25" href="javascript:setCha pter('25')">25</a></li>
                         <li><a id="c26" href="javascript:setChapter('26')">26</a></li>
                         <li><a id="c27" href="javascript:setChapter('27')">27</a></li>
                         <li><a id="c28" href="javascript:setChapter('28')">28</a></li>
@@ -260,7 +340,7 @@ class Navbar extends React.Component
            <Tabs defaultActiveKey={4} animation={false} id="noanim-tab-example">
             <Tab eventKey={4} title="Translation Details">
                                 <div className="form-group">
-                                   <label for="ref-lang-code">Language Code</label><br />
+                                   <label htmlFor="ref-lang-code">Language Code</label><br />
                                     <input type="text" id="ref-lang-code" placeholder="eng" />
                                 </div>
                                  <div id="reference-lang-result" class="lang-code"></div>
@@ -271,10 +351,10 @@ class Navbar extends React.Component
                                     <input type="text" id="ref-version" placeholder="NET-S3" />  
                                 </div>
                            <div className="form-group">
-                                    <label for="ref-path">Path to Folder Location</label><br />
+                                    <label htmlFor="ref-path">Path to Folder Location</label><br />
                                     <input type="text" id="ref-path" placeholder="Path of folder containing USFM files" />
                             </div>
-                            <button style={{float: "right", marginRight: "33px"}} class="btn btn-success" id="ref-import-btn">Import</button>
+                            <button style={{float: "right", marginRight: "33px"}} className="btn btn-success" id="ref-import-btn">Import</button>
                             <div className= "clearfix"></div>
             </Tab>
             <Tab eventKey={5} title="Import Translation">
@@ -286,13 +366,13 @@ class Navbar extends React.Component
             <Tab eventKey={6} title="Import Reference Text">
            <div className="form-group">
                                 <div >
-                                    <label for="ref-name">Bible name</label><br />
-                                    <input  type="text" id="ref-name" placeholder="New English Translation" />
+                                    <label class="mdl-textfield__label" htmlFor="ref-name">Bible name</label><br />
+                                    <input  className="mdl-textfield__input" type="text" id="ref-name" placeholder="New English Translation" />
                                 </div>
             </div>
             <div className="form-group">
                                 <div >
-                                   <label for="ref-lang-code">Language Code</label><br />
+                                   <label htmlFor="ref-lang-code">Language Code</label><br />
                                    <input type="text" id="ref-lang-code" placeholder="eng" />   
                                 </div>
                                 <div id="reference-lang-result" className="lang-code"></div>
@@ -300,13 +380,13 @@ class Navbar extends React.Component
             </div>
             <div className="form-group">
                                 <div >
-                                    <label  for="version">Version</label><br />
+                                    <label  htmlFor="version">Version</label><br />
                                     <input type="text" id="ref-version" placeholder="NET-S3" />
                                 </div>
             </div>
             <div className="form-group">
                                 <div >
-                                    <label for="ref-path">Folder Location</label><br />
+                                    <label htmlFor="ref-path">Folder Location</label><br />
                                     <input type="text" id="ref-path" placeholder="Path of folder containing USFM files" />
                                 </div>
             </div>

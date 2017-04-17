@@ -43,9 +43,12 @@
     "pouchdb-core": "^6.1.0",
     "pouchdb-quick-search": "^1.2.0",
     "react": "15.1.0",
+    "react-addons-css-transition-group": "^15.5.2",
+    "react-addons-shallow-compare": "^15.5.2",
     "react-bootstrap": "^0.30.8",
     "react-bootstrap-grid": "^1.0.0",
-    "react-dom": "15.1.0"
+    "react-dom": "15.1.0",
+    "react-selectize": "^2.1.0"
   },
   "devDependencies": {
     "electron": "1.4.12",

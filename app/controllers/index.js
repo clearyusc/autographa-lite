@@ -499,7 +499,7 @@ function createRefSelections() {
         });
     }
 }
-
+$(document).ready(function(){
 $('.ref-drop-down').change(function(event) {
     var selectedRefElement = $(this);
     var cookieRef = { url: 'http://refs.autographa.com', name: selectedRefElement.next().next().val().toString() , value: selectedRefElement.val() };
@@ -519,6 +519,7 @@ $('.ref-drop-down').change(function(event) {
         }
         selectedRefElement.closest('div.row').next('div.row').children('div[type="ref"]').html(refContent);
     });
+});
 });
 
 function highlightRef() {
@@ -582,7 +583,7 @@ function setMultiwindowReference(layout) {
             //var newID = element.attr('id').replace(/\d+$/, function(str) { return parseInt(str) + 1});
             clone_ele = $(children[0]).clone(true, true).attr("id", "section-1").insertBefore('div.col-editor');
             clone_ele.find(".ref-drop-down").val(clone_ele.find(".current-val").val());
-            clone_ele.find(".current-pos").val('1');
+            clone_ele.find(".current-pos").val('0');
             var refVal = clone_ele.find(".current-val").val()
             if(refVal != ""){
                 console.log(refVal)
@@ -761,7 +762,6 @@ function onBookSelect(bookId) {
 
 
 function getBookList() {
-    console.log("hi");
     createBooksList(66);
     $("#bookChapTabModal").modal('toggle');
     session.defaultSession.cookies.get({ url: 'http://book.autographa.com' }, (error, cookie) => {
