@@ -155,7 +155,7 @@ function initializeTextInUI(book, chapter) {
         refDb.get('refChunks').then(function(chunkDoc) {
             // console.log(doc.chapters[parseInt(chapter,10)-1].verses.length);
             currentBook = doc;
-            createRefSelections();
+            // createRefSelections();
             createVerseInputs(doc.chapters[parseInt(chapter, 10) - 1].verses, chunkDoc.chunks[parseInt(book, 10) - 1], chapter);
         });
     }).catch(function(err) {

@@ -161,8 +161,8 @@ class Navbar extends React.Component
                                         <li><a id="b65" href="javascript:setBookName('b65')">Jude</a></li>
                                         <li><a id="b66" href="javascript:setBookName('b66')">Revelation</a></li>
                                     </ul>*/}
-                                        {this.state.data.map(function(result) {
-                                           return <BookList result={result}/>;
+                                        {this.state.data.map(function(result, index ) {
+                                           return <BookList result={result} key={index}/>;
                                         })}
                                     </ul>
                                 </div>

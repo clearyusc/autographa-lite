@@ -17,14 +17,25 @@ const ReactDOM = require('react-dom')
  const BookList = require("./booklist");
 const ReactSelectize = require("react-selectize");
 const SimpleSelect = ReactSelectize.SimpleSelect;
+const refDb = require(`${__dirname}/../util/data-provider`).referenceDb();
 
 class Contentbox extends React.Component 
 {
   constructor(props) {
     super(props);
-    this.state = {example:Constant.defaultReferences };
 
     this.handleChange = this.handleChange.bind(this);
+    this.state = { refList: [] }
+    var existRef = []
+    var refLists = refDb.get('refs').then(function(doc) {
+            doc.ref_ids.forEach(function(ref_doc) {
+                existRef.push( {value: ref_doc.ref_id, option: ref_doc.ref_name } )
+        })
+        return existRef
+    })
+    refLists.then((refsArray) => {
+        this.setState({refList:  refsArray})
+    })
 
   }
 
@@ -44,26 +55,18 @@ class Contentbox extends React.Component
                         <div className="col-12 center-align">
                             <div className="btn-group">
 
-        
-         <div>
-                    <SimpleSelect 
-                    placeholder = "Select Language"
-                    options = {
-                        this.state.example.map(function(mile) {
-                            return { label: mile, value: mile };
-                        })
-                    }
-                    value = { this.state.mile } 
-                    onValueChange = { function(mile) {
-                        simpleselect.setState ({mile: mile, model: mile}
-                        )
-                    }} 
-                    />
-                </div>
-	                            {/*<select className="ref-drop-down" title="Select Reference Text"></select>
+                                    <select className="ref-drop-down" title="Select Reference Text">
+                                        {
+                                            this.state.refList.map(function(refDoc, index){
+                                                return(
+                                                 <option value={refDoc.value}  key={index} >{refDoc.option}</option>
+                                                )
+                                            })
+                                        }
+                                    </select>
 	                                <input type="hidden" className="current-val" />
 	                                <input type="hidden" className="current-pos" value="0" />
-	                                <span className="diff-count"></span>*/}
+	                                <span className="diff-count"></span>
                              </div>
                         </div>
                     </div>
