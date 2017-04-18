@@ -12,20 +12,28 @@ class BookList extends React.Component {
     	};   
     } 
 
+   handleSelect(key) {
+    this.setState({key});
+  }
+
+  goToTab(key) {
+    this.setState({key});
+  }
 
 
 	render() {
-	    return (
-	    <Tabs defaultActiveKey={1}  animation={false} id="noanim-tab-example">
-		    <Tab eventKey={1} title="Tab 1">
-		    <div className="wrap-center"></div>
-            <div className="row books-li" id="bookdata">
-                <ul id="books-pane">
-                    <BookGroup result={this.state.data} />
-                </ul>
-            </div>
-            <div className= "clearfix"></div></Tab>
-		    <Tab eventKey={2} title="Tab 2"> 
+	    return ( 
+	    <Tabs defaultActiveKey={1} animation={false} activeKey={this.state.key} onSelect={this.handleSelect} id="noanim-tab-example">
+		    <Tab eventKey={1} title="Tab 1" label="Tags"   onClick={() => this.goToTab(2)}>
+			    <div className="wrap-center"></div>
+	            <div className="row books-li" id="bookdata">
+	                <ul id="books-pane">
+	                    <BookGroup result={this.state.data} />
+	                </ul>
+	            </div>
+	            <div className= "clearfix"></div>
+            </Tab>
+		    <Tab eventKey={2} title="Tab 2" > 
 		    	<div className="chapter-no">
                 	<ul id="chaptersList"></ul>
             	</div>
@@ -36,12 +44,15 @@ class BookList extends React.Component {
 }
 
 var BookGroup = function(props) {
-	function handleSelect(item) {
-		console.log('selected ' + item);
-	}
+function _handleClick(){
+  event.preventDefault();
+  let obj = this._obj
+  console.log(obj);
+}
 
 	const BooksGroup = props.result.map((item,index) =>
-		<li key={index} onSelect={handleSelect(item)}>{item}</li>
+		<li key={index}><a href="#" key={index} onClick={_handleClick } ref={(input) => this._obj = item} value={item}>{item}
+		</a></li>
 	)
 	return (
 		<div>{BooksGroup}</div>
@@ -50,12 +61,14 @@ var BookGroup = function(props) {
 	
 
 var ChapterGroup = function(props) {
-	const milestoneGroups = props.result.map((item,index) =>
-		<li><a href="#">{item}</a></li>
-	)
+	
+	const milestoneGroups = 
+		<li onClick={setChapter()}><a href="#">{chapter}</a></li>
+	
 	return (
 		<div>{milestoneGroups}</div>
 	)
 }
 
 module.exports = BookList
+

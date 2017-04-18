@@ -782,20 +782,20 @@ function getBookList() {
 }
 // get book chapter list in popup
 // $(document).ready(function(){
-function getBookChapterList(bookId) {
-    db.get(bookId).then(function(doc) {
-        createChaptersList(doc.chapters.length);
-        createBooksList(66);
-        $("#bookChapTabModal").modal('toggle');
-        $('#booksTab').removeClass('is-active');
-        $('#books-panel').removeClass('is-active');
-        $("#chapterTab").click().addClass('is-active');
-        $("#chapters-panel").addClass("is-active");
+    function getBookChapterList(bookId) {
+        db.get(bookId).then(function(doc) {
+            createChaptersList(doc.chapters.length);
+            createBooksList(66);
+            $("#bookChapTabModal").modal('toggle');
+            $('#booksTab').removeClass('is-active');
+            $('#books-panel').removeClass('is-active');
+            $("#chapterTab").click().addClass('is-active');
+            $("#chapters-panel").addClass("is-active");
 
-    }).catch(function(err) {
-        console.log('Error: While retrieving document. ' + err);
-    });
-}
+        }).catch(function(err) {
+            console.log('Error: While retrieving document. ' + err);
+        });
+    }
 // });
 //end book chapter list
 
