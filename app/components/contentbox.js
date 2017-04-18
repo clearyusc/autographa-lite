@@ -1,5 +1,5 @@
-const React = require('react')
-const ReactDOM = require('react-dom')
+ const React = require('react')
+ const ReactDOM = require('react-dom')
  const bootstrap = require('react-bootstrap');
 // const style = require("./Style");
 // const Nav = require('react-bootstrap/lib/Nav');
@@ -15,9 +15,9 @@ const ReactDOM = require('react-dom')
  const Tab = require('react-bootstrap/lib/Tab');
  const Constant = require("../util/constants");
  const BookList = require("./booklist");
-const ReactSelectize = require("react-selectize");
-const SimpleSelect = ReactSelectize.SimpleSelect;
-const refDb = require(`${__dirname}/../util/data-provider`).referenceDb();
+ // const ReactSelectize = require("react-selectize");
+ // const SimpleSelect = ReactSelectize.SimpleSelect;
+ const refDb = require(`${__dirname}/../util/data-provider`).referenceDb();
 
 class Contentbox extends React.Component 
 {
@@ -25,19 +25,39 @@ class Contentbox extends React.Component
     super(props);
 
     this.handleChange = this.handleChange.bind(this);
-    this.state = { refList: [] }
+    this.state = { refList: [], verses: [] }
     var existRef = []
+    var i
     var refLists = refDb.get('refs').then(function(doc) {
             doc.ref_ids.forEach(function(ref_doc) {
                 existRef.push( {value: ref_doc.ref_id, option: ref_doc.ref_name } )
+                console.log(ref_doc);
         })
         return existRef
     })
-    refLists.then((refsArray) => {
-        this.setState({refList:  refsArray})
-    })
 
-  }
+    refLists.then((refsArray) => {
+    this.setState({refList:  refsArray})
+    })
+ /*   getReferenceText(function(err, refContent) {
+        if (err) {
+            console.log(err);
+            alertModal("Error", "This chapter is not available in the selected reference version.");
+            return;
+        } else {
+
+        }*/
+        var verse = {};
+        var abc = refDb.get('eng_udb_GEN').then(function(doc) {
+        verse = doc;
+        return verse
+    })
+        abc.then((item) => {
+        this.setState({verses:  item})
+    })
+}
+
+
 
   handleChange(event) {
     this.setState({value: event.target.value});
@@ -45,7 +65,8 @@ class Contentbox extends React.Component
 
   
 	render (){
-        var simpleselect = this;
+        console.log(this.state.verses.chapters)
+        // var simpleselect = this;
             // console.log(this.state.example);
 		return (
 		<div className="container-fluid">
@@ -71,7 +92,9 @@ class Contentbox extends React.Component
                         </div>
                     </div>
                     <div className="row">
-                        <div type="ref" className="col-12 col-ref"></div>
+                        <div type="ref" className="col-12 col-ref">
+                        
+                        </div>
                     </div>
                 </div>
                 <div className="col-sm-6 col-fixed col-editor">

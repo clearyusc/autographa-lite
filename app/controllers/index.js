@@ -425,6 +425,7 @@ function createRefSelections() {
                     $(".current-val").val(ref_doc.ref_id);
                     getReferenceText(ref_doc.ref_id, function(err, refContent) {
                         if (err) {
+                            
                             console.log('Info: No references found in database. ' + err);
                             return;
                         }
@@ -499,7 +500,7 @@ function createRefSelections() {
         });
     }
 }
-$(document).ready(function(){
+// $(document).ready(function(){
 $('.ref-drop-down').change(function(event) {
     var selectedRefElement = $(this);
     var cookieRef = { url: 'http://refs.autographa.com', name: selectedRefElement.next().next().val().toString() , value: selectedRefElement.val() };
@@ -520,7 +521,7 @@ $('.ref-drop-down').change(function(event) {
         selectedRefElement.closest('div.row').next('div.row').children('div[type="ref"]').html(refContent);
     });
 });
-});
+// });
 
 function highlightRef() {
     var i,
