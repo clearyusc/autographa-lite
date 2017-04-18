@@ -44,19 +44,18 @@ class BookList extends React.Component {
 }
 
 var BookGroup = function(props) {
-function _handleClick(){
-  event.preventDefault();
-  let obj = this._obj
-  console.log(obj);
-}
-
-	const BooksGroup = props.result.map((item,index) =>
-		<li key={index}><a href="#" key={index} onClick={_handleClick } ref={(input) => this._obj = item} value={item}>{item}
+	const BooksGroup = props.result.map((item,index) =>{
+		let _handleClick = this.onItemClick.bind(this, index+1);
+		return <li key={index}><a href="#" key={index} onClick={_handleClick } ref={(input) => this._obj = item} value={item}>{item}
 		</a></li>
-	)
+	})
 	return (
 		<div>{BooksGroup}</div>
 	)
+}
+
+onItemClick = function(item, e) {  
+  console.log(item);
 }
 	
 
