@@ -18,6 +18,8 @@
  // const ReactSelectize = require("react-selectize");
  // const SimpleSelect = ReactSelectize.SimpleSelect;
  const refDb = require(`${__dirname}/../util/data-provider`).referenceDb();
+const session = require('electron').remote.session;
+const { dialog } = require('electron').remote;
 
 class Contentbox extends React.Component 
 {
@@ -39,10 +41,19 @@ class Contentbox extends React.Component
             this.setState({refList:  refsArray});
         })
         this.getRefContents('eng_ulb');
+
+        session.defaultSession.cookies.get({ url: 'http://refs.autographa.com ' }, (error, cookie) => {
+                if (cookie.length > 0) {
+                    bookCode = cookie[0].value;
+                    console.log(bookCode);
+
+                }
+            })
     }
     
     getRefContents(id) {
-        let refContent = refDb.get(id+'_GEN').then(function(doc) { //book code is hard coded for now
+       var bookCode = 'GEN';
+        let refContent = refDb.get(id+'_'+bookCode).then(function(doc) { //book code is hard coded for now
             for (var i = 0; i < doc.chapters.length; i++) {
                 if (doc.chapters[i].chapter == parseInt(1, 10)) { // 1 is chapter number and hardcoded for now
                     break;

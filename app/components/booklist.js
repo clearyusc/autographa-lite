@@ -1,8 +1,10 @@
 const React = require('react')
 const ReactDOM = require('react-dom')
 const Constant = require("../util/constants");
- const Tabs = require('react-bootstrap/lib/Tabs');
- const Tab = require('react-bootstrap/lib/Tab');
+const Tabs = require('react-bootstrap/lib/Tabs');
+const Tab = require('react-bootstrap/lib/Tab');
+const session = require('electron').remote.session;
+const { dialog } = require('electron').remote;
 
 
 class BookList extends React.Component {
@@ -28,7 +30,27 @@ class BookList extends React.Component {
 		    chap.push({ number: chapter });
 			})  	
 			return chap
+			console.log(chap)
 		})
+		 var cookieRef = { url: 'http://refs.autographa.com', name: 'Book', value: global.book };
+	    session.defaultSession.cookies.set(cookieRef, (error) => {
+	        if (error)
+	            console.log(error);
+	    });
+
+	     var cookieRefs = { url: 'http://refs.autographa.com', name: 'Chapter', value: bookChapter };
+	    session.defaultSession.cookies.set(cookieRefs, (error) => {
+	        if (error)
+	            console.log(error);
+	    });
+
+	    session.defaultSession.cookies.get({ url: 'http://refs.autographa.com ' }, (error, cookie) => {
+                if (cookie.length > 0) {
+                    chapter = cookie[1].value;
+                    console.log(chapter);
+                    // initializeTextInUI(book, chapter);
+                } 	
+            });
 
 		getData.then((item) =>{
 			this.setState({chapterData:item})
