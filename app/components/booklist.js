@@ -4,6 +4,7 @@ const Constant = require("../util/constants");
  const Tabs = require('react-bootstrap/lib/Tabs');
  const Tab = require('react-bootstrap/lib/Tab');
 
+
 class BookList extends React.Component {
 	constructor(props) {
         super(props);
@@ -34,9 +35,6 @@ class BookList extends React.Component {
 		})
 	}
 
-  
-
-
 	render() {
 	    return ( 
 	    <Tabs defaultActiveKey={1} animation={false} activeKey={this.state.key} onSelect={this.handleSelect} id="noanim-tab-example">
@@ -51,11 +49,7 @@ class BookList extends React.Component {
             </Tab>
 		    <Tab eventKey={2} title="Tab 2" > 
 		    	<div className="chapter-no">
-                	<ul id="chaptersList"> 
-	                { this.state.chapterData.map(function(row, i) {
-		          		return ( <li key={i}>{i+1}</li> );
-		        	})} 	
-                	</ul>
+                		<ChapterList chapterData = { this.state.chapterData } />
             	</div>
             </Tab>
   		</Tabs>
@@ -72,6 +66,13 @@ var BookGroup = function(props) {
 	return (
 		<div>{BooksGroup}</div>
 	)
+}
+
+var ChapterList = function(props) {
+	const ChaptersList = props.chapterData.map(function(row, i) {
+		return ( <li key={i}>{i+1}</li> );
+	})
+	return ( <ul id="chaptersList"> { ChaptersList } </ul>)   
 }
 
 onItemClick = function(item, e) {  
