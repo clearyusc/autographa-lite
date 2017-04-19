@@ -21,53 +21,46 @@
 
 class Contentbox extends React.Component 
 {
-  constructor(props) {
-    super(props);
-
-    this.handleChange = this.handleChange.bind(this);
-    this.state = { refList: [], verses: [] }
-    var existRef = []
-    var i
-    var refLists = refDb.get('refs').then(function(doc) {
-            doc.ref_ids.forEach(function(ref_doc) {
-                existRef.push( {value: ref_doc.ref_id, option: ref_doc.ref_name } )
-                console.log(ref_doc);
+    constructor(props) {
+        super(props);
+        this.handleRefChange = this.handleRefChange.bind(this);
+        this.state = { refList: [], verses: [], content: "" }
+        var existRef = [];
+        var i
+        var refLists = refDb.get('refs').then(function(doc) {
+                doc.ref_ids.forEach(function(ref_doc) {
+                    existRef.push( {value: ref_doc.ref_id, option: ref_doc.ref_name } );
+            })
+            return existRef;
         })
-        return existRef
-    })
 
-    refLists.then((refsArray) => {
-    this.setState({refList:  refsArray})
-    })
- /*   getReferenceText(function(err, refContent) {
-        if (err) {
-            console.log(err);
-            alertModal("Error", "This chapter is not available in the selected reference version.");
-            return;
-        } else {
+        refLists.then((refsArray) => {
+            this.setState({refList:  refsArray});
+        })
+    }
 
-        }*/
-        var verse = {};
-        var abc = refDb.get('eng_udb_GEN').then(function(doc) {
-        verse = doc;
-        return verse
-    })
-        abc.then((item) => {
-        this.setState({verses:  item})
-    })
-}
+    handleRefChange(event) {
+        let refContent = refDb.get(event.target.value+'_GEN').then(function(doc) { //book code is hard coded for now
+            for (var i = 0; i < doc.chapters.length; i++) {
+                if (doc.chapters[i].chapter == parseInt(1, 10)) { // 1 is chapter number and hardcoded for now
+                    break;
+                }
+            }
+            let refString = doc.chapters[i].verses.map(function(verse, verseNum) {
+                return '<div data-verse="r' + (verseNum + 1) + '"><span class="verse-num">' + (verseNum + 1) + '</span><span>' + verse.verse + '</span></div>';
+            }).join('');
+            return refString;
+        }).catch(function(err) {
+            console.log(err)
+        });
 
-
-
-  handleChange(event) {
-    this.setState({value: event.target.value});
-  }
+        refContent.then((content)=> {
+            this.setState({content: content})
+        })
+    }
 
   
 	render (){
-        console.log(this.state.verses.chapters)
-        // var simpleselect = this;
-            // console.log(this.state.example);
 		return (
 		<div className="container-fluid">
             <div className="row row-col-fixed rmvflex" style={{display: 'flex'}}>
@@ -76,7 +69,7 @@ class Contentbox extends React.Component
                         <div className="col-12 center-align">
                             <div className="btn-group">
 
-                                    <select className="ref-drop-down" title="Select Reference Text">
+                                    <select className="ref-drop-down" title="Select Reference Text" onChange={this.handleRefChange}>
                                         {
                                             this.state.refList.map(function(refDoc, index){
                                                 return(
@@ -93,7 +86,7 @@ class Contentbox extends React.Component
                     </div>
                     <div className="row">
                         <div type="ref" className="col-12 col-ref">
-                        
+                           <div dangerouslySetInnerHTML={{__html: this.state.content}} />
                         </div>
                     </div>
                 </div>
