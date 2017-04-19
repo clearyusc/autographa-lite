@@ -29,21 +29,31 @@ class Navbar extends React.Component
     } 
 
   close() {
-    this.setState({ showModal: false,showModalSettings:false,showModalBooks:false });
+    this.setState({ 
+        showModal: false,
+        showModalSettings:false,
+        showModalBooks:false 
+    });
   }
 
   open() {
-    this.setState({ showModal: true });
+    this.setState({ 
+        showModal: true 
+    });
   } 
 
   openpopup() {
-    this.setState({ showModalSettings: true });
+    this.setState({ 
+        showModalSettings: true 
+    });
   }
 
   openpopupBooks() {
-    this.setState({ showModalBooks:true });
-    // getBookList();
+    this.setState({ 
+        showModalBooks:true 
+    });
   }
+
   componentDidMount() {
       console.log('Component DID MOUNT!')
 
@@ -62,7 +72,10 @@ class Navbar extends React.Component
     //     wow.
     //   </Tooltip>
     // );
-    let close = () => this.setState({showModal:false,showModalSettings:false,showModalBooks:false});
+     let close = () => this.setState({showModal:false,
+                                      showModalSettings:false,
+                                      showModalBooks:false
+                                  });
         return(
     <div>
         <Modal show={this.state.showModalBooks} onHide={close}>
@@ -71,6 +84,7 @@ class Navbar extends React.Component
           </Modal.Header>
           <Modal.Body>
           <BookList />
+
           </Modal.Body>
         </Modal>
 
@@ -86,7 +100,7 @@ class Navbar extends React.Component
            <Tabs defaultActiveKey={4} animation={false} id="noanim-tab-example">
             <Tab eventKey={4} title="Translation Details">
                                 <div className="form-group">
-                                   <label for="ref-lang-code">Language Code</label><br />
+                                   <label htmlFor="ref-lang-code">Language Code</label><br />
                                     <input type="text" id="ref-lang-code" placeholder="eng" />
                                 </div>
                                  <div id="reference-lang-result" class="lang-code"></div>
@@ -97,10 +111,10 @@ class Navbar extends React.Component
                                     <input type="text" id="ref-version" placeholder="NET-S3" />  
                                 </div>
                            <div className="form-group">
-                                    <label for="ref-path">Path to Folder Location</label><br />
+                                    <label htmlFor="ref-path">Path to Folder Location</label><br />
                                     <input type="text" id="ref-path" placeholder="Path of folder containing USFM files" />
                             </div>
-                            <button style={{float: "right", marginRight: "33px"}} class="btn btn-success" id="ref-import-btn">Import</button>
+                            <button style={{float: "right", marginRight: "33px"}} className="btn btn-success" id="ref-import-btn">Import</button>
                             <div className= "clearfix"></div>
             </Tab>
             <Tab eventKey={5} title="Import Translation">
@@ -112,13 +126,13 @@ class Navbar extends React.Component
             <Tab eventKey={6} title="Import Reference Text">
            <div className="form-group">
                                 <div >
-                                    <label for="ref-name">Bible name</label><br />
-                                    <input  type="text" id="ref-name" placeholder="New English Translation" />
+                                    <label class="mdl-textfield__label" htmlFor="ref-name">Bible name</label><br />
+                                    <input  className="mdl-textfield__input" type="text" id="ref-name" placeholder="New English Translation" />
                                 </div>
             </div>
             <div className="form-group">
                                 <div >
-                                   <label for="ref-lang-code">Language Code</label><br />
+                                   <label htmlFor="ref-lang-code">Language Code</label><br />
                                    <input type="text" id="ref-lang-code" placeholder="eng" />   
                                 </div>
                                 <div id="reference-lang-result" className="lang-code"></div>
@@ -126,13 +140,13 @@ class Navbar extends React.Component
             </div>
             <div className="form-group">
                                 <div >
-                                    <label  for="version">Version</label><br />
+                                    <label  htmlFor="version">Version</label><br />
                                     <input type="text" id="ref-version" placeholder="NET-S3" />
                                 </div>
             </div>
             <div className="form-group">
                                 <div >
-                                    <label for="ref-path">Folder Location</label><br />
+                                    <label htmlFor="ref-path">Folder Location</label><br />
                                     <input type="text" id="ref-path" placeholder="Path of folder containing USFM files" />
                                 </div>
             </div>

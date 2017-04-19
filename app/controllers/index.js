@@ -155,7 +155,7 @@ function initializeTextInUI(book, chapter) {
         refDb.get('refChunks').then(function(chunkDoc) {
             // console.log(doc.chapters[parseInt(chapter,10)-1].verses.length);
             currentBook = doc;
-            createRefSelections();
+            // createRefSelections();
             createVerseInputs(doc.chapters[parseInt(chapter, 10) - 1].verses, chunkDoc.chunks[parseInt(book, 10) - 1], chapter);
         });
     }).catch(function(err) {
@@ -425,6 +425,7 @@ function createRefSelections() {
                     $(".current-val").val(ref_doc.ref_id);
                     getReferenceText(ref_doc.ref_id, function(err, refContent) {
                         if (err) {
+                            
                             console.log('Info: No references found in database. ' + err);
                             return;
                         }
@@ -499,7 +500,7 @@ function createRefSelections() {
         });
     }
 }
-
+// $(document).ready(function(){
 $('.ref-drop-down').change(function(event) {
     var selectedRefElement = $(this);
     var cookieRef = { url: 'http://refs.autographa.com', name: selectedRefElement.next().next().val().toString() , value: selectedRefElement.val() };
@@ -520,6 +521,7 @@ $('.ref-drop-down').change(function(event) {
         selectedRefElement.closest('div.row').next('div.row').children('div[type="ref"]').html(refContent);
     });
 });
+// });
 
 function highlightRef() {
     var i,
@@ -582,7 +584,7 @@ function setMultiwindowReference(layout) {
             //var newID = element.attr('id').replace(/\d+$/, function(str) { return parseInt(str) + 1});
             clone_ele = $(children[0]).clone(true, true).attr("id", "section-1").insertBefore('div.col-editor');
             clone_ele.find(".ref-drop-down").val(clone_ele.find(".current-val").val());
-            clone_ele.find(".current-pos").val('1');
+            clone_ele.find(".current-pos").val('0');
             var refVal = clone_ele.find(".current-val").val()
             if(refVal != ""){
                 console.log(refVal)
@@ -761,7 +763,6 @@ function onBookSelect(bookId) {
 
 
 function getBookList() {
-    console.log("hi");
     createBooksList(66);
     $("#bookChapTabModal").modal('toggle');
     session.defaultSession.cookies.get({ url: 'http://book.autographa.com' }, (error, cookie) => {
