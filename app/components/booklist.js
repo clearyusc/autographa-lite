@@ -37,7 +37,7 @@ class BookList extends React.Component {
 
 	render() {
 	    return ( 
-	    <Tabs defaultActiveKey={1} animation={false} activeKey={this.state.key} onSelect={this.handleSelect} id="noanim-tab-example">
+	    <Tabs animation={false} activeKey={this.state.key} onClick={() =>this.goToTab(1)} id="noanim-tab-example">
 		    <Tab eventKey={1} title="Tab 1" onClick={() => this.goToTab(2)}>
 			    <div className="wrap-center"></div>
 	            <div className="row books-li" id="bookdata">
