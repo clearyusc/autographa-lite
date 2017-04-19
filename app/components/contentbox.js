@@ -24,6 +24,7 @@ class Contentbox extends React.Component
     constructor(props) {
         super(props);
         this.handleRefChange = this.handleRefChange.bind(this);
+        this.getRefContents = this.getRefContents.bind(this);
         this.state = { refList: [], verses: [], content: "" }
         var existRef = [];
         var i
@@ -37,10 +38,11 @@ class Contentbox extends React.Component
         refLists.then((refsArray) => {
             this.setState({refList:  refsArray});
         })
+        this.getRefContents('eng_ulb');
     }
-
-    handleRefChange(event) {
-        let refContent = refDb.get(event.target.value+'_GEN').then(function(doc) { //book code is hard coded for now
+    
+    getRefContents(id) {
+        let refContent = refDb.get(id+'_GEN').then(function(doc) { //book code is hard coded for now
             for (var i = 0; i < doc.chapters.length; i++) {
                 if (doc.chapters[i].chapter == parseInt(1, 10)) { // 1 is chapter number and hardcoded for now
                     break;
@@ -57,6 +59,10 @@ class Contentbox extends React.Component
         refContent.then((content)=> {
             this.setState({content: content})
         })
+    }
+
+    handleRefChange(event) {
+        this.getRefContents(event.target.value)
     }
 
   
