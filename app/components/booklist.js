@@ -15,7 +15,7 @@ class BookList extends React.Component {
             chapterData:[],
             book: '1'
     	};
-/*	    session.defaultSession.cookies.get({ url: 'http://refs.autographa.com' }, (error, cookie) => {
+	    session.defaultSession.cookies.get({ url: 'http://refs.autographa.com' }, (error, cookie) => {
         if (cookie.length > 0) {
             var bookNo = cookie[0].value;
             console.log(cookie);
@@ -23,7 +23,7 @@ class BookList extends React.Component {
             } else {
 				this.setState({book: '1'})
         } 	
-    }); */  
+    });   
     } 
 
    handleSelect(key) {
@@ -44,7 +44,7 @@ class BookList extends React.Component {
 		})
 		var bookno = global.book
 		console.log(bookno);
-		var cookieRef = { url: 'http://refs.autographa.com', name: 'book', value:'1'  };
+		var cookieRef = { url: 'http://refs.autographa.com', name: 'book', value: bookno  };
 	    session.defaultSession.cookies.set(cookieRef, (error) => {
 	        if (error)
 	            console.log(error);
@@ -78,17 +78,7 @@ class BookList extends React.Component {
 }
 
 var BookGroup = function(props) {
-	session.defaultSession.cookies.get({ url: 'http://refs.autographa.com' }, (error, cookie) => {
-        if (cookie.length > 0) {
-            var bookNo = cookie[0].value;
-            console.log(cookie);
-            } else {
-				var bookNo: '1'
-			}
-       	})
-       } 	
 	const BooksGroup = props.result.map((item,index) =>{
-		console.log(cookie);
 		let _handleClick = this.onItemClick.bind(this, index+1);
 		return <li key={index}><a href="#" key={index} onClick={_handleClick } value={item}>{item}
 		</a></li>
