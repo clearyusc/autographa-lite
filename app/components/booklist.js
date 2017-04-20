@@ -1,9 +1,9 @@
 const React = require('react')
 const ReactDOM = require('react-dom')
 const Constant = require("../util/constants");
- const Tabs = require('react-bootstrap/lib/Tabs');
- const Tab = require('react-bootstrap/lib/Tab');
-
+const Tabs = require('react-bootstrap/lib/Tabs');
+const Tab = require('react-bootstrap/lib/Tab');
+const session = require('electron').remote.session;
 
 class BookList extends React.Component {
 	constructor(props) {
@@ -12,6 +12,12 @@ class BookList extends React.Component {
             data: booksList,
             chapterData:[]
     	};   
+	session.defaultSession.cookies.get({ url: 'http://refs.autographa.com ' }, (error, cookie) => {
+        if (cookie.length > 0) {
+            chapter = cookie;
+            console.log(chapter[3].value);
+        } 
+    });
     } 
 
    handleSelect(key) {
@@ -29,7 +35,23 @@ class BookList extends React.Component {
 			})  	
 			return chap
 		})
-
+		var cookieRef = { url: 'http://refs.autographa.com', name: 'book', value: global.book };
+	    session.defaultSession.cookies.set(cookieRef, (error) => {
+	        if (error)
+	            console.log(error);
+	    });
+	    session.defaultSession.cookies.get({ url: 'http://refs.autographa.com ' }, (error, cookie) => {
+                if (cookie.length > 0) {
+                    chapter = cookie;
+                    console.log(chapter);
+                    // initializeTextInUI(book, chapter);
+                } 	
+            });
+	     const cookie = { url: 'http://chapter.autographa.com', name: 'chapter', value: 2 };
+            session.defaultSession.cookies.set(cookie, (error) => {
+                if (error)
+                    console.error(error);
+            });
 		getData.then((item) =>{
 			this.setState({chapterData:item})
 		})
@@ -49,7 +71,7 @@ class BookList extends React.Component {
             </Tab>
 		    <Tab eventKey={2} title="Tab 2" > 
 		    	<div className="chapter-no">
-                		<ChapterList chapterData = { this.state.chapterData } />
+                	<ChapterList chapterData = { this.state.chapterData } />
             	</div>
             </Tab>
   		</Tabs>
@@ -58,9 +80,10 @@ class BookList extends React.Component {
 }
 
 var BookGroup = function(props) {
+	const ACTIVE = { background: '#286090', color: '#fff'}
 	const BooksGroup = props.result.map((item,index) =>{
 		let _handleClick = this.onItemClick.bind(this, index+1);
-		return <li key={index}><a href="#" key={index} onClick={_handleClick } value={item}>{item}
+		return <li key={index}><a href="#" activeStyle={ACTIVE} key={index} onClick={_handleClick } value={item}>{item}
 		</a></li>
 	})
 	return (

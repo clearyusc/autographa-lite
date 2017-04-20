@@ -113,10 +113,8 @@ function lastVisitFromSession(success, failure) {
                 if (cookie.length > 0) {
                     chapter = cookie[0].value;
                     // initializeTextInUI(book, chapter);
-                    success(book, chapter);
-                } else {
-                    failure();
-                }
+                    console.log(chapter);
+                } 
             });
         } else {
             failure();

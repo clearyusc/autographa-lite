@@ -54,12 +54,6 @@ class Navbar extends React.Component
     });
   }
 
-  componentDidMount() {
-      console.log('Component DID MOUNT!')
-
-   }
-
-
     render() 
     {
     //        const popover = (
@@ -72,10 +66,7 @@ class Navbar extends React.Component
     //     wow.
     //   </Tooltip>
     // );
-     let close = () => this.setState({showModal:false,
-                                      showModalSettings:false,
-                                      showModalBooks:false
-                                  });
+     let close = () => this.setState({showModal:false, showModalSettings:false, showModalBooks:false });
         return(
     <div>
         <Modal show={this.state.showModalBooks} onHide={close}>
