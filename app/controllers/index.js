@@ -106,41 +106,44 @@ function createVerseInputs(verses, chunks, chapter) {
 }
 
 function lastVisitFromSession(success, failure) {
-    session.defaultSession.cookies.get({ url: 'http://book.autographa.com' }, (error, cookie) => {
-        if (cookie.length > 0) {
-            book = cookie[0].value;
-            session.defaultSession.cookies.get({ url: 'http://chapter.autographa.com' }, (error, cookie) => {
-                if (cookie.length > 0) {
-                    chapter = cookie[0].value;
-                    // initializeTextInUI(book, chapter);
-                    console.log(chapter);
-                } 
-            });
-        } else {
-            failure();
-        }
-    });
+
+    // session.defaultSession.cookies.get({ url: 'http://book.autographa.com' }, (error, cookie) => {
+    //     if (cookie.length > 0) {
+    //         book = cookie[0].value;
+    //         session.defaultSession.cookies.get({ url: 'http://chapter.autographa.com' }, (error, cookie) => {
+    //             if (cookie.length > 0) {
+    //                 chapter = cookie[0].value;
+    //                 // initializeTextInUI(book, chapter);
+    //                 success(book, chapter);
+    //             } else {
+    //                 failure();
+    //             }
+    //         });
+    //     } else {
+    //         failure();
+    //     }
+    // });
 }
 
 function lastVisitFromDB(success) {
-    refDb.get("ref_history")
-        .then(function(doc) {
-            book = doc.visit_history[0].bookId;
-            chapter = doc.visit_history[0].chapter;
-            var cookie = { url: 'http://book.autographa.com', name: 'book', value: book };
-            session.defaultSession.cookies.set(cookie, (error) => {
-                if (error)
-                    console.error(error);
-                var cookie = { url: 'http://chapter.autographa.com', name: 'chapter', value: chapter };
-                session.defaultSession.cookies.set(cookie, (error) => {
-                    if (error)
-                        console.error(error);
-                    success(book, chapter);
-                });
-            });
-        }).catch(function(err) {
-            console.log('Error: While retrieving document. ' + err);
-        });
+    // refDb.get("ref_history")
+    //     .then(function(doc) {
+    //         book = doc.visit_history[0].bookId;
+    //         chapter = doc.visit_history[0].chapter;
+    //         var cookie = { url: 'http://book.autographa.com', name: 'book', value: book };
+    //         session.defaultSession.cookies.set(cookie, (error) => {
+    //             if (error)
+    //                 console.error(error);
+    //             var cookie = { url: 'http://chapter.autographa.com', name: 'chapter', value: chapter };
+    //             session.defaultSession.cookies.set(cookie, (error) => {
+    //                 if (error)
+    //                     console.error(error);
+    //                 success(book, chapter);
+    //             });
+    //         });
+    //     }).catch(function(err) {
+    //         console.log('Error: While retrieving document. ' + err);
+    //     });
 }
 
 

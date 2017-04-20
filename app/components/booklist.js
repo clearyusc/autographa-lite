@@ -4,20 +4,26 @@ const Constant = require("../util/constants");
 const Tabs = require('react-bootstrap/lib/Tabs');
 const Tab = require('react-bootstrap/lib/Tab');
 const session = require('electron').remote.session;
+const { dialog } = require('electron').remote;
+
 
 class BookList extends React.Component {
 	constructor(props) {
         super(props);
         this.state = { 
             data: booksList,
-            chapterData:[]
-    	};   
-	session.defaultSession.cookies.get({ url: 'http://refs.autographa.com ' }, (error, cookie) => {
+            chapterData:[],
+            book: '1'
+    	};
+/*	    session.defaultSession.cookies.get({ url: 'http://refs.autographa.com' }, (error, cookie) => {
         if (cookie.length > 0) {
-            chapter = cookie;
-            console.log(chapter[3].value);
-        } 
-    });
+            var bookNo = cookie[0].value;
+            console.log(cookie);
+            this.setState({bookNo: bookNo});
+            } else {
+				this.setState({book: '1'})
+        } 	
+    }); */  
     } 
 
    handleSelect(key) {
@@ -34,24 +40,16 @@ class BookList extends React.Component {
 		    chap.push({ number: chapter });
 			})  	
 			return chap
+			console.log(chap)
 		})
-		var cookieRef = { url: 'http://refs.autographa.com', name: 'book', value: global.book };
+		var bookno = global.book
+		console.log(bookno);
+		var cookieRef = { url: 'http://refs.autographa.com', name: 'book', value:'1'  };
 	    session.defaultSession.cookies.set(cookieRef, (error) => {
 	        if (error)
 	            console.log(error);
 	    });
-	    session.defaultSession.cookies.get({ url: 'http://refs.autographa.com ' }, (error, cookie) => {
-                if (cookie.length > 0) {
-                    chapter = cookie;
-                    console.log(chapter);
-                    // initializeTextInUI(book, chapter);
-                } 	
-            });
-	     const cookie = { url: 'http://chapter.autographa.com', name: 'chapter', value: 2 };
-            session.defaultSession.cookies.set(cookie, (error) => {
-                if (error)
-                    console.error(error);
-            });
+
 		getData.then((item) =>{
 			this.setState({chapterData:item})
 		})
@@ -71,7 +69,7 @@ class BookList extends React.Component {
             </Tab>
 		    <Tab eventKey={2} title="Tab 2" > 
 		    	<div className="chapter-no">
-                	<ChapterList chapterData = { this.state.chapterData } />
+                		<ChapterList chapterData = { this.state.chapterData } />
             	</div>
             </Tab>
   		</Tabs>
@@ -80,10 +78,19 @@ class BookList extends React.Component {
 }
 
 var BookGroup = function(props) {
-	const ACTIVE = { background: '#286090', color: '#fff'}
+	session.defaultSession.cookies.get({ url: 'http://refs.autographa.com' }, (error, cookie) => {
+        if (cookie.length > 0) {
+            var bookNo = cookie[0].value;
+            console.log(cookie);
+            } else {
+				var bookNo: '1'
+			}
+       	})
+       } 	
 	const BooksGroup = props.result.map((item,index) =>{
+		console.log(cookie);
 		let _handleClick = this.onItemClick.bind(this, index+1);
-		return <li key={index}><a href="#" activeStyle={ACTIVE} key={index} onClick={_handleClick } value={item}>{item}
+		return <li key={index}><a href="#" key={index} onClick={_handleClick } value={item}>{item}
 		</a></li>
 	})
 	return (

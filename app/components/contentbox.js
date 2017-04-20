@@ -18,6 +18,8 @@
  // const ReactSelectize = require("react-selectize");
  // const SimpleSelect = ReactSelectize.SimpleSelect;
  const refDb = require(`${__dirname}/../util/data-provider`).referenceDb();
+const session = require('electron').remote.session;
+const { dialog } = require('electron').remote;
 
 class Contentbox extends React.Component 
 {
@@ -25,7 +27,7 @@ class Contentbox extends React.Component
         super(props);
         this.handleRefChange = this.handleRefChange.bind(this);
         this.getRefContents = this.getRefContents.bind(this);
-        this.state = { refList: [], verses: [], content: "" }
+        this.state = { refList: [], verses: [], content: "", book: '1', defaultRef: 'eng_ulb' }
         var existRef = [];
         var i
         var refLists = refDb.get('refs').then(function(doc) {
@@ -38,11 +40,32 @@ class Contentbox extends React.Component
         refLists.then((refsArray) => {
             this.setState({refList:  refsArray});
         })
-        this.getRefContents('eng_ulb');
+        
+        session.defaultSession.cookies.get({ url: 'http://book.autographa.com' }, (error, cookie) => {
+            if (cookie.length > 0) {
+                book = cookie[0].value;
+                this.setState({book: book});
+            } else {
+                // refDb.get("ref_history").then(function(doc) { //this will come from database later when save functionality will be done 
+                //     book = doc.visit_history[0].bookId;
+                //     chapter = doc.visit_history[0].chapter;
+                // });
+                this.setState({book: '1'})
+            }
+        });
+         session.defaultSession.cookies.get({ url: 'http://refs.autographa.com' }, (error, cookie) => {
+            if (cookie.length > 0) {    
+                this.setState({defaultRef: cookie[0].value})
+                this.getRefContents(cookie[0].value+'_'+bookCodeList[parseInt(this.state.book, 10) - 1]);
+            }else {
+                this.getRefContents(this.state.defaultRef+'_'+bookCodeList[parseInt(this.state.book, 10) - 1]);
+            }
+        });
+       
     }
     
     getRefContents(id) {
-        let refContent = refDb.get(id+'_GEN').then(function(doc) { //book code is hard coded for now
+        let refContent = refDb.get(id).then(function(doc) { //book code is hard coded for now
             for (var i = 0; i < doc.chapters.length; i++) {
                 if (doc.chapters[i].chapter == parseInt(1, 10)) { // 1 is chapter number and hardcoded for now
                     break;
@@ -62,9 +85,14 @@ class Contentbox extends React.Component
     }
 
     handleRefChange(event) {
-        this.getRefContents(event.target.value)
+        this.getRefContents(event.target.value+'_'+bookCodeList[parseInt(this.state.book, 10) - 1])
+        this.setState({defaultRef: event.target.value})
+        var cookieRef = { url: 'http://refs.autographa.com', name: '0' , value: event.target.value };
+        session.defaultSession.cookies.set(cookieRef, (error) => {
+            if (error)
+                console.log(error);
+        });
     }
-
   
 	render (){
 		return (
@@ -75,7 +103,7 @@ class Contentbox extends React.Component
                         <div className="col-12 center-align">
                             <div className="btn-group">
 
-                                    <select className="ref-drop-down" title="Select Reference Text" onChange={this.handleRefChange}>
+                                    <select className="ref-drop-down" title="Select Reference Text" onChange={this.handleRefChange} value ={this.state.defaultRef}>
                                         {
                                             this.state.refList.map(function(refDoc, index){
                                                 return(
