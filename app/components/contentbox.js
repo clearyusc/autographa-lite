@@ -54,10 +54,11 @@ class Contentbox extends React.Component
             }
         });
          session.defaultSession.cookies.get({ url: 'http://refs.autographa.com' }, (error, cookie) => {
-            if (cookie.length > 0) {
-                 this.getRefContents(cookie[0].value+'_'+bookCodeList[parseInt(this.state.book, 10) - 1]);
+            if (cookie.length > 0) {    
+                this.setState({defaultRef: cookie[0].value})
+                this.getRefContents(cookie[0].value+'_'+bookCodeList[parseInt(this.state.book, 10) - 1]);
             }else {
-                 this.getRefContents(this.state.defaultRef+'_'+bookCodeList[parseInt(this.state.book, 10) - 1]);
+                this.getRefContents(this.state.defaultRef+'_'+bookCodeList[parseInt(this.state.book, 10) - 1]);
             }
         });
        
