@@ -13,7 +13,9 @@ class BookList extends React.Component {
         this.state = { 
             data: booksList,
             chapterData:[],
-            book: '1'
+            book: 1,
+            currentBook: 1
+
     	};
 		session.defaultSession.cookies.get({ url: 'http://book.autographa.com' }, (error, cookie) => {
 	    	if (cookie.length > 0) {
@@ -35,6 +37,7 @@ class BookList extends React.Component {
 		var chap = [];
 		var bookChapter = bookCodeList[parseInt(global.book, 10) - 1]
 		var bookno = global.book
+		this.setState({currentBook: bookno})
 
 		var id = 'eng_udb' + '_' + bookCodeList[parseInt(bookno, 10) - 1]
 		var getData = refDb.get(id).then(function(doc) {
@@ -57,7 +60,7 @@ class BookList extends React.Component {
 			    <div className="wrap-center"></div>
 	            <div className="row books-li" id="bookdata">
 	                <ul id="books-pane">
-	                    <BookGroup result={this.state.data} />
+	                    <BookGroup result={this.state.data} currentBook = {this.state.currentBook} />
 	                </ul>
 	            </div>
 	            <div className= "clearfix"></div>
@@ -75,7 +78,8 @@ class BookList extends React.Component {
 var BookGroup = function(props) {
 	const BooksGroup = props.result.map((item,index) =>{
 		let _handleClick = this.onItemClick.bind(this, index+1);
-		return <li key={index}><a href="#" key={index} onClick={_handleClick } value={item}>{item}
+		console.log(props.currentBook)
+		return <li key={index}><a href="#" key={index} onClick={_handleClick } value={item} className={(index+1 == props.currentBook) ? 'link-active': ""}>{item}
 		</a></li>
 	})
 	return (
