@@ -15,15 +15,15 @@ class BookList extends React.Component {
             chapterData:[],
             book: '1'
     	};
-	    session.defaultSession.cookies.get({ url: 'http://refs.autographa.com' }, (error, cookie) => {
-        if (cookie.length > 0) {
-            var bookNo = cookie[0].value;
-            console.log(cookie);
-            this.setState({bookNo: bookNo});
-            } else {
-				this.setState({book: '1'})
-        } 	
-    });   
+		session.defaultSession.cookies.get({ url: 'http://book.autographa.com' }, (error, cookie) => {
+	    	if (cookie.length > 0) {
+	            var bookNo = cookie[0].value;
+	            console.log(cookie);
+	            this.setState({bookNo: bookNo});
+	            } else {
+					this.setState({book: '1'})
+	        } 	
+	    });   
     } 
 
    handleSelect(key) {
@@ -34,7 +34,9 @@ class BookList extends React.Component {
 		this.setState({key});
 		var chap = [];
 		var bookChapter = bookCodeList[parseInt(global.book, 10) - 1]
-		var id = 'eng_udb' + '_' + bookCodeList[parseInt(book, 10) - 1]
+		var bookno = global.book
+		
+		var id = 'eng_udb' + '_' + bookCodeList[parseInt(bookno, 10) - 1]
 		var getData = refDb.get(id).then(function(doc) {
 			 doc.chapters.forEach(function(ref_doc) {
 		    chap.push({ number: chapter });
@@ -42,14 +44,7 @@ class BookList extends React.Component {
 			return chap
 			console.log(chap)
 		})
-		var bookno = global.book
-		console.log(bookno);
-		var cookieRef = { url: 'http://refs.autographa.com', name: 'book', value: bookno  };
-	    session.defaultSession.cookies.set(cookieRef, (error) => {
-	        if (error)
-	            console.log(error);
-	    });
-
+		
 		getData.then((item) =>{
 			this.setState({chapterData:item})
 		})
