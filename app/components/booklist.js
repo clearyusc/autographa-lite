@@ -35,7 +35,7 @@ class BookList extends React.Component {
 		var chap = [];
 		var bookChapter = bookCodeList[parseInt(global.book, 10) - 1]
 		var bookno = global.book
-		
+
 		var id = 'eng_udb' + '_' + bookCodeList[parseInt(bookno, 10) - 1]
 		var getData = refDb.get(id).then(function(doc) {
 			 doc.chapters.forEach(function(ref_doc) {
@@ -52,7 +52,7 @@ class BookList extends React.Component {
 
 	render() {
 	    return ( 
-	    <Tabs animation={false} activeKey={this.state.key} onClick={() =>this.goToTab(1)} id="noanim-tab-example">
+	    <Tabs animation={false} activeKey={this.state.key} onSelect={() =>this.goToTab((this.state.key == 1) ? 2 : 1)} id="noanim-tab-example">
 		    <Tab eventKey={1} title="Tab 1" onClick={() => this.goToTab(2)}>
 			    <div className="wrap-center"></div>
 	            <div className="row books-li" id="bookdata">
