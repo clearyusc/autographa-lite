@@ -24,8 +24,11 @@ class Navbar extends React.Component
             showModal: false,
             showModalSettings:false,
             showModalBooks:false,
-            data: booksList
-        };      
+            data: booksList,
+            defaultBook: Constant.bookCodeList[parseInt(1, 10) - 1],
+            defaultChapter: 1
+        };
+
         
     } 
 
@@ -205,9 +208,10 @@ class Navbar extends React.Component
                             <li>
                                 <div className="btn-group navbar-btn strong verse-diff-on" role="group" aria-label="..." id="bookBtn" style={{marginLeft:"200px"}}>
                                     <a eventKey={10} onClick={() => this.openpopupBooks()} href="#" className="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Select Book"  id="book-chapter-btn">
+                                        {this.state.defaultBook}
                                     </a>
                                     <span id="chapterBtnSpan">
-                                    <a className="btn btn-default" id="chapterBtn" data-target="#myModal" href="javascript:getBookChapterList('1');" data-toggle="modal" data-placement="bottom"  title="Select Chapter" ></a>
+                                    <a className="btn btn-default" id="chapterBtn" data-target="#myModal" href="javascript:getBookChapterList('1');" data-toggle="modal" data-placement="bottom"  title="Select Chapter" >{this.state.defaultChapter}</a>
                                     </span>
                                 </div>
                                 
