@@ -26,10 +26,9 @@ class Navbar extends React.Component
             showModalBooks:false,
             data: booksList,
             defaultBook: Constant.bookCodeList[parseInt(1, 10) - 1],
-            defaultChapter: 1
+            defaultChapter: 1,
+            chapData:null
         };
-
-        
     } 
 
   close() {
@@ -52,10 +51,24 @@ class Navbar extends React.Component
     });
   }
 
-  openpopupBooks() {
+  openpopupBooks(tab) {
     this.setState({ 
-        showModalBooks:true 
+       showModalBooks:true,
+       activeTab:tab 
     });
+    console.log(this.state.defaultBook);
+    var chap = [];
+        var getData = refDb.get('eng_udb_'+this.state.defaultBook).then(function(doc) {
+             doc.chapters.forEach(function(ref_doc) {
+            chap.push({ number: chapter });
+            })      
+            return chap
+            console.log(chap)
+        })
+        
+        getData.then((item) =>{
+            this.setState({chapData:item})
+        })
   }
 
 
@@ -79,12 +92,10 @@ class Navbar extends React.Component
             <Modal.Title>Book and Chapter</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-          <BookList />
+          <BookList activeTab={this.state.activeTab} chapData={this.state.chapData}/>
 
           </Modal.Body>
         </Modal>
-
-
 
        <Modal show={this.state.showModalSettings} onHide={close}>
           <Modal.Header closeButton>
@@ -207,11 +218,11 @@ class Navbar extends React.Component
                         <ul className="nav navbar-nav" style={{padding: "3px 0 0 0px"}}>
                             <li>
                                 <div className="btn-group navbar-btn strong verse-diff-on" role="group" aria-label="..." id="bookBtn" style={{marginLeft:"200px"}}>
-                                    <a eventKey={10} onClick={() => this.openpopupBooks()} href="#" className="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Select Book"  id="book-chapter-btn">
+                                    <a eventKey={10} onClick={() => this.openpopupBooks(1)} href="#" className="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Select Book"  id="book-chapter-btn">
                                         {this.state.defaultBook}
                                     </a>
                                     <span id="chapterBtnSpan">
-                                    <a className="btn btn-default" id="chapterBtn" data-target="#myModal" href="javascript:getBookChapterList('1');" data-toggle="modal" data-placement="bottom"  title="Select Chapter" >{this.state.defaultChapter}</a>
+                                    <a eventKey={11} onClick={() => this.openpopupBooks(2)} className="btn btn-default" id="chapterBtn" data-target="#myModal"  data-toggle="modal" data-placement="bottom"  title="Select Chapter" >{this.state.defaultChapter}</a>
                                     </span>
                                 </div>
                                 
