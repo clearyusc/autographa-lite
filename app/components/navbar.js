@@ -1,5 +1,6 @@
-const React = require('react')
-const ReactDOM = require('react-dom')
+import React, { Component } from 'react';
+// const React = require('react')
+import ReactDOM from 'react-dom';
 // const style = require("./Style");
 // const Nav = require('react-bootstrap/lib/Nav');
 // const NavItem = require('react-bootstrap/lib/NavItem');
@@ -7,13 +8,13 @@ const ReactDOM = require('react-dom')
 // const NavDropdown = require('react-bootstrap/lib/NavDropdown');
 // const MenuItem = require('react-bootstrap/lib/MenuItem');
 // const MilestoneManagement = require('./milestone_management');
- const Modal = require('react-bootstrap/lib/Modal');
- const Button = require('react-bootstrap/lib/Button');
- const Col = require('react-bootstrap/lib/Col');
- const Tabs = require('react-bootstrap/lib/Tabs');
- const Tab = require('react-bootstrap/lib/Tab');
- const Constant = require("../util/constants");
- const BookList = require("./booklist");
+ import Modal from 'react-bootstrap/lib/Modal';
+ import Button from 'react-bootstrap/lib/Button';
+ import Col from 'react-bootstrap/lib/Col';
+ import Tabs from 'react-bootstrap/lib/Tabs';
+ import Tab from 'react-bootstrap/lib/Tab';
+ import Constant from "../util/constants";
+ import BookList from "./booklist";
  
 
 class Navbar extends React.Component 
@@ -212,17 +213,17 @@ class Navbar extends React.Component
                 <div className="container-fluid">
                     <div className="navbar-header">
                         <button className="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span className="sr-only">Toggle navigation</span><span className="icon-bar"></span><span className="icon-bar"></span><span className="icon-bar"></span></button>
-                        <a className="navbar-brand" href="javascript:;"><img alt="Brand" src="../assets/images/logo.png"/></a>
+                        <a href="javascript:;" className="navbar-brand" ><img alt="Brand" src="../assets/images/logo.png"/></a>
                     </div>
                     <div className="navbar-collapse collapse" id="navbar">
                         <ul className="nav navbar-nav" style={{padding: "3px 0 0 0px"}}>
                             <li>
                                 <div className="btn-group navbar-btn strong verse-diff-on" role="group" aria-label="..." id="bookBtn" style={{marginLeft:"200px"}}>
-                                    <a eventKey={10} onClick={() => this.openpopupBooks(1)} href="#" className="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Select Book"  id="book-chapter-btn">
+                                    <a onClick={() => this.openpopupBooks(1)} href="#" className="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Select Book"  id="book-chapter-btn">
                                         {this.state.defaultBook}
                                     </a>
                                     <span id="chapterBtnSpan">
-                                    <a eventKey={11} onClick={() => this.openpopupBooks(2)} className="btn btn-default" id="chapterBtn" data-target="#myModal"  data-toggle="modal" data-placement="bottom"  title="Select Chapter" >{this.state.defaultChapter}</a>
+                                    <a onClick={() => this.openpopupBooks(2)} className="btn btn-default" id="chapterBtn" data-target="#myModal"  data-toggle="modal" data-placement="bottom"  title="Select Chapter" >{this.state.defaultChapter}</a>
                                     </span>
                                 </div>
                                 
@@ -231,7 +232,7 @@ class Navbar extends React.Component
                         <ul className="nav navbar-nav navbar-right nav-pills verse-diff-on">
                             <li style={{padding: "17px 5px 0 0", color: "#fff", fontWeight: "bold"}}><span>OFF</span></li>
                             <li>
-                                <label style={{marginTop:"17px"}} className="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="switch-2" id="switchLable" data-toggle='tooltip' data-placement='bottom' title="Compare mode">
+                                <label style={{marginTop:"17px"}} className="mdl-switch mdl-js-switch mdl-js-ripple-effect" htmlFor="switch-2" id="switchLable" data-toggle='tooltip' data-placement='bottom' title="Compare mode">
                                     <input type="checkbox" id="switch-2" className="mdl-switch__input check-diff"/>
                                     <span className="mdl-switch__label"></span>
                                 </label>
@@ -246,9 +247,9 @@ class Navbar extends React.Component
                                 </a>
                             </li>
                             <li>
-                                <a eventKey={0} onClick={() => {this.open(); this.getBookChapterList()}} href="#" data-target="#aboutmodal" data-toggle="tooltip" data-placement="bottom" title="About" id="btnAbout"><i className="fa fa-info fa-2x"></i></a>
+                                <a onClick={() => {this.open(); this.getBookChapterList()}} href="#" data-target="#aboutmodal" data-toggle="tooltip" data-placement="bottom" title="About" id="btnAbout"><i className="fa fa-info fa-2x"></i></a>
                             </li>
-                            <li><a eventKey={1} onClick={() => this.openpopup()} href="javascript:;" id="btnSettings" data-target="#bannerformmodal" data-toggle="tooltip" data-placement="bottom" title="Settings"><i className="fa fa-cog fa-2x"></i></a></li>
+                            <li><a onClick={() => this.openpopup()} href="javascript:;" id="btnSettings" data-target="#bannerformmodal" data-toggle="tooltip" data-placement="bottom" title="Settings"><i className="fa fa-cog fa-2x"></i></a></li>
                         </ul>
                     </div>
                 </div>
@@ -257,4 +258,4 @@ class Navbar extends React.Component
         )
     }
 }
-module.exports = Navbar
+export default Navbar

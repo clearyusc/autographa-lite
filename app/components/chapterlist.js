@@ -1,5 +1,5 @@
-const React = require('react')
-const ReactDOM = require('react-dom')
+import React from 'react';
+import ReactDOM from 'react-dom';
 
 class BookList extends React.Component {
 	render() {
@@ -9,4 +9,4 @@ class BookList extends React.Component {
 	}	
 }
 
-module.exports = BookList
+export default BookList

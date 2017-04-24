@@ -1,6 +1,6 @@
- const React = require('react')
- const ReactDOM = require('react-dom')
- const bootstrap = require('react-bootstrap');
+import React, { Component } from 'react';
+// const React = require('react')
+import ReactDOM from 'react-dom';
 // const style = require("./Style");
 // const Nav = require('react-bootstrap/lib/Nav');
 // const NavItem = require('react-bootstrap/lib/NavItem');
@@ -8,18 +8,19 @@
 // const NavDropdown = require('react-bootstrap/lib/NavDropdown');
 // const MenuItem = require('react-bootstrap/lib/MenuItem');
 // const MilestoneManagement = require('./milestone_management');
- const Modal = require('react-bootstrap/lib/Modal');
- const Button = require('react-bootstrap/lib/Button');
- const Col = require('react-bootstrap/lib/Col');
- const Tabs = require('react-bootstrap/lib/Tabs');
- const Tab = require('react-bootstrap/lib/Tab');
- const Constant = require("../util/constants");
- const BookList = require("./booklist");
+ import Modal from 'react-bootstrap/lib/Modal';
+ import Button from 'react-bootstrap/lib/Button';
+ import Col from 'react-bootstrap/lib/Col';
+ import Tabs from 'react-bootstrap/lib/Tabs';
+ import Tab from 'react-bootstrap/lib/Tab';
+ import Constant from "../util/constants";
+ import BookList from "./booklist";
  // const ReactSelectize = require("react-selectize");
  // const SimpleSelect = ReactSelectize.SimpleSelect;
  const refDb = require(`${__dirname}/../util/data-provider`).referenceDb();
-const session = require('electron').remote.session;
-const { dialog } = require('electron').remote;
+ import session from 'electron';
+ import { dialog } from 'electron';
+ import { remote } from 'electron';
 
 class Contentbox extends React.Component 
 {
@@ -143,4 +144,4 @@ class Contentbox extends React.Component
 	}
 }
 
-module.exports = Contentbox
+export default Contentbox

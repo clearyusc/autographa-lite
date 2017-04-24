@@ -1,8 +1,8 @@
-const React = require('react')
-const ReactDOM = require('react-dom')
-const Footer = require('../components/footer')
-const NavBar = require('../components/navbar')
-const Contentbox = require('../components/contentbox')
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { Footer } from '../components/footer';
+import { NavBar } from '../components/navbar';
+import { Contentbox } from '../components/contentbox';
 
 class Page extends React.Component {
   
@@ -15,4 +15,4 @@ render(){
 };
 
 
-module.exports = Page
+export default Page

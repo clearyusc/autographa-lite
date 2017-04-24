@@ -1,5 +1,5 @@
-const React = require('react');
-const ReactDOM = require('react-dom');
+import React from 'react';
+import ReactDOM from 'react-dom';
 
 class Footer extends React.Component 
 {
@@ -38,4 +38,4 @@ class Footer extends React.Component
 	}
 }
 
-module.exports = Footer;
+export default Footer;
