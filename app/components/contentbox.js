@@ -18,7 +18,7 @@ import ReactDOM from 'react-dom';
  // const ReactSelectize = require("react-selectize");
  // const SimpleSelect = ReactSelectize.SimpleSelect;
  const refDb = require(`${__dirname}/../util/data-provider`).referenceDb();
- import session from 'electron';
+ const session =  require('electron').remote.session;
  import { dialog } from 'electron';
  import { remote } from 'electron';
 
@@ -144,4 +144,4 @@ class Contentbox extends React.Component
 	}
 }
 
-export default Contentbox
+module.exports = Contentbox

@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-class BookList extends React.Component {
+class ChapterList extends React.Component {
 	render() {
 	    return (
 	      <li><a href="#">{this.props.result}</a></li>
@@ -9,4 +9,4 @@ class BookList extends React.Component {
 	}	
 }
 
-export default BookList
+module.exports = ChapterList
