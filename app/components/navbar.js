@@ -1,6 +1,5 @@
-import React, { Component } from 'react';
-// const React = require('react')
-import ReactDOM from 'react-dom';
+const React = require('react')
+const ReactDOM = require('react-dom')
 // const style = require("./Style");
 // const Nav = require('react-bootstrap/lib/Nav');
 // const NavItem = require('react-bootstrap/lib/NavItem');
@@ -8,13 +7,16 @@ import ReactDOM from 'react-dom';
 // const NavDropdown = require('react-bootstrap/lib/NavDropdown');
 // const MenuItem = require('react-bootstrap/lib/MenuItem');
 // const MilestoneManagement = require('./milestone_management');
- import Modal from 'react-bootstrap/lib/Modal';
- import Button from 'react-bootstrap/lib/Button';
- import Col from 'react-bootstrap/lib/Col';
- import Tabs from 'react-bootstrap/lib/Tabs';
- import Tab from 'react-bootstrap/lib/Tab';
- import Constant from "../util/constants";
- import BookList from "./booklist";
+ const Modal = require('react-bootstrap/lib/Modal');
+ const Button = require('react-bootstrap/lib/Button');
+ const Col = require('react-bootstrap/lib/Col');
+ const Tabs = require('react-bootstrap/lib/Tabs');
+ const Tab = require('react-bootstrap/lib/Tab');
+ const Constant = require("../util/constants");
+ const BookList = require("./booklist");
+ const TextField = require('material-ui/lib/text-field');
+//  const injectTapEventPlugin = require("react-tap-event-plugin");
+// injectTapEventPlugin();
  
 
 class Navbar extends React.Component 
@@ -101,8 +103,8 @@ class Navbar extends React.Component
        <Modal show={this.state.showModalSettings} onHide={close}>
           <Modal.Header closeButton>
             <Modal.Title>Settings</Modal.Title>
-                        <div class="alert alert-success" role="alert" style= {{display: "none"}}><span>You successfully read this important alert message.</span></div>
-                        <div class="alert alert-danger" role="alert" style= {{display: "none", position: "relative"}}><span>Change a few things up and try submitting again.</span></div>
+                        <div className="alert alert-success" role="alert" style= {{display: "none"}}><span>You successfully read this important alert message.</span></div>
+                        <div className="alert alert-danger" role="alert" style= {{display: "none", position: "relative"}}><span>Change a few things up and try submitting again.</span></div>
           </Modal.Header>
           <Modal.Body style={{height: "400px"}}>
            <Tabs defaultActiveKey={4} animation={false} id="noanim-tab-example">
@@ -111,7 +113,7 @@ class Navbar extends React.Component
                                    <label htmlFor="ref-lang-code">Language Code</label><br />
                                     <input type="text" id="ref-lang-code" placeholder="eng" />
                                 </div>
-                                 <div id="reference-lang-result" class="lang-code"></div>
+                                 <div id="reference-lang-result" className="lang-code"></div>
                                 <input type="hidden" id="langCode" />
                             
                                <div className="form-group">
@@ -126,7 +128,7 @@ class Navbar extends React.Component
                             <div className= "clearfix"></div>
             </Tab>
             <Tab eventKey={5} title="Import Translation">
-                    <div class="form-group">
+                    <div className="form-group">
                         <label>Folder Location</label><br />
                         <input type="text" id="ref-path" placeholder="Path of folder containing USFM files" />
                     </div>
@@ -134,7 +136,9 @@ class Navbar extends React.Component
             <Tab eventKey={6} title="Import Reference Text">
            <div className="form-group">
                                 <div >
-                                    <label class="mdl-textfield__label" htmlFor="ref-name">Bible name</label><br />
+                                <TextField
+  hintText="Hint Text" />
+                                    <label htmlFor="ref-name">Bible name</label><br />
                                     <input  className="mdl-textfield__input" type="text" id="ref-name" placeholder="New English Translation" />
                                 </div>
             </div>
@@ -189,7 +193,7 @@ class Navbar extends React.Component
             <Tab eventKey={2} title="Overview">
                 <div className="row">
                     <div className="col-xs-6">
-                        <img src="../assets/images/autographa_lite_large.png" class="img-circle" alt="Cinque Terre" width="215" height="200" />
+                        <img src="../assets/images/autographa_lite_large.png" className="img-circle" alt="Cinque Terre" width="215" height="200" />
                     </div>
                     <div className="col-xs-6">
                         <h3>Autographa Lite</h3>
@@ -258,4 +262,4 @@ class Navbar extends React.Component
         )
     }
 }
-export default Navbar
+module.exports = Navbar

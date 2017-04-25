@@ -1,5 +1,5 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+const React = require('react')
+const ReactDOM = require('react-dom')
 
 class BookBox extends React.Component {
 	
@@ -11,4 +11,4 @@ class BookBox extends React.Component {
 	}	
 }
 
-export default BookBox;
+module.exports = BookBox;

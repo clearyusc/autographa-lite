@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-// const React = require('react')
-import ReactDOM from 'react-dom';
+ const React = require('react')
+ const ReactDOM = require('react-dom')
+ const bootstrap = require('react-bootstrap');
 // const style = require("./Style");
 // const Nav = require('react-bootstrap/lib/Nav');
 // const NavItem = require('react-bootstrap/lib/NavItem');
@@ -8,19 +8,18 @@ import ReactDOM from 'react-dom';
 // const NavDropdown = require('react-bootstrap/lib/NavDropdown');
 // const MenuItem = require('react-bootstrap/lib/MenuItem');
 // const MilestoneManagement = require('./milestone_management');
- import Modal from 'react-bootstrap/lib/Modal';
- import Button from 'react-bootstrap/lib/Button';
- import Col from 'react-bootstrap/lib/Col';
- import Tabs from 'react-bootstrap/lib/Tabs';
- import Tab from 'react-bootstrap/lib/Tab';
- import Constant from "../util/constants";
- import BookList from "./booklist";
+ const Modal = require('react-bootstrap/lib/Modal');
+ const Button = require('react-bootstrap/lib/Button');
+ const Col = require('react-bootstrap/lib/Col');
+ const Tabs = require('react-bootstrap/lib/Tabs');
+ const Tab = require('react-bootstrap/lib/Tab');
+ const Constant = require("../util/constants");
+ const BookList = require("./booklist");
  // const ReactSelectize = require("react-selectize");
  // const SimpleSelect = ReactSelectize.SimpleSelect;
  const refDb = require(`${__dirname}/../util/data-provider`).referenceDb();
- import session from 'electron';
- import { dialog } from 'electron';
- import { remote } from 'electron';
+const session = require('electron').remote.session;
+const { dialog } = require('electron').remote;
 
 class Contentbox extends React.Component 
 {
@@ -56,7 +55,8 @@ class Contentbox extends React.Component
         });
          session.defaultSession.cookies.get({ url: 'http://refs.autographa.com' }, (error, cookie) => {
             if (cookie.length > 0) {    
-                this.setState({defaultRef: cookie[0].value})
+                this.setState({defaultRef: cookie[2].value})
+                console.log(cookie)
                 this.getRefContents(cookie[0].value+'_'+bookCodeList[parseInt(this.state.book, 10) - 1]);
             }else {
                 this.getRefContents(this.state.defaultRef+'_'+bookCodeList[parseInt(this.state.book, 10) - 1]);
@@ -144,4 +144,4 @@ class Contentbox extends React.Component
 	}
 }
 
-export default Contentbox
+module.exports = Contentbox

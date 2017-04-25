@@ -1,12 +1,10 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import Constant from "../util/constants";
-import Tabs from 'react-bootstrap/lib/Tabs';
-import Tab from 'react-bootstrap/lib/Tab';
-import session from 'electron';
-import { dialog } from 'electron';
-import { remote } from 'electron';
-
+const React = require('react')
+const ReactDOM = require('react-dom')
+const Constant = require("../util/constants");
+const Tabs = require('react-bootstrap/lib/Tabs');
+const Tab = require('react-bootstrap/lib/Tab');
+const session = require('electron').remote.session;
+const { dialog } = require('electron').remote;
 
 class BookList extends React.Component {
 	constructor(props) {
@@ -95,8 +93,8 @@ var ChapterList = function(props) {
 	return ( <ul id="chaptersList"> { ChaptersList } </ul>)   
 }
 
-function onItemClick(item, e) {  
+var onItemClick = function(item, e) {  
   global.book = item;
 }
 	
-export default BookList
+module.exports = BookList
