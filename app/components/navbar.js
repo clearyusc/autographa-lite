@@ -18,8 +18,10 @@ const ReactDOM = require('react-dom')
 
 class Navbar extends React.Component 
 {
-     constructor(props) {
+    constructor(props) {
         super(props);
+        global.bookName = "Genesis"
+        global.book = "1"
         this.state = { 
             showModal: false,
             showModalSettings:false,
@@ -33,15 +35,17 @@ class Navbar extends React.Component
 
   close() {
     this.setState({ 
-        showModal: false,
-        showModalSettings:false,
         showModalBooks:false 
     });
   }
 
+   toggleShowModal() {
+    this.setState({showModalBooks: !this.state.showModalBooks});
+  }
+
   open() {
     this.setState({ 
-        showModal: true 
+        showModal: true
     });
   } 
 
@@ -56,7 +60,6 @@ class Navbar extends React.Component
        showModalBooks:true,
        activeTab:tab 
     });
-    console.log(this.state.defaultBook);
     var chap = [];
         var getData = refDb.get('eng_udb_'+this.state.defaultBook).then(function(doc) {
              doc.chapters.forEach(function(ref_doc) {
@@ -69,17 +72,15 @@ class Navbar extends React.Component
         getData.then((item) =>{
             this.setState({chapData:item})
         })
-  }
+        console.log(global.book);
+    }
 
-
-    render() 
-    {
+    render(){
     //        const popover = (
     //   <Popover id="modal-popover" title="popover">
-    //     very popover. such engagement
     //   </Popover>
     // );
-    // const tooltip = (
+    // const tooltip = (    
     //   <Tooltip id="modal-tooltip">
     //     wow.
     //   </Tooltip>
@@ -87,42 +88,41 @@ class Navbar extends React.Component
      let close = () => this.setState({showModal:false, showModalSettings:false, showModalBooks:false });
         return(
     <div>
-        <Modal show={this.state.showModalBooks} onHide={close}>
+        <Modal show={this.state.showModalBooks} onHide={close} >
           <Modal.Header closeButton>
             <Modal.Title>Book and Chapter</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-          <BookList activeTab={this.state.activeTab} chapData={this.state.chapData}/>
-
+          <BookList ref = 'range' activeTab={this.state.activeTab} chapData={this.state.chapData} onModalClose={this.toggleShowModal.bind(this)}/>
           </Modal.Body>
         </Modal>
 
        <Modal show={this.state.showModalSettings} onHide={close}>
           <Modal.Header closeButton>
             <Modal.Title>Settings</Modal.Title>
-                        <div class="alert alert-success" role="alert" style= {{display: "none"}}><span>You successfully read this important alert message.</span></div>
-                        <div class="alert alert-danger" role="alert" style= {{display: "none", position: "relative"}}><span>Change a few things up and try submitting again.</span></div>
+                <div class="alert alert-success" role="alert" style= {{display: "none"}}><span>You successfully read this important alert message.</span></div>
+                <div class="alert alert-danger" role="alert" style= {{display: "none", position: "relative"}}><span>Change a few things up and try submitting again.</span></div>
           </Modal.Header>
           <Modal.Body style={{height: "400px"}}>
            <Tabs defaultActiveKey={4} animation={false} id="noanim-tab-example">
             <Tab eventKey={4} title="Translation Details">
-                                <div className="form-group">
-                                   <label htmlFor="ref-lang-code">Language Code</label><br />
-                                    <input type="text" id="ref-lang-code" placeholder="eng" />
-                                </div>
-                                 <div id="reference-lang-result" class="lang-code"></div>
-                                <input type="hidden" id="langCode" />
-                            
-                               <div className="form-group">
-                                    <label>Version</label><br />
-                                    <input type="text" id="ref-version" placeholder="NET-S3" />  
-                                </div>
-                           <div className="form-group">
-                                    <label htmlFor="ref-path">Path to Folder Location</label><br />
-                                    <input type="text" id="ref-path" placeholder="Path of folder containing USFM files" />
-                            </div>
-                            <button style={{float: "right", marginRight: "33px"}} className="btn btn-success" id="ref-import-btn">Import</button>
-                            <div className= "clearfix"></div>
+                <div className="form-group">
+                   <label htmlFor="ref-lang-code">Language Code</label><br />
+                    <input type="text" id="ref-lang-code" placeholder="eng" />
+                </div>
+                 <div id="reference-lang-result" class="lang-code"></div>
+                <input type="hidden" id="langCode" />
+            
+               <div className="form-group">
+                    <label>Version</label><br />
+                    <input type="text" id="ref-version" placeholder="NET-S3" />  
+                </div>
+           <div className="form-group">
+                    <label htmlFor="ref-path">Path to Folder Location</label><br />
+                    <input type="text" id="ref-path" placeholder="Path of folder containing USFM files" />
+            </div>
+            <button style={{float: "right", marginRight: "33px"}} className="btn btn-success" id="ref-import-btn">Import</button>
+            <div className= "clearfix"></div>
             </Tab>
             <Tab eventKey={5} title="Import Translation">
                     <div class="form-group">
@@ -132,53 +132,49 @@ class Navbar extends React.Component
             </Tab>
             <Tab eventKey={6} title="Import Reference Text">
            <div className="form-group">
-                                <div >
-                                    <label class="mdl-textfield__label" htmlFor="ref-name">Bible name</label><br />
-                                    <input  className="mdl-textfield__input" type="text" id="ref-name" placeholder="New English Translation" />
-                                </div>
+                <div >
+                    <label class="mdl-textfield__label" htmlFor="ref-name">Bible name</label><br />
+                    <input  className="mdl-textfield__input" type="text" id="ref-name" placeholder="New English Translation" />
+                </div>
             </div>
             <div className="form-group">
-                                <div >
-                                   <label htmlFor="ref-lang-code">Language Code</label><br />
-                                   <input type="text" id="ref-lang-code" placeholder="eng" />   
-                                </div>
-                                <div id="reference-lang-result" className="lang-code"></div>
-                                <input type="hidden" id="langCode" />
+                <div >
+                   <label htmlFor="ref-lang-code">Language Code</label><br />
+                   <input type="text" id="ref-lang-code" placeholder="eng" />   
+                </div>
+                <div id="reference-lang-result" className="lang-code"></div>
+                <input type="hidden" id="langCode" />
             </div>
             <div className="form-group">
-                                <div >
-                                    <label  htmlFor="version">Version</label><br />
-                                    <input type="text" id="ref-version" placeholder="NET-S3" />
-                                </div>
+                <div >
+                    <label  htmlFor="version">Version</label><br />
+                    <input type="text" id="ref-version" placeholder="NET-S3" />
+                </div>
             </div>
             <div className="form-group">
-                                <div >
-                                    <label htmlFor="ref-path">Folder Location</label><br />
-                                    <input type="text" id="ref-path" placeholder="Path of folder containing USFM files" />
-                                </div>
+                    <div >
+                        <label htmlFor="ref-path">Folder Location</label><br />
+                        <input type="text" id="ref-path" placeholder="Path of folder containing USFM files" />
+                    </div>
             </div>
                             <button style={{float: "right", marginRight: "33px"}} className="btn btn-success" id="ref-import-btn">Import</button>
                 <div className= "clearfix"></div>
             </Tab>
             <Tab eventKey={7} title="Manage Reference Texts">
-                            <div>
-                                <table className="table table-bordered table-hover table-striped">
-                                    <th>Name</th>
-                                    <th>Language Code</th>
-                                    <th>Version</th>
-                                    <th>Action</th>
-                                    <tbody id="reference-list">
-                                    </tbody>
-                                </table>
-                            </div>
+                <div>
+                    <table className="table table-bordered table-hover table-striped">
+                        <th>Name</th>
+                        <th>Language Code</th>
+                        <th>Version</th>
+                        <th>Action</th>
+                        <tbody id="reference-list">
+                        </tbody>
+                    </table>
+                </div>
             </Tab>
           </Tabs>
           </Modal.Body>
         </Modal>
-
-
-
-
          <Modal show={this.state.showModal} onHide={close}>
           <Modal.Header closeButton>
             <Modal.Title>About</Modal.Title>
@@ -217,12 +213,13 @@ class Navbar extends React.Component
                     <div className="navbar-collapse collapse" id="navbar">
                         <ul className="nav navbar-nav" style={{padding: "3px 0 0 0px"}}>
                             <li>
-                                <div className="btn-group navbar-btn strong verse-diff-on" role="group" aria-label="..." id="bookBtn" style={{marginLeft:"200px"}}>
-                                    <a eventKey={10} onClick={() => this.openpopupBooks(1)} href="#" className="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Select Book"  id="book-chapter-btn">
-                                        {this.state.defaultBook}
+                                <div className="btn-group navbar-btn strong verse-diff-on" id="bookBtn" style={{marginLeft:"200px"}}>
+                                    <a eventKey={10} onClick={() => this.openpopupBooks(1)} href="#" className="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Select Book"  id="book-chapter-btn" >{global.bookName}
+                                    
                                     </a>
                                     <span id="chapterBtnSpan">
-                                    <a eventKey={11} onClick={() => this.openpopupBooks(2)} className="btn btn-default" id="chapterBtn" data-target="#myModal"  data-toggle="modal" data-placement="bottom"  title="Select Chapter" >{this.state.defaultChapter}</a>
+                                       <a eventKey={11} onClick={() => this.openpopupBooks(2)} className="btn btn-default" id="chapterBtn" data-target="#myModal"  data-toggle="modal" data-placement="bottom"  title="Select Chapter" >
+                                    {global.book}</a>
                                     </span>
                                 </div>
                                 
@@ -246,9 +243,9 @@ class Navbar extends React.Component
                                 </a>
                             </li>
                             <li>
-                                <a eventKey={0} onClick={() => {this.open(); this.getBookChapterList()}} href="#" data-target="#aboutmodal" data-toggle="tooltip" data-placement="bottom" title="About" id="btnAbout"><i className="fa fa-info fa-2x"></i></a>
+                                <a eventKey={0} onClick={() => {this.open(); this.getBookChapterList()}} data-target="#aboutmodal" data-toggle="tooltip" data-placement="bottom" title="About" id="btnAbout"><i className="fa fa-info fa-2x"></i></a>
                             </li>
-                            <li><a eventKey={1} onClick={() => this.openpopup()} href="javascript:;" id="btnSettings" data-target="#bannerformmodal" data-toggle="tooltip" data-placement="bottom" title="Settings"><i className="fa fa-cog fa-2x"></i></a></li>
+                            <li><a eventKey={1} onClick={() => this.openpopup()} id="btnSettings" data-target="#bannerformmodal" data-toggle="tooltip" data-placement="bottom" title="Settings"><i className="fa fa-cog fa-2x"></i></a></li>
                         </ul>
                     </div>
                 </div>
