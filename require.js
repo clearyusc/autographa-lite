@@ -1,5 +1,6 @@
-const React = require('react');
-const ReactDOM = require('react-dom');
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { render } from 'react-dom';
 const Page = require('./app/pages/page.js');
 
-ReactDOM.render(<Page />, document.getElementById('container'));
+render(<Page />, document.getElementById('container'));
