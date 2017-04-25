@@ -31,7 +31,6 @@ class BookList extends React.Component {
 		session.defaultSession.cookies.get({ url: 'http://book.autographa.com' }, (error, cookie) => {
 	    	if (cookie.length > 0) {
 	            var bookNo = cookie[0].value;
-	            console.log(cookie);
 	            this.setState({bookNo: bookNo});
 	            } else {
 					this.setState({book: '1'})
@@ -39,7 +38,7 @@ class BookList extends React.Component {
 	    });
 	}
 
-	onItemClick(bookNo) {  
+	onItemClick(bookNo) {
   		global.book = bookNo;
 	}
      
@@ -51,26 +50,29 @@ class BookList extends React.Component {
 		this.setState({activeTab:key});
 		var chap = [];
 		var bookChapter = bookCodeList[parseInt(global.book, 10) - 1]
-		console.log(bookChapter)
-		var bookno = global.book
-		this.setState({currentBook: global.book})
-		var id = 'eng_udb' + '_' + bookCodeList[parseInt(bookno, 10) - 1]
+		let bookNo = global.book
+		if(!bookNo){
+			bookNo = 1;
+		}
+		this.setState({currentBook: bookNo})
+		var id = 'eng_udb' + '_' + bookCodeList[parseInt(bookNo, 10) - 1]
 		var getData = refDb.get(id).then(function(doc) {
 			 doc.chapters.forEach(function(ref_doc) {
-		    chap.push({ number: chapter });
-			})  	
+		    	chap.push({ number: chapter });
+			})
 			return chap
-			console.log(chap)
+		}).catch(function(err){
+			
 		})
-		
 		getData.then((item) =>{
-			this.setState({chapterData:item})
+			if(item  && item.length)
+				this.setState({chapterData:item})
 		})
 	}
 
 	render() {
 	    return ( 
-	    <Tabs animation={false} activeKey={this.state.activeTab} onSelect={() =>this.goToTab((this.state.key == 1) ? 2 : 1)} id="noanim-tab-example">
+	    <Tabs animation={false} activeKey={this.state.activeTab} onSelect={() =>this.goToTab((this.state.activeTab == 1) ? 2 : 1)} id="noanim-tab-example">
 		    <Tab eventKey={1} title="Book" onClick={() => this.goToTab(2)}>
 			    <div className="wrap-center"></div>
 	            <div className="row books-li" id="bookdata">
@@ -89,11 +91,13 @@ class BookList extends React.Component {
             </Tab>
 		    <Tab eventKey={2} title="Chapters" > 
 		    	<div className="chapter-no">
-                		<ul id="chaptersList">{
-                			this.state.chapterData.map(function(row, i) {
-								return ( <li key={i}>{i+1}</li> );
-							})
-                		}</ul>
+                		<ul id="chaptersList">
+                			{
+                				this.state.chapterData.map(function(row, i) {
+									return ( <li key={i}>{i+1}</li> );
+								})
+                			}
+                		</ul>
             	</div>
             </Tab>
   		</Tabs>
@@ -119,9 +123,5 @@ var ChapterList = function(props) {
 	return ( <ul id="chaptersList"> { ChaptersList } </ul>)   
 }
 
-var onItemClick = function(item, e) {  
-  global.book = item;
-}
-	
 
 module.exports = BookList
