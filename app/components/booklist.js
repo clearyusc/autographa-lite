@@ -19,7 +19,7 @@ import { remote } from 'electron';
 class BookList extends React.Component {
 	constructor(props) {
         super(props);
-        console.log();
+        this.onItemClick = this.onItemClick.bind(this);
         this.state = { 
             data: Constant.booksList,
             chapterData:[],
@@ -38,15 +38,20 @@ class BookList extends React.Component {
 	        	} 	
 	    });
 	}
+
+	onItemClick(bookNo) {  
+  		global.book = bookNo;
+	}
      
-   handleSelect(key) {
-    this.setState({key});
-  }
+   	handleSelect(key) {
+    	this.setState({key});
+  	}
 
 	goToTab(key) {
 		this.setState({activeTab:key});
 		var chap = [];
 		var bookChapter = bookCodeList[parseInt(global.book, 10) - 1]
+		console.log(bookChapter)
 		var bookno = global.book
 		this.setState({currentBook: global.book})
 		var id = 'eng_udb' + '_' + bookCodeList[parseInt(bookno, 10) - 1]
@@ -70,15 +75,25 @@ class BookList extends React.Component {
 			    <div className="wrap-center"></div>
 	            <div className="row books-li" id="bookdata">
 	                <ul id="books-pane">
-	                    <BookGroup result={this.state.data} currentBook = {this.state.currentBook} />
-	                	}
+	                    {
+	                    	this.state.data.map((item,index) =>{
+								return <li key={index}><a href="#" key={index}  onClick = { this.onItemClick.bind(this, index+1) } value={item} className={(index+1 == this.state.currentBook) ? 'link-active': ""}>{item}
+								</a></li>
+							})
+
+	                    }
+	                	
 	                </ul>
 	            </div>
 	            <div className= "clearfix"></div>
             </Tab>
 		    <Tab eventKey={2} title="Chapters" > 
 		    	<div className="chapter-no">
-                		<ChapterList chapterData = { this.state.chapterData } />
+                		<ul id="chaptersList">{
+                			this.state.chapterData.map(function(row, i) {
+								return ( <li key={i}>{i+1}</li> );
+							})
+                		}</ul>
             	</div>
             </Tab>
   		</Tabs>
@@ -108,4 +123,5 @@ var onItemClick = function(item, e) {
   global.book = item;
 }
 	
+
 module.exports = BookList

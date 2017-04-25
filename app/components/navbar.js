@@ -14,7 +14,7 @@ const ReactDOM = require('react-dom')
  const Tab = require('react-bootstrap/lib/Tab');
  const Constant = require("../util/constants");
  const BookList = require("./booklist");
- const TextField = require('material-ui/lib/text-field');
+ import TextField from 'material-ui/TextField';
 //  const injectTapEventPlugin = require("react-tap-event-plugin");
 // injectTapEventPlugin();
  
@@ -136,16 +136,17 @@ class Navbar extends React.Component
             <Tab eventKey={6} title="Import Reference Text">
            <div className="form-group">
                                 <div >
-                                <TextField
-  hintText="Hint Text" />
                                     <label htmlFor="ref-name">Bible name</label><br />
-                                    <input  className="mdl-textfield__input" type="text" id="ref-name" placeholder="New English Translation" />
+                                    {/*<input  className="mdl-textfield__input" type="text" id="ref-name" placeholder="New English Translation" />*/}
+                                    <TextField hintText="New English Translation" />
+
                                 </div>
             </div>
             <div className="form-group">
                                 <div >
                                    <label htmlFor="ref-lang-code">Language Code</label><br />
-                                   <input type="text" id="ref-lang-code" placeholder="eng" />   
+                                   {/*<input type="text" id="ref-lang-code" placeholder="eng" /> */}  
+                                   <TextField hintText="eng" />
                                 </div>
                                 <div id="reference-lang-result" className="lang-code"></div>
                                 <input type="hidden" id="langCode" />

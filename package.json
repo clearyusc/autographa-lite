@@ -40,6 +40,7 @@
     "diff-match-patch": "^1.0.0",
     "electron-squirrel-startup": "^1.0.0",
     "jquery": "2.2.4",
+    "material-ui": "^0.17.4",
     "pouchdb-adapter-leveldb": "^6.1.0",
     "pouchdb-core": "^6.1.0",
     "pouchdb-quick-search": "^1.2.0",
@@ -51,9 +52,8 @@
     "react-dom": "^15.4.2",
     "react-scripts": "0.8.5",
     "react-selectize": "^2.1.0",
-    "react-scripts": "0.8.5",
-    "webpack": "^1.14.0",
-    "react-tap-event-plugin": "^2.0.1"
+    "react-tap-event-plugin": "^2.0.1",
+    "webpack": "^1.14.0"
   },
   "devDependencies": {
     "babel-core": "^6.24.1",
