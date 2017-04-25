@@ -223,9 +223,7 @@ class Navbar extends React.Component
                         <ul className="nav navbar-nav" style={{padding: "3px 0 0 0px"}}>
                             <li>
                                 <div className="btn-group navbar-btn strong verse-diff-on" role="group" aria-label="..." id="bookBtn" style={{marginLeft:"200px"}}>
-                                    <a onClick={() => this.openpopupBooks(1)} href="#" className="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Select Book"  id="book-chapter-btn">
-                                        {this.state.defaultBook}
-                                    </a>
+                                    <a onClick={() => this.openpopupBooks(1)} href="#" className="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Select Book"  id="book-chapter-btn">{this.state.defaultBook}</a>
                                     <span id="chapterBtnSpan">
                                     <a onClick={() => this.openpopupBooks(2)} className="btn btn-default" id="chapterBtn" data-target="#myModal"  data-toggle="modal" data-placement="bottom"  title="Select Chapter" >{this.state.defaultChapter}</a>
                                     </span>

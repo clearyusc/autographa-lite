@@ -1,16 +1,27 @@
-const React = require('react')
-const ReactDOM = require('react-dom')
-const Constant = require("../util/constants");
-const Tabs = require('react-bootstrap/lib/Tabs');
-const Tab = require('react-bootstrap/lib/Tab');
-const session = require('electron').remote.session;
-const { dialog } = require('electron').remote;
+// <<<<<<< HEAD
+// const React = require('react')
+// const ReactDOM = require('react-dom')
+// const Constant = require("../util/constants");
+// const Tabs = require('react-bootstrap/lib/Tabs');
+// const Tab = require('react-bootstrap/lib/Tab');
+// const session = require('electron').remote.session;
+// const { dialog } = require('electron').remote;
+// =======
+import React from 'react';
+import ReactDOM from 'react-dom';
+import Tabs from 'react-bootstrap/lib/Tabs';
+import Tab from 'react-bootstrap/lib/Tab';
+const session =  require('electron').remote.session;
+const Constant = require("../util/constants")
+import { dialog } from 'electron';
+import { remote } from 'electron';
 
 class BookList extends React.Component {
 	constructor(props) {
         super(props);
+        console.log();
         this.state = { 
-            data: booksList,
+            data: Constant.booksList,
             chapterData:[],
             book: 1,
             currentBook: 1,
@@ -60,6 +71,7 @@ class BookList extends React.Component {
 	            <div className="row books-li" id="bookdata">
 	                <ul id="books-pane">
 	                    <BookGroup result={this.state.data} currentBook = {this.state.currentBook} />
+	                	}
 	                </ul>
 	            </div>
 	            <div className= "clearfix"></div>
@@ -77,7 +89,6 @@ class BookList extends React.Component {
 var BookGroup = function(props) {
 	const BooksGroup = props.result.map((item,index) =>{
 		let _handleClick = this.onItemClick.bind(this, index+1);
-		console.log(props.currentBook)
 		return <li key={index}><a href="#" key={index} onClick={_handleClick } value={item} className={(index+1 == props.currentBook) ? 'link-active': ""}>{item}
 		</a></li>
 	})

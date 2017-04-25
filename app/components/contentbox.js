@@ -18,8 +18,13 @@
  // const ReactSelectize = require("react-selectize");
  // const SimpleSelect = ReactSelectize.SimpleSelect;
  const refDb = require(`${__dirname}/../util/data-provider`).referenceDb();
-const session = require('electron').remote.session;
-const { dialog } = require('electron').remote;
+// <<<<<<< HEAD
+// const session = require('electron').remote.session;
+// const { dialog } = require('electron').remote;
+// =======
+ const session =  require('electron').remote.session;
+ import { dialog } from 'electron';
+ import { remote } from 'electron';
 
 class Contentbox extends React.Component 
 {

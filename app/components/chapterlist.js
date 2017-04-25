@@ -1,7 +1,7 @@
 const React = require('react')
 const ReactDOM = require('react-dom')
 
-class BookList extends React.Component {
+class ChapterList extends React.Component {
 	render() {
 	    return (
 	      <li><a href="#">{this.props.result}</a></li>
@@ -9,4 +9,6 @@ class BookList extends React.Component {
 	}	
 }
 
-module.exports = BookList
+
+module.exports = ChapterList
+
