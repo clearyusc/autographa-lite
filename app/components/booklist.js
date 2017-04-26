@@ -19,7 +19,6 @@ import { remote } from 'electron';
 class BookList extends React.Component {
 	constructor(props) {
         super(props);
-
         this.onItemClick = this.onItemClick.bind(this);
         this.state = { 
             data: Constant.booksList,
@@ -77,8 +76,9 @@ class BookList extends React.Component {
 
 	getValue(event){
 		global.bookChapter = event.target.value;
-		var book = global.bookname
-		global.bookName = book 
+		var book = this.state.data[parseInt(global.book, 10) - 1];
+		global.bookName = book;
+		console.log(global.bookName);
 		console.log(this.state.onModalClose);
 		this.state.onModalClose();
 	}
