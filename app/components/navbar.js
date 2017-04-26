@@ -24,7 +24,7 @@ class Navbar extends React.Component
     constructor(props) {
         super(props);
         global.bookName = "Genesis"
-        global.book = "1"
+        global.bookChapter = "1"
         this.state = { 
             showModal: false,
             showModalSettings:false,
@@ -43,6 +43,7 @@ class Navbar extends React.Component
   }
 
    toggleShowModal() {
+    global.bookNumber = global.book
     this.setState({showModalBooks: !this.state.showModalBooks});
   }
 
@@ -63,6 +64,7 @@ class Navbar extends React.Component
        showModalBooks:true,
        activeTab:tab 
     });
+
     var chap = [];
         var getData = refDb.get('eng_udb_'+this.state.defaultBook).then(function(doc) {
              doc.chapters.forEach(function(ref_doc) {
@@ -96,7 +98,7 @@ class Navbar extends React.Component
             <Modal.Title>Book and Chapter</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-          <BookList ref = 'range' activeTab={this.state.activeTab} chapData={this.state.chapData} onModalClose={this.toggleShowModal.bind(this)}/>
+          <BookList activeTab={this.state.activeTab} chapData={this.state.chapData} onModalClose={this.toggleShowModal.bind(this)}/>
           </Modal.Body>
         </Modal>
 
@@ -223,9 +225,9 @@ class Navbar extends React.Component
                             <li>
 
                                 <div className="btn-group navbar-btn strong verse-diff-on" role="group" aria-label="..." id="bookBtn" style={{marginLeft:"200px"}}>
-                                    <a onClick={() => this.openpopupBooks(1)} href="#" className="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Select Book"  id="book-chapter-btn">{this.state.defaultBook}</a>
+                                    <a onClick={() => this.openpopupBooks(1)} href="#" className="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Select Book"  id="book-chapter-btn">{global.bookName}</a>
                                     <span id="chapterBtnSpan">
-                                    <a onClick={() => this.openpopupBooks(2)} className="btn btn-default" id="chapterBtn" data-target="#myModal"  data-toggle="modal" data-placement="bottom"  title="Select Chapter" >{this.state.defaultChapter}</a>
+                                    <a onClick={() => this.openpopupBooks(2)} className="btn btn-default" id="chapterBtn" data-target="#myModal"  data-toggle="modal" data-placement="bottom"  title="Select Chapter" >{global.bookChapter}</a>
                                     </span>
                                 </div>
                                 

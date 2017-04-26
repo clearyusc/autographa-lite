@@ -19,6 +19,7 @@ import { remote } from 'electron';
 class BookList extends React.Component {
 	constructor(props) {
         super(props);
+
         this.onItemClick = this.onItemClick.bind(this);
         this.state = { 
             data: Constant.booksList,
@@ -28,7 +29,6 @@ class BookList extends React.Component {
             activeTab:props.activeTab,
             chapterData:props.chapData,
             currentChapter:1,
-            showModalBooks:props.showModalBooks,
             onModalClose:props.onModalClose
     	};
 		session.defaultSession.cookies.get({ url: 'http://book.autographa.com' }, (error, cookie) => {
@@ -39,7 +39,6 @@ class BookList extends React.Component {
 				this.setState({book: '1'})
         	} 	
 	    });
-	    console.log(this.state.showModalBooks);
 	}
 
 	onItemClick(bookNo) {
@@ -54,8 +53,8 @@ class BookList extends React.Component {
 		this.setState({activeTab:key});
 		var chap = [];
 		var bookChapter = bookCodeList[parseInt(global.book, 10) - 1]
-
 		let bookNo = global.book
+		global.bookname = bookCodeList[parseInt(global.book, 10) - 1]
 		if(!bookNo){
 			bookNo = 1;
 		}
@@ -76,8 +75,15 @@ class BookList extends React.Component {
 		})
 	}
 
+	getValue(event){
+		global.bookChapter = event.target.value;
+		var book = global.bookname
+		global.bookName = book 
+		console.log(this.state.onModalClose);
+		this.state.onModalClose();
+	}
+
 	render() {
-     let close = () => this.setState({showModalBooks:false });
 	    return ( 
 	    <Tabs animation={false} activeKey={this.state.activeTab} onSelect={() =>this.goToTab((this.state.activeTab == 1) ? 2 : 1)} id="noanim-tab-example">
 		    <Tab eventKey={1} title="Book" onClick={() => this.goToTab(2)}>
@@ -89,23 +95,20 @@ class BookList extends React.Component {
 								return <li key={index}><a href="#" key={index}  onClick = { this.onItemClick.bind(this, index+1) } value={item} className={(index+1 == this.state.currentBook) ? 'link-active': ""}>{item}
 								</a></li>
 							})
-
-	                    }
-	                	
+	                    }	                	
 	                </ul>
 	            </div>
 				<div className= "clearfix"></div>
             </Tab>
 		    <Tab eventKey={2} title="Chapters" > 
 		    	<div className="chapter-no">
-
-                		<ul id="chaptersList">
-                			{
-                				this.state.chapterData.map(function(row, i) {
-									return ( <li key={i}>{i+1}</li> );
-								})
-                			}
-                		</ul>
+            		<ul id="chaptersList" onClick={this.getValue.bind(this)}>
+            			{
+            				this.state.chapterData.map(function(row, i) {
+								return ( <li key={i} value={i+1} >{i+1}</li> );
+							})  
+            			}
+            		</ul>
             	</div>
             </Tab>
   		</Tabs>
@@ -113,27 +116,5 @@ class BookList extends React.Component {
 	}
 }
 
-var BookGroup = function(props) {
-	const BooksGroup = props.result.map((item,index) =>{
-		let _handleClick = this.onItemClick.bind(this, index+1);
-
-		return <li key={index}><a href="#" key={index} onClick={_handleClick } value={item} className={(index+1 == props.currentBook) ? 'link-active': ""}>{item}
-		</a></li>
-	})
-	return (
-		<div>{BooksGroup}</div>
-	)
-}
-
-var ChapterList = function(props) {
-		const ChaptersList = props.chapterData.map(function(row, i) {
-		return ( <li key={i}><a href='#'  onClick={props.onModalClose} className={(i+1 == props.currentChapter) ? 'link-active': ""}>{i+1}</a></li> );
-	})
-	return ( <ul id="chaptersList"> { ChaptersList } </ul>)   
-}
-
-onItemClick = function(item, e) {  
-	global.book = item;
-}
 
 module.exports = BookList
