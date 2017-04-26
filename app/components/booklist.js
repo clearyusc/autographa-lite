@@ -30,12 +30,12 @@ class BookList extends React.Component {
             currentChapter:1,
             onModalClose:props.onModalClose
     	};
-		session.defaultSession.cookies.get({ url: 'http://book.autographa.com' }, (error, cookie) => {
+		session.defaultSession.cookies.get({ url: 'http://books.autographa.com' }, (error, cookie) => {
 	    	if (cookie.length > 0) {
 	            var bookNo = cookie[0].value;
-	            this.setState({bookNo: bookNo});
+	            this.setState({currentBook: bookNo});
             } else {
-				this.setState({book: '1'})
+				this.setState({currentBook: '1'})
         	} 	
 	    });
 	}
@@ -67,6 +67,11 @@ class BookList extends React.Component {
 		}).catch(function(err){
 			
 		})
+		var cookieRef = { url: 'http://books.autographa.com', name: 'book' , value: bookNo };
+        session.defaultSession.cookies.set(cookieRef, (error) => {
+            if (error)
+                console.log(error);
+        });
 
 		getData.then((item) =>{
 			if(item  && item.length)
@@ -78,8 +83,6 @@ class BookList extends React.Component {
 		global.bookChapter = event.target.value;
 		var book = this.state.data[parseInt(global.book, 10) - 1];
 		global.bookName = book;
-		console.log(global.bookName);
-		console.log(this.state.onModalClose);
 		this.state.onModalClose();
 	}
 
