@@ -10,14 +10,17 @@ const ReactDOM = require('react-dom')
  const Modal = require('react-bootstrap/lib/Modal');
  const Button = require('react-bootstrap/lib/Button');
  const Col = require('react-bootstrap/lib/Col');
- const Tabs = require('react-bootstrap/lib/Tabs');
- const Tab = require('react-bootstrap/lib/Tab');
+ // const Tabs = require('react-bootstrap/lib/Tabs');
+ // const Tab = require('react-bootstrap/lib/Tab');
  const Constant = require("../util/constants");
  const BookList = require("./booklist");
  import TextField from 'material-ui/TextField';
-//  const injectTapEventPlugin = require("react-tap-event-plugin");
-// injectTapEventPlugin();
- 
+ import {Tabs, Tab} from 'material-ui/Tabs';
+ const injectTapEventPlugin = require("react-tap-event-plugin");
+injectTapEventPlugin();
+  function handleActive(tab) {
+  alert(`A tab with this route property ${tab.props['data-route']} was activated.`);
+}
 
 class Navbar extends React.Component 
 {
@@ -75,6 +78,7 @@ class Navbar extends React.Component
   }
 
 
+
     render() 
     {
     //        const popover = (
@@ -106,67 +110,70 @@ class Navbar extends React.Component
                         <div className="alert alert-success" role="alert" style= {{display: "none"}}><span>You successfully read this important alert message.</span></div>
                         <div className="alert alert-danger" role="alert" style= {{display: "none", position: "relative"}}><span>Change a few things up and try submitting again.</span></div>
           </Modal.Header>
-          <Modal.Body style={{height: "400px"}}>
-           <Tabs defaultActiveKey={4} animation={false} id="noanim-tab-example">
-            <Tab eventKey={4} title="Translation Details">
+          <Modal.Body>
+           <Tabs id="noanim-tab-example" style={{width: "850px"}}>
+            <Tab label="Translation Details" >
                                 <div className="form-group">
                                    <label htmlFor="ref-lang-code">Language Code</label><br />
-                                    <input type="text" id="ref-lang-code" placeholder="eng" />
+                                {/*<input type="text" id="ref-lang-code" placeholder="eng" />*/}
+                                    <TextField hintText="eng" />
                                 </div>
-                                 <div id="reference-lang-result" className="lang-code"></div>
-                                <input type="hidden" id="langCode" />
-                            
+                                 <div id="reference-lang-result" className="lang-code">
+                                 <input type="hidden" id="langCode" />
+                                </div>
                                <div className="form-group">
                                     <label>Version</label><br />
-                                    <input type="text" id="ref-version" placeholder="NET-S3" />  
+                                    {/*<input type="text" id="ref-version" placeholder="NET-S3" />*/}
+                                    <TextField hintText="NET-S3" />
                                 </div>
                            <div className="form-group">
                                     <label htmlFor="ref-path">Path to Folder Location</label><br />
-                                    <input type="text" id="ref-path" placeholder="Path of folder containing USFM files" />
+                                    {/*<input type="text" id="ref-path" placeholder="Path of folder containing USFM files" />*/}
+                                    <TextField hintText="Path of folder containing USFM files" />
                             </div>
                             <button style={{float: "right", marginRight: "33px"}} className="btn btn-success" id="ref-import-btn">Import</button>
                             <div className= "clearfix"></div>
             </Tab>
-            <Tab eventKey={5} title="Import Translation">
+            <Tab label="Import Translation" >
                     <div className="form-group">
                         <label>Folder Location</label><br />
-                        <input type="text" id="ref-path" placeholder="Path of folder containing USFM files" />
+                        {/*<input type="text" id="ref-path" placeholder="Path of folder containing USFM files" />*/}
+                        <TextField hintText="Path of folder containing USFM files" />
                     </div>
             </Tab>
-            <Tab eventKey={6} title="Import Reference Text">
-           <div className="form-group">
+            <Tab label="Import Reference Text" >
+                    <div className="form-group">
                                 <div >
                                     <label htmlFor="ref-name">Bible name</label><br />
                                     {/*<input  className="mdl-textfield__input" type="text" id="ref-name" placeholder="New English Translation" />*/}
                                     <TextField hintText="New English Translation" />
 
                                 </div>
-            </div>
-            <div className="form-group">
+            
                                 <div >
                                    <label htmlFor="ref-lang-code">Language Code</label><br />
-                                   {/*<input type="text" id="ref-lang-code" placeholder="eng" /> */}  
+                                   {/*<input type="text" id="ref-lang-code" placeholder="eng" />*/}  
                                    <TextField hintText="eng" />
                                 </div>
                                 <div id="reference-lang-result" className="lang-code"></div>
                                 <input type="hidden" id="langCode" />
-            </div>
-            <div className="form-group">
+            
                                 <div >
                                     <label  htmlFor="version">Version</label><br />
-                                    <input type="text" id="ref-version" placeholder="NET-S3" />
+                                    {/*<input type="text" id="ref-version" placeholder="NET-S3" />*/}
+                                    <TextField hintText="NET-S3" />
                                 </div>
-            </div>
-            <div className="form-group">
+            
                                 <div >
                                     <label htmlFor="ref-path">Folder Location</label><br />
-                                    <input type="text" id="ref-path" placeholder="Path of folder containing USFM files" />
+                                    {/*<input type="text" id="ref-path" placeholder="Path of folder containing USFM files" />*/}
+                                    <TextField hintText="Path of folder containing USFM files" />
                                 </div>
             </div>
                             <button style={{float: "right", marginRight: "33px"}} className="btn btn-success" id="ref-import-btn">Import</button>
                 <div className= "clearfix"></div>
             </Tab>
-            <Tab eventKey={7} title="Manage Reference Texts">
+            <Tab label="Manage Reference Texts">
                             <div>
                                 <table className="table table-bordered table-hover table-striped">
                                     <th>Name</th>
@@ -190,8 +197,8 @@ class Navbar extends React.Component
             <Modal.Title>About</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-          <Tabs defaultActiveKey={2} animation={false} id="noanim-tab-example">
-            <Tab eventKey={2} title="Overview">
+          <Tabs id="noanim-tabexample">
+            <Tab label="Overview">
                 <div className="row">
                     <div className="col-xs-6">
                         <img src="../assets/images/autographa_lite_large.png" className="img-circle" alt="Cinque Terre" width="215" height="200" />
@@ -203,12 +210,15 @@ class Navbar extends React.Component
                     </div>
                 </div>
             </Tab>
-            <Tab style={{height: "306px", overflowY: "scroll", overflowX : "scroll"}} eventKey={3} title="License"><h4> The MIT License (MIT)</h4>
+            <Tab label="License" style={{ overflowY: "scroll", overflowX : "scroll"}}>
+        <div >
+            <h4> The MIT License (MIT)</h4>
                 <p>Released in 2017 by Friends of Agape (www.friendsofagape.org) in partnership with RUN Ministries (www.runministries.org). </p>
                 <br />
                 <p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</p>
                 <p>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.</p>
                 <p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
+        </div>
             </Tab>
           </Tabs>
            
