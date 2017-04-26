@@ -78,8 +78,8 @@ html, body {height: 100%; }
 #saved-time {font-style: italic; font-family: Georgia,Serif; position: absolute; right: 125px; top: 28px; color: rgba(0, 0, 0, 0.5); }
 ul {list-style-type: none; } 
 #myModalLabel {font-weight: bold;}
-.modal-header {border-bottom: 0px; padding-bottom: inherit; } 
-#tab-settings .modal-content {width: 880px; height: 500px}
+.modal-header {border-bottom: 0px; padding-bottom: inherit; }
+
 // Books tab css
 .books-li {width: 100%; column-count: 4; column-gap: 25%;}
 .books-li ul {padding-left: 50px;}
@@ -156,3 +156,8 @@ div.tabs a:focus, .active {background-color: #ccc; color: rgba(11,130,255,1);}
 
 // #input-verse div span{direction: rtl;}
 @media screen and (max-width: 760px) {.rmvflex{display: block !important;}}
+//react-css
+#tab-settings .modal-content {width: 880px; height: 500px}
+#tab-about .modal-body {height: 350px; overflow-y: scroll;}
+#tab-settings label {color: #03a9f4;}
+#tab-settings .modal-dialog {width: 800px}

@@ -18,9 +18,7 @@ const ReactDOM = require('react-dom')
  import {Tabs, Tab} from 'material-ui/Tabs';
  const injectTapEventPlugin = require("react-tap-event-plugin");
 injectTapEventPlugin();
-  function handleActive(tab) {
-  alert(`A tab with this route property ${tab.props['data-route']} was activated.`);
-}
+
 
 class Navbar extends React.Component 
 {
@@ -192,12 +190,12 @@ class Navbar extends React.Component
 
 
 
-         <Modal show={this.state.showModal} onHide={close}>
+         <Modal show={this.state.showModal} onHide={close} id="tab-about">
           <Modal.Header closeButton>
             <Modal.Title>About</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-          <Tabs id="noanim-tabexample">
+          <Tabs id="noanim-tabexample" value={this.state.value} onChange={this.handleChange}>
             <Tab label="Overview">
                 <div className="row">
                     <div className="col-xs-6">
@@ -260,7 +258,7 @@ class Navbar extends React.Component
                                 </a>
                             </li>
                             <li>
-                                <a onClick={() => {this.open(); this.getBookChapterList()}} href="#" data-target="#aboutmodal" data-toggle="tooltip" data-placement="bottom" title="About" id="btnAbout"><i className="fa fa-info fa-2x"></i></a>
+                                <a onClick={() => this.open()} href="#" data-target="#aboutmodal" data-toggle="tooltip" data-placement="bottom" title="About" id="btnAbout"><i className="fa fa-info fa-2x"></i></a>
                             </li>
                             <li><a onClick={() => this.openpopup()} href="javascript:;" id="btnSettings" data-target="#bannerformmodal" data-toggle="tooltip" data-placement="bottom" title="Settings"><i className="fa fa-cog fa-2x"></i></a></li>
                         </ul>
