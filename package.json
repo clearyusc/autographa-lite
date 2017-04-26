@@ -49,6 +49,7 @@
     "react-addons-shallow-compare": "^15.5.2",
     "react-bootstrap": "^0.30.8",
     "react-bootstrap-grid": "^1.0.0",
+    "react-bootstrap-slider": "^1.1.7",
     "react-dom": "^15.4.2",
     "react-scripts": "0.8.5",
     "react-selectize": "^2.1.0",

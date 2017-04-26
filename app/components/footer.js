@@ -1,8 +1,18 @@
-const React = require('react')
-const ReactDOM = require('react-dom')
+import React from 'react';
+import ReactDOM from 'react-dom';
+import ReactBootstrapSlider from 'react-bootstrap-slider';
 
 class Footer extends React.Component 
 {
+
+    constructor(props){
+        super(props)
+        this.state = {
+            step: 10,
+            max: 40,
+            min: 14
+        }
+    }
 	render() 
     {
 		return (
@@ -13,8 +23,8 @@ class Footer extends React.Component
                             <span>
                                 <a className="btn btn-default font-button minus" data-toggle="tooltip" data-placement="top" title="Decrease font size" href="JavaScript:void(0)">A-</a>
                             </span>
-                                <input id="fontSlider" type="text" data-slider-min="14" data-slider-max="30" data-slider-step="1" data-slider-value="14"/>
-                                <span id="fontSliderCurrentSliderValLabel"></span>
+                                <ReactBootstrapSlider slideStop={this.changeValue} step={this.state.step} max={this.state.max} min={this.state.min} orientation="horizontal"
+                                disabled="disabled" />
                             <span>
                                 <a className="btn btn-default font-button plus" data-toggle="tooltip" data-placement="top" title="Increase font size" href="JavaScript:void(0);">A+</a>
                             </span>
