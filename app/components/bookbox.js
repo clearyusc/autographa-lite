@@ -11,4 +11,4 @@ class BookBox extends React.Component {
 	}	
 }
 
-module.exports = BookBox
+module.exports = BookBox;

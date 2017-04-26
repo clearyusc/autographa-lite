@@ -14,6 +14,9 @@ const ReactDOM = require('react-dom')
  const Tab = require('react-bootstrap/lib/Tab');
  const Constant = require("../util/constants");
  const BookList = require("./booklist");
+ import TextField from 'material-ui/TextField';
+//  const injectTapEventPlugin = require("react-tap-event-plugin");
+// injectTapEventPlugin();
  
 
 class Navbar extends React.Component 
@@ -106,44 +109,49 @@ class Navbar extends React.Component
           <Modal.Body style={{height: "400px"}}>
            <Tabs defaultActiveKey={4} animation={false} id="noanim-tab-example">
             <Tab eventKey={4} title="Translation Details">
-                <div className="form-group">
-                   <label htmlFor="ref-lang-code">Language Code</label><br />
-                    <input type="text" id="ref-lang-code" placeholder="eng" />
-                </div>
-                 <div id="reference-lang-result" class="lang-code"></div>
-                <input type="hidden" id="langCode" />
-            
-               <div className="form-group">
-                    <label>Version</label><br />
-                    <input type="text" id="ref-version" placeholder="NET-S3" />  
-                </div>
-           <div className="form-group">
-                    <label htmlFor="ref-path">Path to Folder Location</label><br />
-                    <input type="text" id="ref-path" placeholder="Path of folder containing USFM files" />
-            </div>
-            <button style={{float: "right", marginRight: "33px"}} className="btn btn-success" id="ref-import-btn">Import</button>
-            <div className= "clearfix"></div>
+
+                                <div className="form-group">
+                                   <label htmlFor="ref-lang-code">Language Code</label><br />
+                                    <input type="text" id="ref-lang-code" placeholder="eng" />
+                                </div>
+                                 <div id="reference-lang-result" className="lang-code"></div>
+                                <input type="hidden" id="langCode" />
+                            
+                               <div className="form-group">
+                                    <label>Version</label><br />
+                                    <input type="text" id="ref-version" placeholder="NET-S3" />  
+                                </div>
+                           <div className="form-group">
+                                    <label htmlFor="ref-path">Path to Folder Location</label><br />
+                                    <input type="text" id="ref-path" placeholder="Path of folder containing USFM files" />
+                            </div>
+                            <button style={{float: "right", marginRight: "33px"}} className="btn btn-success" id="ref-import-btn">Import</button>
+                            <div className= "clearfix"></div>
             </Tab>
             <Tab eventKey={5} title="Import Translation">
-                    <div class="form-group">
+                    <div className="form-group">
                         <label>Folder Location</label><br />
                         <input type="text" id="ref-path" placeholder="Path of folder containing USFM files" />
                     </div>
             </Tab>
             <Tab eventKey={6} title="Import Reference Text">
            <div className="form-group">
-                <div >
-                    <label class="mdl-textfield__label" htmlFor="ref-name">Bible name</label><br />
-                    <input  className="mdl-textfield__input" type="text" id="ref-name" placeholder="New English Translation" />
-                </div>
+
+                                <div >
+                                    <label htmlFor="ref-name">Bible name</label><br />
+                                    {/*<input  className="mdl-textfield__input" type="text" id="ref-name" placeholder="New English Translation" />*/}
+                                    <TextField hintText="New English Translation" />
+
+                                </div>
             </div>
             <div className="form-group">
-                <div >
-                   <label htmlFor="ref-lang-code">Language Code</label><br />
-                   <input type="text" id="ref-lang-code" placeholder="eng" />   
-                </div>
-                <div id="reference-lang-result" className="lang-code"></div>
-                <input type="hidden" id="langCode" />
+                                <div >
+                                   <label htmlFor="ref-lang-code">Language Code</label><br />
+                                   {/*<input type="text" id="ref-lang-code" placeholder="eng" /> */}  
+                                   <TextField hintText="eng" />
+                                </div>
+                                <div id="reference-lang-result" className="lang-code"></div>
+                                <input type="hidden" id="langCode" />
             </div>
             <div className="form-group">
                 <div >
@@ -184,7 +192,7 @@ class Navbar extends React.Component
             <Tab eventKey={2} title="Overview">
                 <div className="row">
                     <div className="col-xs-6">
-                        <img src="../assets/images/autographa_lite_large.png" class="img-circle" alt="Cinque Terre" width="215" height="200" />
+                        <img src="../assets/images/autographa_lite_large.png" className="img-circle" alt="Cinque Terre" width="215" height="200" />
                     </div>
                     <div className="col-xs-6">
                         <h3>Autographa Lite</h3>
@@ -208,18 +216,16 @@ class Navbar extends React.Component
                 <div className="container-fluid">
                     <div className="navbar-header">
                         <button className="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span className="sr-only">Toggle navigation</span><span className="icon-bar"></span><span className="icon-bar"></span><span className="icon-bar"></span></button>
-                        <a className="navbar-brand" href="javascript:;"><img alt="Brand" src="../assets/images/logo.png"/></a>
+                        <a href="javascript:;" className="navbar-brand" ><img alt="Brand" src="../assets/images/logo.png"/></a>
                     </div>
                     <div className="navbar-collapse collapse" id="navbar">
                         <ul className="nav navbar-nav" style={{padding: "3px 0 0 0px"}}>
                             <li>
-                                <div className="btn-group navbar-btn strong verse-diff-on" id="bookBtn" style={{marginLeft:"200px"}}>
-                                    <a eventKey={10} onClick={() => this.openpopupBooks(1)} href="#" className="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Select Book"  id="book-chapter-btn" >{global.bookName}
-                                    
-                                    </a>
+
+                                <div className="btn-group navbar-btn strong verse-diff-on" role="group" aria-label="..." id="bookBtn" style={{marginLeft:"200px"}}>
+                                    <a onClick={() => this.openpopupBooks(1)} href="#" className="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Select Book"  id="book-chapter-btn">{this.state.defaultBook}</a>
                                     <span id="chapterBtnSpan">
-                                       <a eventKey={11} onClick={() => this.openpopupBooks(2)} className="btn btn-default" id="chapterBtn" data-target="#myModal"  data-toggle="modal" data-placement="bottom"  title="Select Chapter" >
-                                    {global.book}</a>
+                                    <a onClick={() => this.openpopupBooks(2)} className="btn btn-default" id="chapterBtn" data-target="#myModal"  data-toggle="modal" data-placement="bottom"  title="Select Chapter" >{this.state.defaultChapter}</a>
                                     </span>
                                 </div>
                                 
@@ -228,7 +234,7 @@ class Navbar extends React.Component
                         <ul className="nav navbar-nav navbar-right nav-pills verse-diff-on">
                             <li style={{padding: "17px 5px 0 0", color: "#fff", fontWeight: "bold"}}><span>OFF</span></li>
                             <li>
-                                <label style={{marginTop:"17px"}} className="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="switch-2" id="switchLable" data-toggle='tooltip' data-placement='bottom' title="Compare mode">
+                                <label style={{marginTop:"17px"}} className="mdl-switch mdl-js-switch mdl-js-ripple-effect" htmlFor="switch-2" id="switchLable" data-toggle='tooltip' data-placement='bottom' title="Compare mode">
                                     <input type="checkbox" id="switch-2" className="mdl-switch__input check-diff"/>
                                     <span className="mdl-switch__label"></span>
                                 </label>
@@ -243,9 +249,9 @@ class Navbar extends React.Component
                                 </a>
                             </li>
                             <li>
-                                <a eventKey={0} onClick={() => {this.open(); this.getBookChapterList()}} data-target="#aboutmodal" data-toggle="tooltip" data-placement="bottom" title="About" id="btnAbout"><i className="fa fa-info fa-2x"></i></a>
+                                <a onClick={() => {this.open(); this.getBookChapterList()}} href="#" data-target="#aboutmodal" data-toggle="tooltip" data-placement="bottom" title="About" id="btnAbout"><i className="fa fa-info fa-2x"></i></a>
                             </li>
-                            <li><a eventKey={1} onClick={() => this.openpopup()} id="btnSettings" data-target="#bannerformmodal" data-toggle="tooltip" data-placement="bottom" title="Settings"><i className="fa fa-cog fa-2x"></i></a></li>
+                            <li><a onClick={() => this.openpopup()} href="javascript:;" id="btnSettings" data-target="#bannerformmodal" data-toggle="tooltip" data-placement="bottom" title="Settings"><i className="fa fa-cog fa-2x"></i></a></li>
                         </ul>
                     </div>
                 </div>

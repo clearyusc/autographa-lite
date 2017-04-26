@@ -18,8 +18,13 @@
  // const ReactSelectize = require("react-selectize");
  // const SimpleSelect = ReactSelectize.SimpleSelect;
  const refDb = require(`${__dirname}/../util/data-provider`).referenceDb();
-const session = require('electron').remote.session;
-const { dialog } = require('electron').remote;
+// <<<<<<< HEAD
+// const session = require('electron').remote.session;
+// const { dialog } = require('electron').remote;
+// =======
+ const session =  require('electron').remote.session;
+ import { dialog } from 'electron';
+ import { remote } from 'electron';
 
 class Contentbox extends React.Component 
 {
@@ -55,7 +60,8 @@ class Contentbox extends React.Component
         });
          session.defaultSession.cookies.get({ url: 'http://refs.autographa.com' }, (error, cookie) => {
             if (cookie.length > 0) {    
-                this.setState({defaultRef: cookie[0].value})
+                this.setState({defaultRef: cookie[2].value})
+                console.log(cookie)
                 this.getRefContents(cookie[0].value+'_'+bookCodeList[parseInt(this.state.book, 10) - 1]);
             }else {
                 this.getRefContents(this.state.defaultRef+'_'+bookCodeList[parseInt(this.state.book, 10) - 1]);
