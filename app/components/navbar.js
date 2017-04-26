@@ -104,7 +104,7 @@ class Navbar extends React.Component
           </Modal.Body>
         </Modal>
 
-       <Modal show={this.state.showModalSettings} onHide={close}>
+       <Modal show={this.state.showModalSettings} onHide={close} id="tab-settings">
           <Modal.Header closeButton>
             <Modal.Title>Settings</Modal.Title>
                         <div className="alert alert-success" role="alert" style= {{display: "none"}}><span>You successfully read this important alert message.</span></div>
@@ -210,7 +210,7 @@ class Navbar extends React.Component
                     </div>
                 </div>
             </Tab>
-            <Tab label="License" style={{ overflowY: "scroll", overflowX : "scroll"}}>
+            <Tab label="License">
         <div >
             <h4> The MIT License (MIT)</h4>
                 <p>Released in 2017 by Friends of Agape (www.friendsofagape.org) in partnership with RUN Ministries (www.runministries.org). </p>
