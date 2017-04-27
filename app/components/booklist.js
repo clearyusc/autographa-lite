@@ -94,12 +94,7 @@ class BookList extends React.Component {
 			    <div className="wrap-center"></div>
 	            <div className="row books-li" id="bookdata">
 	                <ul id="books-pane">
-	                    {
-	                    	this.state.data.map((item,index) =>{
-								return <li key={index}><a href="#" key={index} onClick = { this.onItemClick.bind(this, index+1) } value={item} className={('bookNo'+(index+1) == this.state.currentBook) ? 'link-active': ""} >{item}
-								</a></li>
-							})
-	                    }	                	
+	                    <BookGroup result={this.state.data} currentBook = {this.state.currentBook} />	                	
 	                </ul>
 	            </div>
 				<div className= "clearfix"></div>
@@ -107,17 +102,33 @@ class BookList extends React.Component {
 		    <Tab eventKey={2} title="Chapters" > 
 		    	<div className="chapter-no">
             		<ul id="chaptersList" onClick={this.getValue.bind(this)}>
-            			{
-            				this.state.chapterData.map(function(row, i) {
-								return ( <li key={i} value={i+1} >{i+1}</li> );
-							})  
-            			}
+ 						<ChapterList chapterData = { this.state.chapterData } currentchapter = {this.state.currentchapter} onModalClose = {this.state.onModalClose}/> 
             		</ul>
             	</div>
             </Tab>
   		</Tabs>
       )
 	}
+}
+var BookGroup = function(props) {
+	const BooksGroup = props.result.map((item,index) =>{
+		return <li key={index}><a href="#" onClick={onItemClick.bind(this, index+1) } value={item} className={(index+1 == props.currentBook) ? 'link-active': ""}>{item}
+		</a></li>
+	})
+	return (
+		<div>{BooksGroup}</div>
+	)
+}
+
+var ChapterList = function(props) {
+		const ChaptersList = props.chapterData.map(function(row, i) {
+		return ( <li key={i}><a href='#'  onClick={props.onModalClose} className={(i+1 == props.currentChapter) ? 'link-active': ""}>{i+1}</a></li> );
+	})
+	return ( <ul id="chaptersList"> { ChaptersList } </ul>)   
+}
+
+onItemClick => function(item, e) {  
+	global.book = item;
 }
 
 module.exports = BookList
