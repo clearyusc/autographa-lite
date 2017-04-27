@@ -24,7 +24,6 @@ class BookList extends React.Component {
             data: Constant.booksList,
             chapterData:[],
             book: 1,
-            currentBook: 'bookNo1',
             activeTab:props.activeTab,
             chapterData:props.chapData,
             currentChapter:1,
@@ -37,7 +36,7 @@ class BookList extends React.Component {
 	            this.setState({currentBook: bookNo});
 	            console.log(bookNo);
             } else {
-				this.setState({currentBook: '1'})
+				this.setState({currentBook: 'bookNo1'})
         	} 	
 	    });
 	}
