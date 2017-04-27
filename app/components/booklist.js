@@ -24,16 +24,18 @@ class BookList extends React.Component {
             data: Constant.booksList,
             chapterData:[],
             book: 1,
-            currentBook: 1,
+            currentBook: 'bookNo1',
             activeTab:props.activeTab,
             chapterData:props.chapData,
             currentChapter:1,
             onModalClose:props.onModalClose
     	};
-		session.defaultSession.cookies.get({ url: 'http://books.autographa.com' }, (error, cookie) => {
+
+		session.defaultSession.cookies.get({ url: 'http://book.autographa.com' }, (error, cookie) => {
 	    	if (cookie.length > 0) {
 	            var bookNo = cookie[0].value;
 	            this.setState({currentBook: bookNo});
+	            console.log(bookNo);
             } else {
 				this.setState({currentBook: '1'})
         	} 	
@@ -66,8 +68,8 @@ class BookList extends React.Component {
 			return chap
 		}).catch(function(err){
 			
-		})
-		var cookieRef = { url: 'http://books.autographa.com', name: 'book' , value: bookNo };
+	})
+		const cookieRef = { url: 'http://book.autographa.com', name: 'book' , value: 'bookNo'+bookNo };
         session.defaultSession.cookies.set(cookieRef, (error) => {
             if (error)
                 console.log(error);
@@ -75,7 +77,7 @@ class BookList extends React.Component {
 
 		getData.then((item) =>{
 			if(item  && item.length)
-				this.setState({chapterData:item})
+			this.setState({chapterData:item})
 		})
 	}
 
@@ -95,7 +97,7 @@ class BookList extends React.Component {
 	                <ul id="books-pane">
 	                    {
 	                    	this.state.data.map((item,index) =>{
-								return <li key={index}><a href="#" key={index}  onClick = { this.onItemClick.bind(this, index+1) } value={item} className={(index+1 == this.state.currentBook) ? 'link-active': ""}>{item}
+								return <li key={index}><a href="#" key={index} onClick = { this.onItemClick.bind(this, index+1) } value={item} className={('bookNo'+(index+1) == this.state.currentBook) ? 'link-active': ""} >{item}
 								</a></li>
 							})
 	                    }	                	
@@ -118,6 +120,5 @@ class BookList extends React.Component {
       )
 	}
 }
-
 
 module.exports = BookList
