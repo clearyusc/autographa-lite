@@ -1,5 +1,5 @@
- const React = require('react')
- const ReactDOM = require('react-dom')
+import React from 'react';
+import ReactDOM from 'react-dom';
  const bootstrap = require('react-bootstrap');
 // const style = require("./Style");
 // const Nav = require('react-bootstrap/lib/Nav');
@@ -49,7 +49,6 @@ class Contentbox extends React.Component
         
         session.defaultSession.cookies.get({ url: 'http://book.autographa.com' }, (error, cookie) => {
             if (cookie.length > 0) {
-                console.log(cookie);
                 book = cookie[0].value;
                 this.setState({book: book});
             } else {

@@ -1,5 +1,5 @@
-const React = require('react')
-const ReactDOM = require('react-dom')
+import React from 'react';
+import ReactDOM from 'react-dom';
 // const style = require("./Style");
  const Nav = require('react-bootstrap/lib/Nav');
  const NavItem = require('react-bootstrap/lib/NavItem');
@@ -36,7 +36,7 @@ class Navbar extends React.Component {
             showModalSettings: false,
             showModalBooks: false,
             data: booksList,
-            defaultBook: Constant.bookCodeList[parseInt(1, 10) - 1],
+            defaultBook: Constant.bookCodeList[parseInt('1', 10) - 1],
             defaultChapter: 1,
             chapData: null
         };
@@ -86,6 +86,7 @@ class Navbar extends React.Component {
     }
 
     render() {
+
         //    const popover = (
         //   <Popover id="modal-popover" title="popover">
         //   </Popover>
@@ -97,6 +98,7 @@ class Navbar extends React.Component {
         // );
         let close = () => this.setState({ showModal: false, showModalSettings: false, showModalBooks: false });
         return (
+
             <div>
         <Modal show={this.state.showModalBooks} onHide={close} >
             <Modal.Header closeButton>
