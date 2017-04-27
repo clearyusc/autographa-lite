@@ -26,6 +26,7 @@
  import { dialog } from 'electron';
  import { remote } from 'electron';
 
+
 class Contentbox extends React.Component 
 {
     constructor(props) {

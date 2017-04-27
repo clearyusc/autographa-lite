@@ -1,8 +1,8 @@
 const React = require('react')
 const ReactDOM = require('react-dom')
 // const style = require("./Style");
-// const Nav = require('react-bootstrap/lib/Nav');
-// const NavItem = require('react-bootstrap/lib/NavItem');
+ const Nav = require('react-bootstrap/lib/Nav');
+ const NavItem = require('react-bootstrap/lib/NavItem');
 // const Navbar = require('react-bootstrap/lib/Navbar');
 // const NavDropdown = require('react-bootstrap/lib/NavDropdown');
 // const MenuItem = require('react-bootstrap/lib/MenuItem');
@@ -10,12 +10,18 @@ const ReactDOM = require('react-dom')
  const Modal = require('react-bootstrap/lib/Modal');
  const Button = require('react-bootstrap/lib/Button');
  const Col = require('react-bootstrap/lib/Col');
- // const Tabs = require('react-bootstrap/lib/Tabs');
- // const Tab = require('react-bootstrap/lib/Tab');
+ const Row = require('react-bootstrap/lib/Row')
+ const Grid = require('react-bootstrap/lib/Grid')
+
+  const Tabs = require('react-bootstrap/lib/Tabs');
+  const Tab = require('react-bootstrap/lib/Tab');
  const Constant = require("../util/constants");
  const BookList = require("./booklist");
  import TextField from 'material-ui/TextField';
- import {Tabs, Tab} from 'material-ui/Tabs';
+ import RaisedButton from 'material-ui/RaisedButton';
+ // import {Tabs, Tab} from 'material-ui/Tabs';
+ // const Tabsreact = require('react-bootstrap/lib/Tabs');
+ // const Tabreact = require('react-bootstrap/lib/Tabs');
  const injectTapEventPlugin = require("react-tap-event-plugin");
 injectTapEventPlugin();
 
@@ -109,9 +115,28 @@ class Navbar extends React.Component
                         <div className="alert alert-danger" role="alert" style= {{display: "none", position: "relative"}}><span>Change a few things up and try submitting again.</span></div>
           </Modal.Header>
           <Modal.Body>
-           <Tabs id="noanim-tab-example" style={{width: "850px"}}>
-            <Tab label="Translation Details" >
-                                <div className="form-group">
+             <Tab.Container id="left-tabs-example" defaultActiveKey="first">
+                <Row className="clearfix">
+                    <Col sm={4}>
+                        <Nav bsStyle="pills" stacked>
+                          <NavItem eventKey="first">
+                            Translation Details
+                          </NavItem>
+                          <NavItem eventKey="second">
+                            Import Translation
+                          </NavItem>
+                          <NavItem eventKey="third">
+                            Import Reference Text
+                          </NavItem>
+                          <NavItem eventKey="fourth">
+                            Manage Reference Texts
+                          </NavItem>
+                        </Nav>
+                    </Col>
+                    <Col sm={8}>
+                        <Tab.Content animation>
+                          <Tab.Pane eventKey="first">
+                            <div className="form-group">
                                    <label htmlFor="ref-lang-code">Language Code</label><br />
                                 {/*<input type="text" id="ref-lang-code" placeholder="eng" />*/}
                                     <TextField hintText="eng" />
@@ -128,19 +153,19 @@ class Navbar extends React.Component
                                     <label htmlFor="ref-path">Path to Folder Location</label><br />
                                     {/*<input type="text" id="ref-path" placeholder="Path of folder containing USFM files" />*/}
                                     <TextField hintText="Path of folder containing USFM files" />
+                          </div>
+                        {/*<button style={{float:"right", marginRight: "33px"}} className="btn btn-success" id="save-settings">Save</button>*/}
+                        <RaisedButton label="Save" primary={true}/>  
+                          </Tab.Pane>
+                          <Tab.Pane eventKey="second">
+                             <div className="form-group">
+                                <label>Folder Location</label><br />
+                                {/*<input type="text" id="ref-path" placeholder="Path of folder containing USFM files" />*/}
+                                <TextField hintText="Path of folder containing USFM files" />
                             </div>
-                            <button style={{float: "right", marginRight: "33px"}} className="btn btn-success" id="ref-import-btn">Import</button>
-                            <div className= "clearfix"></div>
-            </Tab>
-            <Tab label="Import Translation" >
-                    <div className="form-group">
-                        <label>Folder Location</label><br />
-                        {/*<input type="text" id="ref-path" placeholder="Path of folder containing USFM files" />*/}
-                        <TextField hintText="Path of folder containing USFM files" />
-                    </div>
-            </Tab>
-            <Tab label="Import Reference Text" >
-                    <div className="form-group">
+                          </Tab.Pane>
+                          <Tab.Pane eventKey="third">
+                            <div className="form-group">
                                 <div >
                                     <label htmlFor="ref-name">Bible name</label><br />
                                     {/*<input  className="mdl-textfield__input" type="text" id="ref-name" placeholder="New English Translation" />*/}
@@ -167,11 +192,11 @@ class Navbar extends React.Component
                                     {/*<input type="text" id="ref-path" placeholder="Path of folder containing USFM files" />*/}
                                     <TextField hintText="Path of folder containing USFM files" />
                                 </div>
-            </div>
-                            <button style={{float: "right", marginRight: "33px"}} className="btn btn-success" id="ref-import-btn">Import</button>
-                <div className= "clearfix"></div>
-            </Tab>
-            <Tab label="Manage Reference Texts">
+                                {/*<button style={{float:"right", marginRight: "33px"}} class="btn btn-success" id="ref-import-btn">Import</button>*/}
+                                <RaisedButton label="Import" primary={true}/>
+                            </div>
+                          </Tab.Pane>
+                          <Tab.Pane eventKey="fourth">
                             <div>
                                 <table className="table table-bordered table-hover table-striped">
                                     <th>Name</th>
@@ -182,8 +207,11 @@ class Navbar extends React.Component
                                     </tbody>
                                 </table>
                             </div>
-            </Tab>
-          </Tabs>
+                          </Tab.Pane>
+                        </Tab.Content>
+                    </Col>
+                </Row>
+  </Tab.Container>
           </Modal.Body>
         </Modal>
 
@@ -195,7 +223,30 @@ class Navbar extends React.Component
             <Modal.Title>About</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-          <Tabs id="noanim-tabexample" value={this.state.value} onChange={this.handleChange}>
+          <Tabs defaultActiveKey={1} id="uncontrolled-tab-example">
+                <Tab eventKey={1} title="Overview"><div className="row">
+                    <div className="col-xs-6">
+                            <img src="../assets/images/autographa_lite_large.png" className="img-circle" alt="Cinque Terre" width="215" height="200" />
+                        </div>
+                        <div className="col-xs-6">
+                            <h3>Autographa Lite</h3>
+                            <p>Version 0.1</p>
+                            <p>Source code hosted at: https://github.com/Bridgeconn/autographa-lite</p>
+                        </div>
+                    </div>
+                </Tab>
+                <Tab eventKey={2} title="License">
+                    <div style={{overflowY: "scroll", height: "255px"}}>
+                        <h4> The MIT License (MIT)</h4>
+                            <p>Released in 2017 by Friends of Agape (www.friendsofagape.org) in partnership with RUN Ministries (www.runministries.org). </p>
+                            <br />
+                            <p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</p>
+                            <p>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.</p>
+                            <p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
+                    </div>
+                </Tab>
+          </Tabs>
+          {/*<Tabs id="noanim-tabexample" value={this.state.value} onChange={this.handleChange}>
             <Tab label="Overview">
                 <div className="row">
                     <div className="col-xs-6">
@@ -218,7 +269,7 @@ class Navbar extends React.Component
                 <p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
         </div>
             </Tab>
-          </Tabs>
+          </Tabs>*/}
            
           </Modal.Body>
         </Modal>
