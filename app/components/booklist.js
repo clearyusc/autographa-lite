@@ -34,15 +34,14 @@ class BookList extends React.Component {
 	    	if (cookie.length > 0) {
 	            var bookNo = cookie[0].value;
 	            this.setState({currentBook: bookNo});
-	            console.log(bookNo);
             } else {
-				this.setState({currentBook: 'bookNo1'})
+				this.setState({currentBook: '1'})
         	} 	
 	    });
 	}
 
 	onItemClick(bookNo) {
-  		global.book = bookNo;
+  		global.book = bookNo.toString();
 	}
      
 	handleSelect(key) {
@@ -56,7 +55,7 @@ class BookList extends React.Component {
 		let bookNo = global.book
 		global.bookname = bookCodeList[parseInt(global.book, 10) - 1]
 		if(!bookNo){
-			bookNo = 1;
+			bookNo = '1';
 		}
 		this.setState({currentBook: bookNo})
 		var id = 'eng_udb' + '_' + bookCodeList[parseInt(bookNo, 10) - 1]
@@ -67,8 +66,8 @@ class BookList extends React.Component {
 			return chap
 		}).catch(function(err){
 			
-	})
-		const cookieRef = { url: 'http://book.autographa.com', name: 'book' , value: 'bookNo'+bookNo };
+		})
+		const cookieRef = { url: 'http://book.autographa.com', name: 'book' , value: bookNo };
         session.defaultSession.cookies.set(cookieRef, (error) => {
             if (error)
                 console.log(error);
@@ -80,8 +79,8 @@ class BookList extends React.Component {
 		})
 	}
 
-	getValue(event){
-		global.bookChapter = event.target.value;
+	getValue(chapter){
+		global.bookChapter = chapter
 		var book = this.state.data[parseInt(global.book, 10) - 1];
 		global.bookName = book;
 		this.state.onModalClose();
@@ -96,7 +95,7 @@ class BookList extends React.Component {
 	                <ul id="books-pane">
 	                    {
 	                    	this.state.data.map((item,index) =>{
-								return <li key={index}><a href="#" key={index} onClick = { this.onItemClick.bind(this, index+1) } value={item} className={('bookNo'+(index+1) == this.state.currentBook) ? 'link-active': ""} >{item}
+								return <li key={index}><a href="#" key={index} onClick = { this.onItemClick.bind(this, index+1) } value={item} className={(index+1 == this.state.currentBook) ? 'link-active': ""} >{item}
 								</a></li>
 							})
 	                    }	                	
@@ -106,10 +105,10 @@ class BookList extends React.Component {
             </Tab>
 		    <Tab eventKey={2} title="Chapters" > 
 		    	<div className="chapter-no">
-            		<ul id="chaptersList" onClick={this.getValue.bind(this)}>
+            		<ul id="chaptersList">
             			{
-            				this.state.chapterData.map(function(row, i) {
-								return ( <li key={i} value={i+1} >{i+1}</li> );
+            				this.state.chapterData.map((item, i) => {
+								return ( <li key={i} value={i+1} ><a href="#" onClick = { this.getValue.bind(this,  i+1) } >{i+1}</a></li> );
 							})  
             			}
             		</ul>
