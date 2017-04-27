@@ -49,6 +49,7 @@ class Contentbox extends React.Component
         
         session.defaultSession.cookies.get({ url: 'http://book.autographa.com' }, (error, cookie) => {
             if (cookie.length > 0) {
+                console.log(cookie);
                 book = cookie[0].value;
                 this.setState({book: book});
             } else {
@@ -59,16 +60,16 @@ class Contentbox extends React.Component
                 this.setState({book: '1'})
             }
         });
-         session.defaultSession.cookies.get({ url: 'http://refs.autographa.com' }, (error, cookie) => {
+
+        session.defaultSession.cookies.get({ url: 'http://refs.autographa.com' }, (error, cookie) => {
             if (cookie.length > 0) {    
-                this.setState({defaultRef: cookie[2].value})
+                this.setState({defaultRef: cookie[0].value})
                 console.log(cookie)
                 this.getRefContents(cookie[0].value+'_'+bookCodeList[parseInt(this.state.book, 10) - 1]);
             }else {
                 this.getRefContents(this.state.defaultRef+'_'+bookCodeList[parseInt(this.state.book, 10) - 1]);
             }
-        });
-       
+        });       
     }
     
     getRefContents(id) {

@@ -24,17 +24,20 @@ class BookList extends React.Component {
             data: Constant.booksList,
             chapterData:[],
             book: 1,
-            currentBook: 1,
             activeTab:props.activeTab,
-            chapterData:props.chapData
+            chapterData:props.chapData,
+            currentChapter:1,
+            onModalClose:props.onModalClose
     	};
+
 		session.defaultSession.cookies.get({ url: 'http://book.autographa.com' }, (error, cookie) => {
 	    	if (cookie.length > 0) {
 	            var bookNo = cookie[0].value;
-	            this.setState({bookNo: bookNo});
-	            } else {
-					this.setState({book: '1'})
-	        	} 	
+	            this.setState({currentBook: bookNo});
+	            console.log(bookNo);
+            } else {
+				this.setState({currentBook: 'bookNo1'})
+        	} 	
 	    });
 	}
 
@@ -42,15 +45,16 @@ class BookList extends React.Component {
   		global.book = bookNo;
 	}
      
-   	handleSelect(key) {
-    	this.setState({key});
-  	}
+	handleSelect(key) {
+		this.setState({key});
+	}
 
 	goToTab(key) {
 		this.setState({activeTab:key});
 		var chap = [];
 		var bookChapter = bookCodeList[parseInt(global.book, 10) - 1]
 		let bookNo = global.book
+		global.bookname = bookCodeList[parseInt(global.book, 10) - 1]
 		if(!bookNo){
 			bookNo = 1;
 		}
@@ -63,11 +67,24 @@ class BookList extends React.Component {
 			return chap
 		}).catch(function(err){
 			
-		})
+	})
+		const cookieRef = { url: 'http://book.autographa.com', name: 'book' , value: 'bookNo'+bookNo };
+        session.defaultSession.cookies.set(cookieRef, (error) => {
+            if (error)
+                console.log(error);
+        });
+
 		getData.then((item) =>{
 			if(item  && item.length)
-				this.setState({chapterData:item})
+			this.setState({chapterData:item})
 		})
+	}
+
+	getValue(event){
+		global.bookChapter = event.target.value;
+		var book = this.state.data[parseInt(global.book, 10) - 1];
+		global.bookName = book;
+		this.state.onModalClose();
 	}
 
 	render() {
@@ -79,49 +96,28 @@ class BookList extends React.Component {
 	                <ul id="books-pane">
 	                    {
 	                    	this.state.data.map((item,index) =>{
-								return <li key={index}><a href="#" key={index}  onClick = { this.onItemClick.bind(this, index+1) } value={item} className={(index+1 == this.state.currentBook) ? 'link-active': ""}>{item}
+								return <li key={index}><a href="#" key={index} onClick = { this.onItemClick.bind(this, index+1) } value={item} className={('bookNo'+(index+1) == this.state.currentBook) ? 'link-active': ""} >{item}
 								</a></li>
 							})
-
-	                    }
-	                	
+	                    }	                	
 	                </ul>
 	            </div>
-	            <div className= "clearfix"></div>
+				<div className= "clearfix"></div>
             </Tab>
 		    <Tab eventKey={2} title="Chapters" > 
 		    	<div className="chapter-no">
-                		<ul id="chaptersList">
-                			{
-                				this.state.chapterData.map(function(row, i) {
-									return ( <li key={i}>{i+1}</li> );
-								})
-                			}
-                		</ul>
+            		<ul id="chaptersList" onClick={this.getValue.bind(this)}>
+            			{
+            				this.state.chapterData.map(function(row, i) {
+								return ( <li key={i} value={i+1} >{i+1}</li> );
+							})  
+            			}
+            		</ul>
             	</div>
             </Tab>
   		</Tabs>
       )
 	}
 }
-
-var BookGroup = function(props) {
-	const BooksGroup = props.result.map((item,index) =>{
-		let _handleClick = this.onItemClick.bind(this, index+1);
-		return <li key={index}><a href="#" key={index} onClick={_handleClick } value={item} className={(index+1 == props.currentBook) ? 'link-active': ""}>{item}
-		</a></li>
-	})
-	return (
-		<div>{BooksGroup}</div>
-	)
-}
-
-var ChapterList = function(props) {
-	const ChaptersList = props.chapterData.map(function(row, i) {
-		return ( <li key={i}>{i+1}</li> );
-	})
-	return ( <ul id="chaptersList"> { ChaptersList } </ul>)   
-}
-
 
 module.exports = BookList

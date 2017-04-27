@@ -26,93 +26,92 @@ const ReactDOM = require('react-dom')
 injectTapEventPlugin();
 
 
-class Navbar extends React.Component 
-{
-     constructor(props) {
+class Navbar extends React.Component {
+    constructor(props) {
         super(props);
-        this.state = { 
+        global.bookName = "Genesis"
+        global.bookChapter = "1"
+        this.state = {
             showModal: false,
-            showModalSettings:false,
-            showModalBooks:false,
+            showModalSettings: false,
+            showModalBooks: false,
             data: booksList,
             defaultBook: Constant.bookCodeList[parseInt(1, 10) - 1],
             defaultChapter: 1,
-            chapData:null
+            chapData: null
         };
-    } 
+    }
 
-  close() {
-    this.setState({ 
-        showModal: false,
-        showModalSettings:false,
-        showModalBooks:false 
-    });
-  }
+    close() {
+        this.setState({
+            showModalBooks: false
+        });
+    }
 
-  open() {
-    this.setState({ 
-        showModal: true 
-    });
-  } 
+    toggleShowModal() {
+        global.bookNumber = global.book
+        this.setState({ showModalBooks: !this.state.showModalBooks });
+    }
 
-  openpopup() {
-    this.setState({ 
-        showModalSettings: true 
-    });
-  }
+    open() {
+        this.setState({
+            showModal: true
+        });
+    }
 
-  openpopupBooks(tab) {
-    this.setState({ 
-       showModalBooks:true,
-       activeTab:tab 
-    });
-    console.log(this.state.defaultBook);
-    var chap = [];
-        var getData = refDb.get('eng_udb_'+this.state.defaultBook).then(function(doc) {
-             doc.chapters.forEach(function(ref_doc) {
-            chap.push({ number: chapter });
-            })      
+    openpopup() {
+        this.setState({
+            showModalSettings: true
+        });
+    }
+
+    openpopupBooks(tab) {
+        this.setState({
+            showModalBooks: true,
+            activeTab: tab
+        });
+
+        var chap = [];
+        var getData = refDb.get('eng_udb_' + this.state.defaultBook).then(function(doc) {
+            doc.chapters.forEach(function(ref_doc) {
+                chap.push({ number: chapter });
+            })
             return chap
             console.log(chap)
         })
-        
-        getData.then((item) =>{
-            this.setState({chapData:item})
+
+        getData.then((item) => {
+            this.setState({ chapData: item })
         })
-  }
+    }
 
-
-
-    render() 
-    {
-    //        const popover = (
-    //   <Popover id="modal-popover" title="popover">
-    //     very popover. such engagement
-    //   </Popover>
-    // );
-    // const tooltip = (
-    //   <Tooltip id="modal-tooltip">
-    //     wow.
-    //   </Tooltip>
-    // );
-     let close = () => this.setState({showModal:false, showModalSettings:false, showModalBooks:false });
-        return(
-    <div>
-        <Modal show={this.state.showModalBooks} onHide={close}>
-          <Modal.Header closeButton>
-            <Modal.Title>Book and Chapter</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-          <BookList activeTab={this.state.activeTab} chapData={this.state.chapData}/>
-
-          </Modal.Body>
+    render() {
+        //    const popover = (
+        //   <Popover id="modal-popover" title="popover">
+        //   </Popover>
+        // );
+        // const tooltip = (    
+        //   <Tooltip id="modal-tooltip">
+        //     wow.
+        //   </Tooltip>
+        // );
+        let close = () => this.setState({ showModal: false, showModalSettings: false, showModalBooks: false });
+        return (
+            <div>
+        <Modal show={this.state.showModalBooks} onHide={close} >
+            <Modal.Header closeButton>
+                <Modal.Title>Book and Chapter</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+            <BookList activeTab={this.state.activeTab} chapData={this.state.chapData} onModalClose={this.toggleShowModal.bind(this)}/>
+            </Modal.Body>
         </Modal>
 
        <Modal show={this.state.showModalSettings} onHide={close} id="tab-settings">
           <Modal.Header closeButton>
             <Modal.Title>Settings</Modal.Title>
-                        <div className="alert alert-success" role="alert" style= {{display: "none"}}><span>You successfully read this important alert message.</span></div>
-                        <div className="alert alert-danger" role="alert" style= {{display: "none", position: "relative"}}><span>Change a few things up and try submitting again.</span></div>
+                <div class="alert alert-success" role="alert" style= {{display: "none"}}><span>You successfully read this important alert message.</span></div>
+                <div class="alert alert-danger" role="alert" style= {{display: "none", position: "relative"}}><span>Change a few things up and try submitting again.</span></div>
           </Modal.Header>
           <Modal.Body>
              <Tab.Container id="left-tabs-example" defaultActiveKey="first">
@@ -211,13 +210,9 @@ class Navbar extends React.Component
                         </Tab.Content>
                     </Col>
                 </Row>
-  </Tab.Container>
+            </Tab.Container>
           </Modal.Body>
         </Modal>
-
-
-
-
          <Modal show={this.state.showModal} onHide={close} id="tab-about">
           <Modal.Header closeButton>
             <Modal.Title>About</Modal.Title>
@@ -282,10 +277,11 @@ class Navbar extends React.Component
                     <div className="navbar-collapse collapse" id="navbar">
                         <ul className="nav navbar-nav" style={{padding: "3px 0 0 0px"}}>
                             <li>
+
                                 <div className="btn-group navbar-btn strong verse-diff-on" role="group" aria-label="..." id="bookBtn" style={{marginLeft:"200px"}}>
-                                    <a onClick={() => this.openpopupBooks(1)} href="#" className="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Select Book"  id="book-chapter-btn">{this.state.defaultBook}</a>
+                                    <a onClick={() => this.openpopupBooks(1)} href="#" className="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Select Book"  id="book-chapter-btn">{global.bookName}</a>
                                     <span id="chapterBtnSpan">
-                                    <a onClick={() => this.openpopupBooks(2)} className="btn btn-default" id="chapterBtn" data-target="#myModal"  data-toggle="modal" data-placement="bottom"  title="Select Chapter" >{this.state.defaultChapter}</a>
+                                    <a onClick={() => this.openpopupBooks(2)} className="btn btn-default" id="chapterBtn" data-target="#myModal"  data-toggle="modal" data-placement="bottom"  title="Select Chapter" >{global.bookChapter}</a>
                                     </span>
                                 </div>
                                 
