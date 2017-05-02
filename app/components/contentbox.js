@@ -33,7 +33,7 @@ class Contentbox extends React.Component
         super(props);
         this.handleRefChange = this.handleRefChange.bind(this);
         this.getRefContents = this.getRefContents.bind(this);
-        this.state = { refList: [], verses: [], content: "", book: '1', defaultRef: 'eng_ulb' }
+        this.state = { refList: [], verses: [], content: "", book: props.selectedBook, selectedChapter:props.selectedChapter ,defaultRef: 'eng_ulb' }
         var existRef = [];
         var i
         var refLists = refDb.get('refs').then(function(doc) {
@@ -47,18 +47,6 @@ class Contentbox extends React.Component
             this.setState({refList:  refsArray});
         })
         
-        session.defaultSession.cookies.get({ url: 'http://book.autographa.com' }, (error, cookie) => {
-            if (cookie.length > 0) {
-                book = cookie[0].value;
-                this.setState({book: book});
-            } else {
-                // refDb.get("ref_history").then(function(doc) { //this will come from database later when save functionality will be done 
-                //     book = doc.visit_history[0].bookId;
-                //     chapter = doc.visit_history[0].chapter;
-                // });
-                this.setState({book: '1'})
-            }
-        });
 
         session.defaultSession.cookies.get({ url: 'http://refs.autographa.com' }, (error, cookie) => {
             if (cookie.length > 0) {    
@@ -72,6 +60,7 @@ class Contentbox extends React.Component
     }
     
     getRefContents(id) {
+        console.log(id);
         let refContent = refDb.get(id).then(function(doc) { //book code is hard coded for now
             for (var i = 0; i < doc.chapters.length; i++) {
                 if (doc.chapters[i].chapter == parseInt(1, 10)) { // 1 is chapter number and hardcoded for now

@@ -22,7 +22,6 @@ render(){
     <MuiThemeProvider>
      <div>
      	<NavBar />
-     	<Contentbox />
      	<Footer />
      </div>   
      </ MuiThemeProvider>

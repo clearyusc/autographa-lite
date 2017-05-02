@@ -32,8 +32,9 @@ class BookList extends React.Component {
 
 		session.defaultSession.cookies.get({ url: 'http://book.autographa.com' }, (error, cookie) => {
 	    	if (cookie.length > 0) {
-	            var bookNo = cookie[0].value;
-	            this.setState({currentBook: bookNo});
+	              var bookNo = cookie[0].value;
+              this.setState({currentBook: bookNo});
+   
             } else {
 				this.setState({currentBook: '1'})
         	} 	
@@ -50,6 +51,7 @@ class BookList extends React.Component {
 
 	goToTab(key) {
 		this.setState({activeTab:key});
+		global.bookChapter='';
 		var chap = [];
 		var bookChapter = bookCodeList[parseInt(global.book, 10) - 1]
 		let bookNo = global.book
@@ -57,6 +59,11 @@ class BookList extends React.Component {
 		if(!bookNo){
 			bookNo = '1';
 		}
+		const cookieRef = { url: 'http://book.autographa.com', name: 'book' , value: global.book };
+        session.defaultSession.cookies.set(cookieRef, (error) => {
+            if (error)
+            console.log(error);
+        });
 		this.setState({currentBook: bookNo})
 		var id = 'eng_udb' + '_' + bookCodeList[parseInt(bookNo, 10) - 1]
 		var getData = refDb.get(id).then(function(doc) {
@@ -67,11 +74,6 @@ class BookList extends React.Component {
 		}).catch(function(err){
 			
 		})
-		const cookieRef = { url: 'http://book.autographa.com', name: 'book' , value: bookNo };
-        session.defaultSession.cookies.set(cookieRef, (error) => {
-            if (error)
-                console.log(error);
-        });
 
 		getData.then((item) =>{
 			if(item  && item.length)
@@ -80,6 +82,7 @@ class BookList extends React.Component {
 	}
 
 	getValue(chapter){
+		
 		global.bookChapter = chapter
 		var book = this.state.data[parseInt(global.book, 10) - 1];
 		global.bookName = book;

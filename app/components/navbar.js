@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import Contentbox  from './contentbox';
 // const style = require("./Style");
  const Nav = require('react-bootstrap/lib/Nav');
  const NavItem = require('react-bootstrap/lib/NavItem');
@@ -29,8 +30,8 @@ injectTapEventPlugin();
 class Navbar extends React.Component {
     constructor(props) {
         super(props);
-        global.bookName = "Genesis"
-        global.bookChapter = "1"
+        global.bookChapter = "1",
+        global.bookName = ""
         this.state = {
             showModal: false,
             showModalSettings: false,
@@ -38,8 +39,22 @@ class Navbar extends React.Component {
             data: booksList,
             defaultBook: Constant.bookCodeList[parseInt('1', 10) - 1],
             defaultChapter: 1,
-            chapData: null
+            chapData: null,
+            bookNo:1
         };
+        session.defaultSession.cookies.get({ url: 'http://book.autographa.com' }, (error, cookie) => {
+            if (cookie.length > 0) {
+                var bookNo = cookie[0].value;
+                this.setState({bookNo:bookNo})
+                global.bookName = Constant.bookCodeList[parseInt(bookNo, 10) - 1]
+                this.setState({currentBook: global.bookName})
+                console.log("in iF");
+                console.log();
+            } else {
+                console.log("else");
+                this.setState({currentBook: Constant.bookCodeList[parseInt(this.state.bookNo, 10) - 1]});
+            }   
+        });
     }
 
     close() {
@@ -65,14 +80,15 @@ class Navbar extends React.Component {
         });
     }
 
+    
     openpopupBooks(tab) {
         this.setState({
             showModalBooks: true,
             activeTab: tab
         });
-
         var chap = [];
-        var getData = refDb.get('eng_udb_' + this.state.defaultBook).then(function(doc) {
+        console.log(this.state.currentBook);
+        var getData = refDb.get('eng_udb_' + this.state.currentBook).then(function(doc) {
             doc.chapters.forEach(function(ref_doc) {
                 chap.push({ number: chapter });
             })
@@ -83,6 +99,7 @@ class Navbar extends React.Component {
         getData.then((item) => {
             this.setState({ chapData: item })
         })
+        console.log(this.state.chapData);
     }
 
     render() {
@@ -314,6 +331,7 @@ class Navbar extends React.Component {
                     </div>
                 </div>
             </nav>
+            <Contentbox selectedBook = {this.state.bookNo} selectedChapter={global.bookChapter}/>
         </div>
         )
     }
