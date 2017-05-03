@@ -31,7 +31,7 @@ class Navbar extends React.Component {
     constructor(props) {
         super(props);
         global.bookChapter = "1",
-        global.bookName = ""
+        global.bookName = "Genesis"
         this.state = {
             showModal: false,
             showModalSettings: false,
@@ -40,7 +40,8 @@ class Navbar extends React.Component {
             defaultBook: Constant.bookCodeList[parseInt('1', 10) - 1],
             defaultChapter: 1,
             chapData: null,
-            bookNo:1
+            bookNo:1,
+            defaultRef: 'eng_ulb'
         };
         session.defaultSession.cookies.get({ url: 'http://book.autographa.com' }, (error, cookie) => {
             if (cookie.length > 0) {
@@ -55,6 +56,16 @@ class Navbar extends React.Component {
                 this.setState({currentBook: Constant.bookCodeList[parseInt(this.state.bookNo, 10) - 1]});
             }   
         });
+
+         session.defaultSession.cookies.get({ url: 'http://refs.autographa.com' }, (error, cookie) => {
+            if (cookie.length > 0) {    
+                this.setState({defaultRef: cookie[0].value})
+                console.log(cookie)
+                this.getRefContents(cookie[0].value+'_'+bookCodeList[parseInt(this.state.bookNo, 10) - 1]);
+            }else {
+                this.getRefContents(this.state.defaultRef+'_'+bookCodeList[parseInt(this.state.bookNo, 10) - 1]);
+            }
+        });  
     }
 
     close() {
@@ -64,8 +75,31 @@ class Navbar extends React.Component {
     }
 
     toggleShowModal() {
+        this.getRefContents(this.state.defaultRef+'_'+bookCodeList[parseInt(this.state.bookNo, 10) - 1])
         global.bookNumber = global.book
-        this.setState({ showModalBooks: !this.state.showModalBooks });
+        this.setState({ showModalBooks: !this.state.showModalBooks });     
+    }
+
+     getRefContents(id) {
+        console.log(id);
+        let refContent = refDb.get(id).then(function(doc) { //book code is hard coded for now
+            for (var i = 0; i < doc.chapters.length; i++) {
+                if (doc.chapters[i].chapter == parseInt(1, 10)) { // 1 is chapter number and hardcoded for now
+                    break;
+                }
+            }
+            let refString = doc.chapters[i].verses.map(function(verse, verseNum) {
+                return '<div data-verse="r' + (verseNum + 1) + '"><span class="verse-num">' + (verseNum + 1) + '</span><span>' + verse.verse + '</span></div>';
+            }).join('');
+            return refString;
+        }).catch(function(err) {
+            console.log(err)
+        });
+
+        refContent.then((content)=> {
+            this.setState({content: content})
+        })
+        console.log(this.state.content);
     }
 
     open() {
@@ -80,26 +114,37 @@ class Navbar extends React.Component {
         });
     }
 
-    
+
     openpopupBooks(tab) {
+        var chap = [];
         this.setState({
             showModalBooks: true,
             activeTab: tab
         });
-        var chap = [];
-        console.log(this.state.currentBook);
-        var getData = refDb.get('eng_udb_' + this.state.currentBook).then(function(doc) {
+        session.defaultSession.cookies.get({ url: 'http://book.autographa.com' }, (error, cookie) => {
+            if (cookie.length > 0) {
+                var bookNo = cookie[0].value;
+                this.setState({bookNo:bookNo})
+                var bookName = Constant.bookCodeList[parseInt(bookNo, 10) - 1]
+                this.setState({currentBook: bookName})
+                console.log(this.state.currentBook);
+            } else {
+                console.log("else");
+                this.setState({currentBook: Constant.bookCodeList[parseInt(this.state.bookNo, 10) - 1]});
+            }       
+        });
+
+        var bookno = this.state.currentBook
+        console.log(bookno);
+        var getData = refDb.get('eng_udb_' + bookno).then(function(doc) {
             doc.chapters.forEach(function(ref_doc) {
                 chap.push({ number: chapter });
             })
             return chap
-            console.log(chap)
         })
-
         getData.then((item) => {
-            this.setState({ chapData: item })
+           setTimeout(function(){ this.setState({ chapData: item });}.bind(this), 100);
         })
-        console.log(this.state.chapData);
     }
 
     render() {
@@ -126,7 +171,7 @@ class Navbar extends React.Component {
             </Modal.Body>
         </Modal>
 
-       <Modal show={this.state.showModalSettings} onHide={close} id="tab-settings">
+        <Modal show={this.state.showModalSettings} onHide={close} id="tab-settings">
           <Modal.Header closeButton>
             <Modal.Title>Settings</Modal.Title>
                 <div class="alert alert-success" role="alert" style= {{display: "none"}}><span>You successfully read this important alert message.</span></div>
@@ -312,8 +357,7 @@ class Navbar extends React.Component {
                                 <label style={{marginTop:"17px"}} className="mdl-switch mdl-js-switch mdl-js-ripple-effect" htmlFor="switch-2" id="switchLable" data-toggle='tooltip' data-placement='bottom' title="Compare mode">
                                     <input type="checkbox" id="switch-2" className="mdl-switch__input check-diff"/>
                                     <span className="mdl-switch__label"></span>
-                                </label>
-                                
+                                </label>                               
                             </li>
                             <li style={{padding:"17px 0 0 0", color: "#fff", fontWeight: "bold"}}><span>ON</span></li>
                             <li>
@@ -331,7 +375,7 @@ class Navbar extends React.Component {
                     </div>
                 </div>
             </nav>
-            <Contentbox selectedBook = {this.state.bookNo} selectedChapter={global.bookChapter}/>
+            <Contentbox selectedBook = {this.state.bookNo} selectedChapter={global.bookChapter} content={this.state.content}/>
         </div>
         )
     }

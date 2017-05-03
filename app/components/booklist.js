@@ -82,7 +82,6 @@ class BookList extends React.Component {
 	}
 
 	getValue(chapter){
-		
 		global.bookChapter = chapter
 		var book = this.state.data[parseInt(global.book, 10) - 1];
 		global.bookName = book;

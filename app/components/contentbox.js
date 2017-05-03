@@ -33,7 +33,7 @@ class Contentbox extends React.Component
         super(props);
         this.handleRefChange = this.handleRefChange.bind(this);
         this.getRefContents = this.getRefContents.bind(this);
-        this.state = { refList: [], verses: [], content: "", book: props.selectedBook, selectedChapter:props.selectedChapter ,defaultRef: 'eng_ulb' }
+        this.state = { refList: [], verses: [], content: '', book: props.selectedBook, selectedChapter:props.selectedChapter ,defaultRef: 'eng_ulb' }
         var existRef = [];
         var i
         var refLists = refDb.get('refs').then(function(doc) {
@@ -46,18 +46,12 @@ class Contentbox extends React.Component
         refLists.then((refsArray) => {
             this.setState({refList:  refsArray});
         })
-        
 
-        session.defaultSession.cookies.get({ url: 'http://refs.autographa.com' }, (error, cookie) => {
-            if (cookie.length > 0) {    
-                this.setState({defaultRef: cookie[0].value})
-                console.log(cookie)
-                this.getRefContents(cookie[0].value+'_'+bookCodeList[parseInt(this.state.book, 10) - 1]);
-            }else {
-                this.getRefContents(this.state.defaultRef+'_'+bookCodeList[parseInt(this.state.book, 10) - 1]);
-            }
-        });       
+    componentWillReceiveProps(nextProps) {
+        console.log(nextProps);
+      this.setState({ content: nextProps.content });  
     }
+
     
     getRefContents(id) {
         console.log(id);
