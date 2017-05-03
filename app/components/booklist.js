@@ -27,7 +27,11 @@ class BookList extends React.Component {
             activeTab:props.activeTab,
             chapterData:props.chapData,
             currentChapter:1,
-            onModalClose:props.onModalClose
+            onModalClose:props.onModalClose,
+            OTbooksstart:0,
+            OTbooksend:38,
+            NTbooksstart: 39,
+            NTbooksend: 65
     	};
 
 		session.defaultSession.cookies.get({ url: 'http://book.autographa.com' }, (error, cookie) => {
@@ -40,6 +44,33 @@ class BookList extends React.Component {
         	} 	
 	    });
 	}
+
+		getOTList(OTbooksstart, OTbooksend) {
+		var booksOT = [];
+		for (var i = OTbooksstart; i <= OTbooksend; i++) {
+			// booksList.push(i);
+			booksOT.push(booksList[i]);
+		};
+		  console.log(booksOT)
+		  this.setState({data:booksOT});
+    }
+
+    getNTList(NTbooksstart, NTbooksend) {
+    	var booksNT = [];
+    	for (var i = NTbooksstart; i <= NTbooksend; i++) {
+    		booksNT.push(booksList[i])
+    	};
+		   console.log(booksNT)
+		    this.setState({data:booksNT});
+    }
+
+    getALLList(OTbooksstart, NTbooksend) {
+      	var booksALL = [];
+      	for (var i = OTbooksstart; i <= NTbooksend; i++) {
+      		booksALL.push(booksList[i])
+      	};
+      	this.setState({data:booksALL});
+    }
 
 	onItemClick(bookNo) {
   		global.book = bookNo.toString();
@@ -86,11 +117,24 @@ class BookList extends React.Component {
 		var book = this.state.data[parseInt(global.book, 10) - 1];
 		global.bookName = book;
 		this.state.onModalClose();
-	}
 
+	}
 	render() {
+			
+ 	const test = (this.state.activeTab == 1);
+   
 	    return ( 
 	    <Tabs animation={false} activeKey={this.state.activeTab} onSelect={() =>this.goToTab((this.state.activeTab == 1) ? 2 : 1)} id="noanim-tab-example">
+		     {test ? (
+	        <div className="wrap-center">
+					    <div className="btn-group" role="group" aria-label="...">
+	                        <button className="btn btn-primary" type="button" id="allBooksBtn" data-toggle="tooltip" data-placement="bottom" title=""onClick = { this.getALLList.bind(this, this.state.OTbooksstart, this.state.NTbooksend) } data-original-title="All">ALL</button>
+	                        <button className="btn btn-primary" type="button" id="otBooksBtn" data-toggle="tooltip" data-placement="bottom" title="" onClick = { this.getOTList.bind(this, this.state.OTbooksstart, this.state.OTbooksend) } data-original-title="Old Testament">OT</button>
+	                        <button className="btn btn-primary" type="button" id="ntBooksBtn" data-toggle="tooltip" data-placement="bottom" title="" onClick = { this.getNTList.bind(this, this.state.NTbooksstart, this.state.NTbooksend) } data-original-title="New Testament">NT</button>
+		                </div>	        
+		            </div>
+	      		) : ''
+			}
 		    <Tab eventKey={1} title="Book" onClick={() => this.goToTab(2)}>
 			    <div className="wrap-center"></div>
 	            <div className="row books-li" id="bookdata">

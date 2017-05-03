@@ -47,6 +47,17 @@ class Contentbox extends React.Component
             this.setState({refList:  refsArray});
         })
 
+    session.defaultSession.cookies.get({ url: 'http://refs.autographa.com' }, (error, cookie) => {
+            if (cookie.length > 0) {    
+                this.setState({defaultRef: cookie[0].value})
+                console.log(cookie)
+                this.getRefContents(cookie[0].value+'_'+bookCodeList[parseInt(this.state.book, 10) - 1]);
+            }else {
+                this.getRefContents(this.state.defaultRef+'_'+bookCodeList[parseInt(this.state.book, 10) - 1]);
+            }
+        });       
+    }
+
     componentWillReceiveProps(nextProps) {
         console.log(nextProps);
       this.setState({ content: nextProps.content });  
@@ -109,7 +120,7 @@ class Contentbox extends React.Component
                         </div>
                     </div>
                     <div className="row">
-                        <div type="ref" className="col-12 col-ref">
+                        <div type="ref" className="col-12 col-ref" id="test">
                            <div dangerouslySetInnerHTML={{__html: this.state.content}} />
                         </div>
                     </div>

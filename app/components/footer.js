@@ -2,31 +2,38 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import ReactBootstrapSlider from 'react-bootstrap-slider';
 
-class Footer extends React.Component 
-{
-
+class Footer extends React.Component {
     constructor(props){
-        super(props)
+        super(props);
+        this.fontChange = this.fontChange.bind(this);
         this.state = {
             step: 10,
             max: 40,
             min: 14
         }
     }
-	render() 
-    {
+    fontChange(multiplier) {
+        if (document.getElementById("test").style.fontSize == "") {
+            document.getElementById("test").style.fontSize = "1.0em";
+            console.log("hi")
+        }
+        document.getElementById("test").style.fontSize = parseFloat(document.getElementById("test").style.fontSize) + (multiplier * 0.2) + "em";
+    }
+
+	render() {
+
 		return (
 		<nav className="navbar navbar-default navbar-fixed-bottom">
             <div className="container-fluid">
                  <div className="collapse navbar-collapse">
                         <div style={{float:"left"}} className="btn-group navbar-btn verse-diff-on" role="group" aria-label="...">
                             <span>
-                                <a className="btn btn-default font-button minus" data-toggle="tooltip" data-placement="top" title="Decrease font size" href="JavaScript:void(0)">A-</a>
+                                <a className="btn btn-default font-button minus" data-toggle="tooltip" data-placement="top" title="Decrease font size" onClick= {this.fontChange.bind(this, (-1))}>A-</a>
                             </span>
                                 <ReactBootstrapSlider slideStop={this.changeValue} step={this.state.step} max={this.state.max} min={this.state.min} orientation="horizontal"
                                 disabled="disabled" />
                             <span>
-                                <a className="btn btn-default font-button plus" data-toggle="tooltip" data-placement="top" title="Increase font size" href="JavaScript:void(0);">A+</a>
+                                <a className="btn btn-default font-button plus" data-toggle="tooltip" data-placement="top" title="Increase font size" onClick= {this.fontChange.bind(this, (+1))}>A+</a>
                             </span>
                         </div>
                     <div className="nav navbar-nav navbar-center verse-diff-on">
