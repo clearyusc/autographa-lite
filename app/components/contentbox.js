@@ -27,8 +27,7 @@ import ReactDOM from 'react-dom';
  import { remote } from 'electron';
 
 
-class Contentbox extends React.Component 
-{
+class Contentbox extends React.Component {
     constructor(props) {
         super(props);
         this.handleRefChange = this.handleRefChange.bind(this);
@@ -47,10 +46,9 @@ class Contentbox extends React.Component
             this.setState({refList:  refsArray});
         })
 
-    session.defaultSession.cookies.get({ url: 'http://refs.autographa.com' }, (error, cookie) => {
+        session.defaultSession.cookies.get({ url: 'http://refs.autographa.com' }, (error, cookie) => {
             if (cookie.length > 0) {    
                 this.setState({defaultRef: cookie[0].value})
-                console.log(cookie)
                 this.getRefContents(cookie[0].value+'_'+bookCodeList[parseInt(this.state.book, 10) - 1]);
             }else {
                 this.getRefContents(this.state.defaultRef+'_'+bookCodeList[parseInt(this.state.book, 10) - 1]);
@@ -59,11 +57,9 @@ class Contentbox extends React.Component
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log(nextProps);
       this.setState({ content: nextProps.content });  
     }
 
-    
     getRefContents(id) {
         console.log(id);
         let refContent = refDb.get(id).then(function(doc) { //book code is hard coded for now

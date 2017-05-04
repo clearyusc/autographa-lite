@@ -84,8 +84,8 @@ ul {list-style-type: none; }
 .books-li {width: 100%; column-count: 4; column-gap: 25%;}
 .books-li ul {padding-left: 50px;}
 .books-li ul li a{color: #0b63bf !important;}
-.link-active {font-weight: bold !important;background-color:#0070e6;color: #ffffff !important;padding: 4px 4px 4px 4px;margin-left: -5px;}
-.selected .chapter-no a.link-active {font-weight: bold !important; background-color: rgba(11, 99, 191, 0.8) !important; color: white !important;}
+.books-li ul li a.link-active {font-weight: bold !important;background-color:#0b82ff; color: #ffffff !important;padding: 4px 4px 4px 4px;margin-left: -5px;}
+.chapter-no ul li a.link-active {font-weight: bold !important; background-color: rgba(11, 99, 191, 0.8) !important; color: white !important;}
 // chapter tab css
 .chapter-no{width: 100%; min-height: 485px; padding: 20px 0 0 10px;}
 .chapter-no ul {margin: 0; padding: 0; float: left; width: 100%;}
@@ -95,7 +95,7 @@ ul {list-style-type: none; }
 .chapter-no ul li a {color: #0b63bf !important;}
 .chapter-no li a {font-size: inherit; width: 42px; display: inline-block; background-color: #f5f5f5 !important;}
 
-.mdl-tabs__tab-bar a {text-decoration: none;}
+// .mdl-tabs__tab-bar a {text-decoration: none;}
 #bookdata{padding-top: 20px;}
 .translation {text-decoration: underline; font-weight: bold;}
 // slider css
@@ -161,11 +161,18 @@ body{font-family: "Lato", sans-serif;}
 // #tab-about .modal-body {height: 350px; overflow-y: scroll;}
 #tab-settings label {color: #03a9f4;}
 #tab-settings .modal-dialog {width: 800px}
-.nav-stacked li {background-color: #f8f8f8;}
+.nav-stacked li {background-color: #f8f8f8;}     
+.nav-tabs > li {float: none; margin-bottom: -1px; width: 100px; margin: 0 auto; display: inline-block;}
 .nav-stacked li a {height: 70px; font-size: 20px; text-align: center; padding-top: 22px;}
 .nav-stacked li.active a {background-color: #fff !important; color: #03a9f4 !important; border-left: 3px solid #0b82ff; }
 .nav-stacked li a:hover {background-color: #ddd !important; color: #0b82ff !important;}
 .nav-stacked li a {color: black;}
-.nav-tabs {margin-left: 180px; border-bottom: none; font-size: 15px;}
-.nav-tabs li.active a {color: white !important; font-weight: bold; background-color: #0b82ff !important;}
-.nav-tabs li a:hover {background-color: #f8f8f8;}
+.nav-tabs {font-size: 15px; text-align: center;}
+// .nav-tabs li.active a {color: white !important; font-weight: bold; background-color: #0b82ff !important;}
+.nav-tabs li.active a {color: #0b82ff !important; font-weight: bold; background-color: #fff !important; border-bottom: #0b82ff 3px solid !important; border-top: none; border: 0;}
+.nav-tabs > li > a {color: black; transition: all 0.5s ease 0s !important;}
+.nav-tabs {border-bottom: 1px solid #0b82ff;}
+.nav-tabs li a:hover {background-color: #f8f8f8; }
+.nav-tabs > li.active > a:focus {border: none;}
+#tab-books .modal-content {width: 725px !important;}
+#test {}

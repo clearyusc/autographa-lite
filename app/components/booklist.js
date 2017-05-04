@@ -28,31 +28,22 @@ class BookList extends React.Component {
             chapterData:props.chapData,
             currentChapter:1,
             onModalClose:props.onModalClose,
+            bookNo:'',
             OTbooksstart:0,
             OTbooksend:38,
             NTbooksstart: 39,
             NTbooksend: 65
     	};
-
-		session.defaultSession.cookies.get({ url: 'http://book.autographa.com' }, (error, cookie) => {
-	    	if (cookie.length > 0) {
-	              var bookNo = cookie[0].value;
-              this.setState({currentBook: bookNo});
-   
-            } else {
-				this.setState({currentBook: '1'})
-        	} 	
-	    });
 	}
 
-		getOTList(OTbooksstart, OTbooksend) {
+	getOTList(OTbooksstart, OTbooksend) {
 		var booksOT = [];
 		for (var i = OTbooksstart; i <= OTbooksend; i++) {
 			// booksList.push(i);
 			booksOT.push(booksList[i]);
 		};
-		  console.log(booksOT)
-		  this.setState({data:booksOT});
+		console.log(booksOT)
+		this.setState({data:booksOT});
     }
 
     getNTList(NTbooksstart, NTbooksend) {
@@ -60,8 +51,8 @@ class BookList extends React.Component {
     	for (var i = NTbooksstart; i <= NTbooksend; i++) {
     		booksNT.push(booksList[i])
     	};
-		   console.log(booksNT)
-		    this.setState({data:booksNT});
+		console.log(booksNT)
+		this.setState({data:booksNT});
     }
 
     getALLList(OTbooksstart, NTbooksend) {
@@ -82,11 +73,9 @@ class BookList extends React.Component {
 
 	goToTab(key) {
 		this.setState({activeTab:key});
-		global.bookChapter='';
 		var chap = [];
-		var bookChapter = bookCodeList[parseInt(global.book, 10) - 1]
-		let bookNo = global.book
-		global.bookname = bookCodeList[parseInt(global.book, 10) - 1]
+		global.bookChapter ='';
+		let bookNo = global.book;
 		if(!bookNo){
 			bookNo = '1';
 		}
@@ -95,15 +84,15 @@ class BookList extends React.Component {
             if (error)
             console.log(error);
         });
-		this.setState({currentBook: bookNo})
+		this.setState({bookNo: bookNo})
 		var id = 'eng_udb' + '_' + bookCodeList[parseInt(bookNo, 10) - 1]
 		var getData = refDb.get(id).then(function(doc) {
-			 doc.chapters.forEach(function(ref_doc) {
+			doc.chapters.forEach(function(ref_doc) {
 		    	chap.push({ number: chapter });
 			})
 			return chap
 		}).catch(function(err){
-			
+			console.log(err);
 		})
 
 		getData.then((item) =>{
@@ -114,15 +103,12 @@ class BookList extends React.Component {
 
 	getValue(chapter){
 		global.bookChapter = chapter
-		var book = this.state.data[parseInt(global.book, 10) - 1];
-		global.bookName = book;
+		global.bookName = this.state.data[parseInt(global.book, 10) - 1];
 		this.state.onModalClose();
-
 	}
-	render() {
-			
+
+	render() {		
  	const test = (this.state.activeTab == 1);
-   
 	    return ( 
 	    <Tabs animation={false} activeKey={this.state.activeTab} onSelect={() =>this.goToTab((this.state.activeTab == 1) ? 2 : 1)} id="noanim-tab-example">
 		     {test ? (
@@ -141,7 +127,7 @@ class BookList extends React.Component {
 	                <ul id="books-pane">
 	                    {
 	                    	this.state.data.map((item,index) =>{
-								return <li key={index}><a href="#" key={index} onClick = { this.onItemClick.bind(this, index+1) } value={item} className={(index+1 == this.state.currentBook) ? 'link-active': ""} >{item}
+								return <li key={index}><a href="#" key={index} onClick = { this.onItemClick.bind(this, index+1) } value={item} className={(index+1 == this.state.bookNo) ? 'link-active': ""} >{item}
 								</a></li>
 							})
 	                    }	                	
@@ -154,7 +140,7 @@ class BookList extends React.Component {
             		<ul id="chaptersList">
             			{
             				this.state.chapterData.map((item, i) => {
-								return ( <li key={i} value={i+1} className={(i+1 == global.bookChapter) ? 'link-active': ""}><a href="#" onClick = { this.getValue.bind(this,  i+1) } >{i+1}</a></li> );
+								return ( <li key={i} value={i+1} ><a href="#" className={(i+1 == global.bookChapter) ? 'link-active': ""} onClick = { this.getValue.bind(this,  i+1) } >{i+1}</a></li> );
 							})  
             			}
             		</ul>

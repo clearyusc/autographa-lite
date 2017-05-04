@@ -8,18 +8,17 @@ import Contentbox  from './contentbox';
 // const NavDropdown = require('react-bootstrap/lib/NavDropdown');
 // const MenuItem = require('react-bootstrap/lib/MenuItem');
 // const MilestoneManagement = require('./milestone_management');
- const Modal = require('react-bootstrap/lib/Modal');
- const Button = require('react-bootstrap/lib/Button');
- const Col = require('react-bootstrap/lib/Col');
- const Row = require('react-bootstrap/lib/Row')
- const Grid = require('react-bootstrap/lib/Grid')
-
-  const Tabs = require('react-bootstrap/lib/Tabs');
-  const Tab = require('react-bootstrap/lib/Tab');
- const Constant = require("../util/constants");
- const BookList = require("./booklist");
- import TextField from 'material-ui/TextField';
- import RaisedButton from 'material-ui/RaisedButton';
+const Modal = require('react-bootstrap/lib/Modal');
+const Button = require('react-bootstrap/lib/Button');
+const Col = require('react-bootstrap/lib/Col');
+const Row = require('react-bootstrap/lib/Row')
+const Grid = require('react-bootstrap/lib/Grid')
+const Tabs = require('react-bootstrap/lib/Tabs');
+const Tab = require('react-bootstrap/lib/Tab');
+const Constant = require("../util/constants");
+const BookList = require("./booklist");
+import TextField from 'material-ui/TextField';
+import RaisedButton from 'material-ui/RaisedButton';
  // import {Tabs, Tab} from 'material-ui/Tabs';
  // const Tabsreact = require('react-bootstrap/lib/Tabs');
  // const Tabreact = require('react-bootstrap/lib/Tabs');
@@ -30,15 +29,13 @@ injectTapEventPlugin();
 class Navbar extends React.Component {
     constructor(props) {
         super(props);
-        global.bookChapter = "1",
-        global.bookName = "Genesis"
+        this.getData = this.getData.bind(this);
+        global.bookChapter="1"  
         this.state = {
             showModal: false,
             showModalSettings: false,
             showModalBooks: false,
-            data: booksList,
-            defaultBook: Constant.bookCodeList[parseInt('1', 10) - 1],
-            defaultChapter: 1,
+            data: Constant,
             chapData: null,
             bookNo:1,
             defaultRef: 'eng_ulb'
@@ -47,26 +44,33 @@ class Navbar extends React.Component {
             if (cookie.length > 0) {
                 var bookNo = cookie[0].value;
                 this.setState({bookNo:bookNo})
-                global.bookName = Constant.bookCodeList[parseInt(bookNo, 10) - 1]
+                this.setState({currentBookCode:this.state.data.bookCodeList[parseInt(bookNo, 10) - 1]})
                 this.setState({currentBook: global.bookName})
-                console.log("in iF");
-                console.log();
+                global.bookName = this.state.data.booksList[parseInt(bookNo, 10) - 1];
+                console.log(global.bookName);
             } else {
                 console.log("else");
-                this.setState({currentBook: Constant.bookCodeList[parseInt(this.state.bookNo, 10) - 1]});
+                this.setState({currentBookCode:this.state.data.bookCodeList[parseInt(this.state.bookNo, 10) - 1]})
+                this.setState({currentBook: this.state.data.bookCodeList[parseInt(this.state.bookNo, 10) - 1]});
+                global.bookName = this.state.data.booksList[parseInt(this.state.bookNo, 10) - 1];
+                console.log(global.bookName);
             }   
         });
 
-         session.defaultSession.cookies.get({ url: 'http://refs.autographa.com' }, (error, cookie) => {
+        session.defaultSession.cookies.get({ url: 'http://refs.autographa.com' }, (error, cookie) => {
             if (cookie.length > 0) {    
                 this.setState({defaultRef: cookie[0].value})
                 console.log(cookie)
-                this.getRefContents(cookie[0].value+'_'+bookCodeList[parseInt(this.state.bookNo, 10) - 1]);
+                this.getRefContents(cookie[0].value+'_'+this.state.data.bookCodeList[parseInt(this.state.bookNo, 10) - 1]);
             }else {
-                this.getRefContents(this.state.defaultRef+'_'+bookCodeList[parseInt(this.state.bookNo, 10) - 1]);
+                console.log("In Else of REF");
+                this.getRefContents(this.state.defaultRef+'_'+this.state.data.bookCodeList[parseInt(this.state.bookNo, 10) - 1]);
             }
-        });  
-    }
+        });          
+    }/*
+    componentDidUpdate(prevProps, prevState) {
+    console.log(this.state.currentBookCode+prevProps, prevState);
+}*/
 
     close() {
         this.setState({
@@ -75,7 +79,7 @@ class Navbar extends React.Component {
     }
 
     toggleShowModal() {
-        this.getRefContents(this.state.defaultRef+'_'+bookCodeList[parseInt(this.state.bookNo, 10) - 1])
+        this.getRefContents(this.state.defaultRef+'_'+this.state.currentBookCode);
         global.bookNumber = global.book
         this.setState({ showModalBooks: !this.state.showModalBooks });     
     }
@@ -88,10 +92,10 @@ class Navbar extends React.Component {
                     break;
                 }
             }
-            let refString = doc.chapters[i].verses.map(function(verse, verseNum) {
-                return '<div data-verse="r' + (verseNum + 1) + '"><span class="verse-num">' + (verseNum + 1) + '</span><span>' + verse.verse + '</span></div>';
-            }).join('');
-            return refString;
+        let refString = doc.chapters[i].verses.map(function(verse, verseNum) {
+            return '<div data-verse="r' + (verseNum + 1) + '"><span class="verse-num">' + (verseNum + 1) + '</span><span>' + verse.verse + '</span></div>';
+        }).join('');
+        return refString;
         }).catch(function(err) {
             console.log(err)
         });
@@ -99,7 +103,6 @@ class Navbar extends React.Component {
         refContent.then((content)=> {
             this.setState({content: content})
         })
-        console.log(this.state.content);
     }
 
     open() {
@@ -114,7 +117,6 @@ class Navbar extends React.Component {
         });
     }
 
-
     openpopupBooks(tab) {
         var chap = [];
         this.setState({
@@ -125,25 +127,32 @@ class Navbar extends React.Component {
             if (cookie.length > 0) {
                 var bookNo = cookie[0].value;
                 this.setState({bookNo:bookNo})
-                var bookName = Constant.bookCodeList[parseInt(bookNo, 10) - 1]
+                this.setState({currentBookCode:this.state.data.bookCodeList[parseInt(bookNo, 10) - 1]},this.getData());
+                //var bookName = Constant.bookCodeList[parseInt(bookNo, 10) - 1]
                 this.setState({currentBook: bookName})
-                console.log(this.state.currentBook);
+                console.log(this.state.currentBook);       
             } else {
                 console.log("else");
-                this.setState({currentBook: Constant.bookCodeList[parseInt(this.state.bookNo, 10) - 1]});
-            }       
+                console.log(this.state.bookNo);
+                this.setState({currentBook: this.state.data.bookCodeList[parseInt(this.state.bookNo, 10) - 1]},this.getData());
+                console.log(this.state.currentBook);       
+            }
         });
+    }
 
-        var bookno = this.state.currentBook
-        console.log(bookno);
-        var getData = refDb.get('eng_udb_' + bookno).then(function(doc) {
-            doc.chapters.forEach(function(ref_doc) {
-                chap.push({ number: chapter });
-            })
-            return chap
+    getData(){
+        var chap = [];
+        console.log('eng_udb_' + this.state.currentBookCode);
+        refDb.get('eng_udb_' + this.state.currentBookCode).then(function(doc) {
+        doc.chapters.forEach(function(ref_doc) {
+            chap.push({ number: chapter });
         })
-        getData.then((item) => {
-           setTimeout(function(){ this.setState({ chapData: item });}.bind(this), 100);
+        return chap
+        }).then((item)=>{
+            if(item  && item.length)
+           this.setState({ chapData: item });
+        }).catch(function(err){
+            console.log(err);
         })
     }
 
@@ -160,14 +169,13 @@ class Navbar extends React.Component {
         // );
         let close = () => this.setState({ showModal: false, showModalSettings: false, showModalBooks: false });
         return (
-
             <div>
         <Modal show={this.state.showModalBooks} onHide={close} >
             <Modal.Header closeButton>
                 <Modal.Title>Book and Chapter</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-            <BookList activeTab={this.state.activeTab} chapData={this.state.chapData} onModalClose={this.toggleShowModal.bind(this)}/>
+            <BookList activeTab={this.state.activeTab} chapData={this.state.chapData} onModalClose={this.toggleShowModal.bind(this)} bookNo={this.state.bookNo}/>
             </Modal.Body>
         </Modal>
 
