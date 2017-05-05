@@ -18,10 +18,10 @@ class Footer extends React.Component {
 
     fontChange(multiplier) {
         let fontSize = 14;
-        if (document.getElementById("test").style.fontSize == "") {
-            document.getElementById("test").style.fontSize = "14px";
+        if (document.getElementsByClassName("col-ref")[0].style.fontSize == "") {
+            document.getElementsByClassName("col-ref")[0].style.fontSize = "14px";
         }else{
-            fontSize = parseInt(document.getElementById("test").style.fontSize)
+            fontSize = parseInt(document.getElementsByClassName("col-ref")[0].style.fontSize)
         }
         // console.log((multiplier+this.state.fontSize ))
         if(multiplier < 0){
@@ -39,7 +39,7 @@ class Footer extends React.Component {
             }
         }
         this.setState({currentValue: fontSize})
-        document.getElementById("test").style.fontSize = fontSize + "px";
+        document.getElementsByClassName("col-ref")[0].style.fontSize = fontSize + "px";
     }
 	render() {
 
