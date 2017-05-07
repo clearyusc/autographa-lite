@@ -31,7 +31,7 @@ class Contentbox extends React.Component {
     constructor(props) {
         super(props);
         this.handleRefChange = this.handleRefChange.bind(this);
-        this.getRefContents = this.getRefContents.bind(this);
+        // this.getRefContents = this.getRefContents.bind(this);
         this.state = { refList: [], verses: [], content: '', book: props.selectedBook, selectedChapter:props.selectedChapter ,defaultRef: 'eng_ulb' }
         var existRef = [];
         var i
@@ -45,44 +45,55 @@ class Contentbox extends React.Component {
         refLists.then((refsArray) => {
             this.setState({refList:  refsArray});
         })
-
-        session.defaultSession.cookies.get({ url: 'http://refs.autographa.com' }, (error, cookie) => {
-            if (cookie.length > 0) {    
-                this.setState({defaultRef: cookie[0].value})
-                this.getRefContents(cookie[0].value+'_'+bookCodeList[parseInt(this.state.book, 10) - 1]);
-            }else {
-                this.getRefContents(this.state.defaultRef+'_'+bookCodeList[parseInt(this.state.book, 10) - 1]);
-            }
-        });       
+        console.log("test")
+        // session.defaultSession.cookies.get({ url: 'http://book.autographa.com' }, (error, bookCookie) => {
+        //     if (bookCookie.length > 0) {    
+        //         session.defaultSession.cookies.get({ url: 'http://refs.autographa.com' }, (error, cookie) => {
+        //             if (cookie.length > 0) {    
+        //                 this.getRefContents(cookie[0].value+'_'+bookCodeList[parseInt(bookCookie[0], 10) - 1]);
+        //             }else {
+        //                 this.getRefContents(this.state.defaultRef+'_'+bookCodeList[parseInt('1', 10) - 1]);
+        //             }
+        //         });  
+        //     }else {
+        //         this.getRefContents(this.state.defaultRef+'_'+bookCodeList[parseInt('1', 10) - 1]);
+        //     }
+        // });
     }
 
     componentWillReceiveProps(nextProps) {
       this.setState({ content: nextProps.content });  
     }
 
-    getRefContents(id) {
-        console.log(id);
-        let refContent = refDb.get(id).then(function(doc) { //book code is hard coded for now
-            for (var i = 0; i < doc.chapters.length; i++) {
-                if (doc.chapters[i].chapter == parseInt(1, 10)) { // 1 is chapter number and hardcoded for now
-                    break;
-                }
-            }
-            let refString = doc.chapters[i].verses.map(function(verse, verseNum) {
-                return '<div data-verse="r' + (verseNum + 1) + '"><span class="verse-num">' + (verseNum + 1) + '</span><span>' + verse.verse + '</span></div>';
-            }).join('');
-            return refString;
-        }).catch(function(err) {
-            console.log(err)
-        });
+    // getRefContents(id) {
+    //     console.log(id);
+    //     let refContent = refDb.get(id).then(function(doc) { //book code is hard coded for now
+    //         for (var i = 0; i < doc.chapters.length; i++) {
+    //             if (doc.chapters[i].chapter == parseInt(1, 10)) { // 1 is chapter number and hardcoded for now
+    //                 break;
+    //             }
+    //         }
+    //         let refString = doc.chapters[i].verses.map(function(verse, verseNum) {
+    //             return '<div data-verse="r' + (verseNum + 1) + '"><span class="verse-num">' + (verseNum + 1) + '</span><span>' + verse.verse + '</span></div>';
+    //         }).join('');
+    //         return refString;
+    //     }).catch(function(err) {
+    //         console.log(err)
+    //     });
 
-        refContent.then((content)=> {
-            this.setState({content: content})
-        })
-    }
+    //     refContent.then((content)=> {
+    //         this.setState({content: content})
+    //     })
+    // }
 
     handleRefChange(event) {
-        this.getRefContents(event.target.value+'_'+bookCodeList[parseInt(this.state.book, 10) - 1])
+        session.defaultSession.cookies.get({ url: 'http://book.autographa.com' }, (error, bookCookie) => {
+            if(bookCookie.length > 0){
+                this.getRefContents(event.target.value+'_'+bookCodeList[parseInt(bookCookie[0], 10) - 1])
+            }else{
+                this.getRefContents(event.target.value+'_'+bookCodeList[parseInt('1', 10) - 1])
+            }    
+        })
         this.setState({defaultRef: event.target.value})
         var cookieRef = { url: 'http://refs.autographa.com', name: '0' , value: event.target.value };
         session.defaultSession.cookies.set(cookieRef, (error) => {

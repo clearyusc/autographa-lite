@@ -79,7 +79,7 @@ class BookList extends React.Component {
 		if(!bookNo){
 			bookNo = '1';
 		}
-		const cookieRef = { url: 'http://book.autographa.com', name: 'book' , value: global.book };
+		const cookieRef = { url: 'http://book.autographa.com', name: 'book' , value: bookNo.toString() };
         session.defaultSession.cookies.set(cookieRef, (error) => {
             if (error)
             console.log(error);
@@ -103,6 +103,11 @@ class BookList extends React.Component {
 
 	getValue(chapter){
 		global.bookChapter = chapter
+		const cookiechapter = { url: 'http://chapter.autographa.com', name: 'chapter' , value: chapter.toString() };
+        session.defaultSession.cookies.set(cookiechapter, (error) => {
+            if (error)
+            console.log(error);
+        });
 		global.bookName = this.state.data[parseInt(global.book, 10) - 1];
 		this.state.onModalClose();
 	}
@@ -126,6 +131,7 @@ class BookList extends React.Component {
 	            <div className="row books-li" id="bookdata">
 	                <ul id="books-pane">
 	                    {
+
 	                    	this.state.data.map((item,index) =>{
 								return <li key={index}><a href="#" key={index} onClick = { this.onItemClick.bind(this, index+1) } value={item} className={(index+1 == this.state.bookNo) ? 'link-active': ""} >{item}
 								</a></li>
@@ -139,9 +145,10 @@ class BookList extends React.Component {
 		    	<div className="chapter-no">
             		<ul id="chaptersList">
             			{
-            				this.state.chapterData.map((item, i) => {
-								return ( <li key={i} value={i+1} ><a href="#" className={(i+1 == global.bookChapter) ? 'link-active': ""} onClick = { this.getValue.bind(this,  i+1) } >{i+1}</a></li> );
-							})  
+            				this.state.chapterData ? 
+            					this.state.chapterData.map((item, i) => {
+									return ( <li key={i} value={i+1} ><a href="#" className={(i+1 == global.bookChapter) ? 'link-active': ""} onClick = { this.getValue.bind(this,  i+1) } >{i+1}</a></li> );
+								})  : ''
             			}
             		</ul>
             	</div>

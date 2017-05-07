@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Contentbox  from './contentbox';
 // const style = require("./Style");
  const Nav = require('react-bootstrap/lib/Nav');
  const NavItem = require('react-bootstrap/lib/NavItem');
@@ -8,6 +7,8 @@ import Contentbox  from './contentbox';
 // const NavDropdown = require('react-bootstrap/lib/NavDropdown');
 // const MenuItem = require('react-bootstrap/lib/MenuItem');
 // const MilestoneManagement = require('./milestone_management');
+import Contentbox  from '../components/contentbox';
+
 const Modal = require('react-bootstrap/lib/Modal');
 const Button = require('react-bootstrap/lib/Button');
 const Col = require('react-bootstrap/lib/Col');
@@ -36,24 +37,25 @@ class Navbar extends React.Component {
             showModalSettings: false,
             showModalBooks: false,
             data: Constant,
-            chapData: null,
+            chapData: [],
             bookNo:1,
             defaultRef: 'eng_ulb'
         };
         session.defaultSession.cookies.get({ url: 'http://book.autographa.com' }, (error, cookie) => {
             if (cookie.length > 0) {
                 var bookNo = cookie[0].value;
-                this.setState({bookNo:bookNo})
-                this.setState({currentBookCode:this.state.data.bookCodeList[parseInt(bookNo, 10) - 1]})
-                this.setState({currentBook: global.bookName})
-                global.bookName = this.state.data.booksList[parseInt(bookNo, 10) - 1];
-                console.log(global.bookName);
+                console.log(bookNo)
+                // this.setState({bookNo:bookNo})
+                 this.setState({currentBookCode: Constant.bookCodeList[parseInt(bookNo, 10) - 1]})
+                // this.setState({currentBook: global.bookName})
+                // global.bookName = this.state.data.booksList[parseInt(bookNo, 10) - 1];
+                // console.log(global.bookName);
             } else {
-                console.log("else");
-                this.setState({currentBookCode:this.state.data.bookCodeList[parseInt(this.state.bookNo, 10) - 1]})
-                this.setState({currentBook: this.state.data.bookCodeList[parseInt(this.state.bookNo, 10) - 1]});
-                global.bookName = this.state.data.booksList[parseInt(this.state.bookNo, 10) - 1];
-                console.log(global.bookName);
+                // console.log("else");
+                 this.setState({currentBookCode:this.state.data.bookCodeList[parseInt(this.state.bookNo, 10) - 1]})
+                // this.setState({currentBook: this.state.data.bookCodeList[parseInt(this.state.bookNo, 10) - 1]});
+                // global.bookName = this.state.data.booksList[parseInt(this.state.bookNo, 10) - 1];
+                // console.log(global.bookName);
             }   
         });
 
@@ -64,7 +66,7 @@ class Navbar extends React.Component {
                 this.getRefContents(cookie[0].value+'_'+this.state.data.bookCodeList[parseInt(this.state.bookNo, 10) - 1]);
             }else {
                 console.log("In Else of REF");
-                this.getRefContents(this.state.defaultRef+'_'+this.state.data.bookCodeList[parseInt(this.state.bookNo, 10) - 1]);
+                this.getRefContents(this.state.defaultRef+'_'+Constant.bookCodeList[parseInt(1, 10) - 1], 1);
             }
         });          
     }/*
@@ -79,16 +81,28 @@ class Navbar extends React.Component {
     }
 
     toggleShowModal() {
-        this.getRefContents(this.state.defaultRef+'_'+this.state.currentBookCode);
+        session.defaultSession.cookies.get({ url: 'http://book.autographa.com' }, (error, bookCookie) => {
+            if(bookCookie.length > 0 ){
+                session.defaultSession.cookies.get({url: 'http://chapter.autographa.com'}, (err, chapterCookie) => {
+                    if(chapterCookie.length > 0){
+                        this.getRefContents(this.state.defaultRef+'_'+Constant.bookCodeList[parseInt(bookCookie[0].value, 10) - 1], chapterCookie[0].value);        
+                    }else{
+                        this.getRefContents(this.state.defaultRef+'_'+Constant.bookCodeList[parseInt(bookCookie[0].value, 10) - 1], 1);
+                    }
+                })    
+            }else{
+                this.getRefContents(this.state.defaultRef+'_'+'GEN', 1);
+            }
+        });
         global.bookNumber = global.book
         this.setState({ showModalBooks: !this.state.showModalBooks });     
     }
 
-     getRefContents(id) {
-        console.log(id);
+     getRefContents(id, chapter) {
+        console.log(chapter)
         let refContent = refDb.get(id).then(function(doc) { //book code is hard coded for now
             for (var i = 0; i < doc.chapters.length; i++) {
-                if (doc.chapters[i].chapter == parseInt(1, 10)) { // 1 is chapter number and hardcoded for now
+                if (doc.chapters[i].chapter == parseInt(chapter, 10)) { // 1 is chapter number and hardcoded for now
                     break;
                 }
             }
@@ -128,21 +142,17 @@ class Navbar extends React.Component {
                 var bookNo = cookie[0].value;
                 this.setState({bookNo:bookNo})
                 this.setState({currentBookCode:this.state.data.bookCodeList[parseInt(bookNo, 10) - 1]},this.getData());
-                //var bookName = Constant.bookCodeList[parseInt(bookNo, 10) - 1]
+                var bookName = Constant.bookCodeList[parseInt(bookNo, 10) - 1]
                 this.setState({currentBook: bookName})
                 console.log(this.state.currentBook);       
             } else {
-                console.log("else");
-                console.log(this.state.bookNo);
-                this.setState({currentBook: this.state.data.bookCodeList[parseInt(this.state.bookNo, 10) - 1]},this.getData());
-                console.log(this.state.currentBook);       
+                this.setState({currentBook: Constant.bookCodeList[parseInt(this.state.bookNo, 10) - 1]},this.getData());
             }
         });
     }
 
     getData(){
         var chap = [];
-        console.log('eng_udb_' + this.state.currentBookCode);
         refDb.get('eng_udb_' + this.state.currentBookCode).then(function(doc) {
         doc.chapters.forEach(function(ref_doc) {
             chap.push({ number: chapter });
@@ -383,7 +393,7 @@ class Navbar extends React.Component {
                     </div>
                 </div>
             </nav>
-            <Contentbox selectedBook = {this.state.bookNo} selectedChapter={global.bookChapter} content={this.state.content}/>
+            <Contentbox  content = {this.state.content}/>
         </div>
         )
     }
