@@ -15,6 +15,8 @@ const session =  require('electron').remote.session;
 const Constant = require("../util/constants")
 import { dialog } from 'electron';
 import { remote } from 'electron';
+ const refDb = require(`${__dirname}/../util/data-provider`).referenceDb();
+
 
 class BookList extends React.Component {
 	constructor(props) {
@@ -28,13 +30,26 @@ class BookList extends React.Component {
             chapterData:props.chapData,
             currentChapter:1,
             onModalClose:props.onModalClose,
-            bookNo:'',
-            OTbooksstart:0,
+            bookNo:1,
+            OTbooksstart:1,
             OTbooksend:38,
             NTbooksstart: 39,
             NTbooksend: 65
     	};
+    	 session.defaultSession.cookies.get({ url: 'http://book.autographa.com' }, (error, cookie) => {
+            if (cookie.length > 0) {
+                var bookNo = cookie[0].value;
+                this.setState({bookNo:bookNo})
+            } else {
+                console.log("else");
+            }   
+        });
+
 	}
+
+	componentWillReceiveProps(nextProps) {
+      this.setState({chapterData:nextProps.chapData})
+    }
 
 	getOTList(OTbooksstart, OTbooksend) {
 		var booksOT = [];
@@ -85,10 +100,10 @@ class BookList extends React.Component {
             console.log(error);
         });
 		this.setState({bookNo: bookNo})
-		var id = 'eng_udb' + '_' + bookCodeList[parseInt(bookNo, 10) - 1]
+		var id = 'eng_udb' + '_' + Constant.bookCodeList[parseInt(bookNo, 10) - 1]
 		var getData = refDb.get(id).then(function(doc) {
 			doc.chapters.forEach(function(ref_doc) {
-		    	chap.push({ number: chapter });
+		    	chap.push({ number: ref_doc.chapter });
 			})
 			return chap
 		}).catch(function(err){

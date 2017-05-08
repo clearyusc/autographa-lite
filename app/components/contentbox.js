@@ -32,7 +32,7 @@ class Contentbox extends React.Component {
         super(props);
         this.handleRefChange = this.handleRefChange.bind(this);
         this.getRefContents = this.getRefContents.bind(this);
-        this.state = { refList: [], verses: [], content: '', book: props.selectedBook, selectedChapter:props.selectedChapter ,defaultRef: 'eng_ulb' }
+        this.state = { refList: [], verses: [], content:props.content, book: props.selectedBook, selectedChapter:props.selectedChapter ,defaultRef: 'eng_ulb',bookNo:1 }
         var existRef = [];
         var i
         var refLists = refDb.get('refs').then(function(doc) {
@@ -46,12 +46,20 @@ class Contentbox extends React.Component {
             this.setState({refList:  refsArray});
         })
 
+        session.defaultSession.cookies.get({ url: 'http://book.autographa.com' }, (error, cookie) => {
+            if (cookie.length > 0) {
+                var bookNo = cookie[0].value;
+                this.setState({bookNo:bookNo})
+            } else {
+                console.log("else");
+            }   
+        });
         session.defaultSession.cookies.get({ url: 'http://refs.autographa.com' }, (error, cookie) => {
             if (cookie.length > 0) {    
                 this.setState({defaultRef: cookie[0].value})
-                this.getRefContents(cookie[0].value+'_'+bookCodeList[parseInt(this.state.book, 10) - 1]);
+                this.getRefContents(cookie[0].value+'_'+Constant.bookCodeList[parseInt(this.state.bookNo, 10) - 1]);
             }else {
-                this.getRefContents(this.state.defaultRef+'_'+bookCodeList[parseInt(this.state.book, 10) - 1]);
+                this.getRefContents(this.state.defaultRef+'_'+Constant.bookCodeList[parseInt(this.state.book, 10) - 1]);
             }
         });       
     }
@@ -82,7 +90,7 @@ class Contentbox extends React.Component {
     }
 
     handleRefChange(event) {
-        this.getRefContents(event.target.value+'_'+bookCodeList[parseInt(this.state.book, 10) - 1])
+        this.getRefContents(event.target.value+'_'+Constant.bookCodeList[parseInt(this.state.book, 10) - 1])
         this.setState({defaultRef: event.target.value})
         var cookieRef = { url: 'http://refs.autographa.com', name: '0' , value: event.target.value };
         session.defaultSession.cookies.set(cookieRef, (error) => {

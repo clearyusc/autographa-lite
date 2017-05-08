@@ -19,6 +19,11 @@ const Constant = require("../util/constants");
 const BookList = require("./booklist");
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
+const session =  require('electron').remote.session;
+import { dialog } from 'electron';
+import { remote } from 'electron';
+const refDb = require(`${__dirname}/../util/data-provider`).referenceDb();
+
  // import {Tabs, Tab} from 'material-ui/Tabs';
  // const Tabsreact = require('react-bootstrap/lib/Tabs');
  // const Tabreact = require('react-bootstrap/lib/Tabs');
@@ -29,7 +34,6 @@ injectTapEventPlugin();
 class Navbar extends React.Component {
     constructor(props) {
         super(props);
-        this.getData = this.getData.bind(this);
         global.bookChapter="1"  
         this.state = {
             showModal: false,
@@ -47,30 +51,25 @@ class Navbar extends React.Component {
                 this.setState({currentBookCode:this.state.data.bookCodeList[parseInt(bookNo, 10) - 1]})
                 this.setState({currentBook: global.bookName})
                 global.bookName = this.state.data.booksList[parseInt(bookNo, 10) - 1];
-                console.log(global.bookName);
             } else {
                 console.log("else");
                 this.setState({currentBookCode:this.state.data.bookCodeList[parseInt(this.state.bookNo, 10) - 1]})
                 this.setState({currentBook: this.state.data.bookCodeList[parseInt(this.state.bookNo, 10) - 1]});
                 global.bookName = this.state.data.booksList[parseInt(this.state.bookNo, 10) - 1];
-                console.log(global.bookName);
+                console.log(this.state.currentBookCode);
             }   
         });
 
         session.defaultSession.cookies.get({ url: 'http://refs.autographa.com' }, (error, cookie) => {
             if (cookie.length > 0) {    
                 this.setState({defaultRef: cookie[0].value})
-                console.log(cookie)
                 this.getRefContents(cookie[0].value+'_'+this.state.data.bookCodeList[parseInt(this.state.bookNo, 10) - 1]);
             }else {
-                console.log("In Else of REF");
+                console.log(this.state.defaultRef+'_'+this.state.data.bookCodeList[parseInt(this.state.bookNo, 10) - 1]);
                 this.getRefContents(this.state.defaultRef+'_'+this.state.data.bookCodeList[parseInt(this.state.bookNo, 10) - 1]);
             }
         });          
-    }/*
-    componentDidUpdate(prevProps, prevState) {
-    console.log(this.state.currentBookCode+prevProps, prevState);
-}*/
+    }
 
     close() {
         this.setState({
@@ -79,12 +78,14 @@ class Navbar extends React.Component {
     }
 
     toggleShowModal() {
-        this.getRefContents(this.state.defaultRef+'_'+this.state.currentBookCode);
+        var bookcde = this.state.data.bookCodeList[parseInt(global.book, 10) - 1]
+        this.getRefContents(this.state.defaultRef+'_'+bookcde)
+        console.log(this.state.defaultRef+'_'+bookcde);
         global.bookNumber = global.book
         this.setState({ showModalBooks: !this.state.showModalBooks });     
     }
 
-     getRefContents(id) {
+    getRefContents(id) {
         console.log(id);
         let refContent = refDb.get(id).then(function(doc) { //book code is hard coded for now
             for (var i = 0; i < doc.chapters.length; i++) {
@@ -118,7 +119,6 @@ class Navbar extends React.Component {
     }
 
     openpopupBooks(tab) {
-        var chap = [];
         this.setState({
             showModalBooks: true,
             activeTab: tab
@@ -126,38 +126,29 @@ class Navbar extends React.Component {
         session.defaultSession.cookies.get({ url: 'http://book.autographa.com' }, (error, cookie) => {
             if (cookie.length > 0) {
                 var bookNo = cookie[0].value;
-                this.setState({bookNo:bookNo})
-                this.setState({currentBookCode:this.state.data.bookCodeList[parseInt(bookNo, 10) - 1]},this.getData());
-                //var bookName = Constant.bookCodeList[parseInt(bookNo, 10) - 1]
-                this.setState({currentBook: bookName})
-                console.log(this.state.currentBook);       
+                var bookCode = this.state.data.bookCodeList[parseInt(bookNo, 10) - 1] 
+                this.setState({currentBookCode:bookCode},this.getData(bookNo));
             } else {
-                console.log("else");
-                console.log(this.state.bookNo);
-                this.setState({currentBook: this.state.data.bookCodeList[parseInt(this.state.bookNo, 10) - 1]},this.getData());
-                console.log(this.state.currentBook);       
+                this.setState({currentBookCode: this.state.data.bookCodeList[parseInt(this.state.bookNo, 10) - 1]},this.getData(this.state.bookNo));
             }
         });
     }
 
-    getData(){
+   getData(item){
         var chap = [];
-        console.log('eng_udb_' + this.state.currentBookCode);
-        refDb.get('eng_udb_' + this.state.currentBookCode).then(function(doc) {
-        doc.chapters.forEach(function(ref_doc) {
-            chap.push({ number: chapter });
-        })
-        return chap
-        }).then((item)=>{
-            if(item  && item.length)
-           this.setState({ chapData: item });
-        }).catch(function(err){
-            console.log(err);
+        var bookCode = this.state.data.bookCodeList[parseInt(item, 10) - 1]
+        refDb.get('eng_udb_' + bookCode).then(function(doc) {
+            doc.chapters.forEach(function(ref_doc) {
+                chap.push({ number: ref_doc.chapter });
+            })
+            return chap 
+        }).then((label) => {
+           this.setState({ chapData: label });
         })
     }
 
-    render() {
 
+    render() {
         //    const popover = (
         //   <Popover id="modal-popover" title="popover">
         //   </Popover>
@@ -175,7 +166,7 @@ class Navbar extends React.Component {
                 <Modal.Title>Book and Chapter</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-            <BookList activeTab={this.state.activeTab} chapData={this.state.chapData} onModalClose={this.toggleShowModal.bind(this)} bookNo={this.state.bookNo}/>
+            <BookList activeTab={this.state.activeTab} chapData={this.state.chapData} onModalClose={this.toggleShowModal.bind(this)} bookNo={global.bkno}/>
             </Modal.Body>
         </Modal>
 
