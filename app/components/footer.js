@@ -7,19 +7,40 @@ class Footer extends React.Component {
         super(props);
         this.fontChange = this.fontChange.bind(this);
         this.state = {
-            step: 10,
+            step: 1,
             max: 40,
-            min: 14
+            min: 14,
+            currentValue: 14,
         }
-    }
-    fontChange(multiplier) {
-        if (document.getElementById("test").style.fontSize == "") {
-            document.getElementById("test").style.fontSize = "1.0em";
-            console.log("hi")
-        }
-        document.getElementById("test").style.fontSize = parseFloat(document.getElementById("test").style.fontSize) + (multiplier * 0.2) + "em";
+       
+        // console.log(mySlider)
     }
 
+    fontChange(multiplier) {
+        let fontSize = 14;
+        if (document.getElementsByClassName("col-ref")[0].style.fontSize == "") {
+            document.getElementsByClassName("col-ref")[0].style.fontSize = "14px";
+        }else{
+            fontSize = parseInt(document.getElementsByClassName("col-ref")[0].style.fontSize)
+        }
+        // console.log((multiplier+this.state.fontSize ))
+        if(multiplier < 0){
+            if((multiplier+fontSize) <= 14 ){
+                fontSize = 14
+            }else{
+                fontSize = multiplier + fontSize
+                // this.setState({fontSize: (multiplier+this.state.fontSize )})
+            }
+        }else{
+            if((multiplier+fontSize) >= 40 ){
+                fontSize = 40
+            }else{
+                fontSize = multiplier + fontSize
+            }
+        }
+        this.setState({currentValue: fontSize})
+        document.getElementsByClassName("col-ref")[0].style.fontSize = fontSize + "px";
+    }
 	render() {
 
 		return (
@@ -28,12 +49,11 @@ class Footer extends React.Component {
                  <div className="collapse navbar-collapse">
                         <div style={{float:"left"}} className="btn-group navbar-btn verse-diff-on" role="group" aria-label="...">
                             <span>
-                                <a className="btn btn-default font-button minus" data-toggle="tooltip" data-placement="top" title="Decrease font size" onClick= {this.fontChange.bind(this, (-1))}>A-</a>
+                                <a className="btn btn-default font-button minus" data-toggle="tooltip" data-placement="top" title="Decrease font size" onClick= {this.fontChange.bind(this, (-2))}>A-</a>
                             </span>
-                                <ReactBootstrapSlider slideStop={this.changeValue} step={this.state.step} max={this.state.max} min={this.state.min} orientation="horizontal"
-                                disabled="disabled" />
+                                <ReactBootstrapSlider value = {this.state.currentValue}   step={this.state.step} max={this.state.max} min={this.state.min} orientation="horizontal"/>
                             <span>
-                                <a className="btn btn-default font-button plus" data-toggle="tooltip" data-placement="top" title="Increase font size" onClick= {this.fontChange.bind(this, (+1))}>A+</a>
+                                <a className="btn btn-default font-button plus" data-toggle="tooltip" data-placement="top" title="Increase font size" onClick= {this.fontChange.bind(this, (+2))}>A+</a>
                             </span>
                         </div>
                     <div className="nav navbar-nav navbar-center verse-diff-on">

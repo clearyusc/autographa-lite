@@ -124,7 +124,7 @@ class Contentbox extends React.Component {
                         </div>
                     </div>
                     <div className="row">
-                        <div type="ref" className="col-12 col-ref" id="test">
+                        <div type="ref" className="col-12 col-ref">
                            <div dangerouslySetInnerHTML={{__html: this.state.content}} />
                         </div>
                     </div>
