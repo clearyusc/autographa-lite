@@ -48,6 +48,7 @@ class BookList extends React.Component {
 	}
 
 	componentWillReceiveProps(nextProps) {
+      this.setState({ chap: nextProps.chap });  
       this.setState({chapterData:nextProps.chapData})
     }
 
@@ -94,11 +95,7 @@ class BookList extends React.Component {
 		if(!bookNo){
 			bookNo = '1';
 		}
-		const cookieRef = { url: 'http://book.autographa.com', name: 'book' , value: global.book };
-        session.defaultSession.cookies.set(cookieRef, (error) => {
-            if (error)
-            console.log(error);
-        });
+
 		this.setState({bookNo: bookNo})
 		var id = 'eng_udb' + '_' + Constant.bookCodeList[parseInt(bookNo, 10) - 1]
 		var getData = refDb.get(id).then(function(doc) {
@@ -117,6 +114,17 @@ class BookList extends React.Component {
 	}
 
 	getValue(chapter){
+		const cookieBook = { url: 'http://book.autographa.com', name: 'book' , value: global.book };
+        session.defaultSession.cookies.set(cookieBook, (error) => {
+            if (error)
+            console.log(error);
+        });
+        var chap = chapter.toString();
+		const cookieChapter = { url: 'http://chapter.autographa.com', name: 'chapter' , value: chap };
+        session.defaultSession.cookies.set(cookieChapter, (error) => {
+            if (error)
+            console.log(error);
+        });
 		global.bookChapter = chapter
 		global.bookName = this.state.data[parseInt(global.book, 10) - 1];
 		this.state.onModalClose();

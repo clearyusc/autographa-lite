@@ -46,6 +46,7 @@ class Contentbox extends React.Component {
             this.setState({refList:  refsArray});
         })
 
+
         session.defaultSession.cookies.get({ url: 'http://book.autographa.com' }, (error, cookie) => {
             if (cookie.length > 0) {
                 var bookNo = cookie[0].value;
@@ -59,9 +60,22 @@ class Contentbox extends React.Component {
                 this.setState({defaultRef: cookie[0].value})
                 this.getRefContents(cookie[0].value+'_'+Constant.bookCodeList[parseInt(this.state.bookNo, 10) - 1]);
             }else {
-                this.getRefContents(this.state.defaultRef+'_'+Constant.bookCodeList[parseInt(this.state.book, 10) - 1]);
+                console.log("contentbox else");
+                this.getRefContents(this.state.defaultRef+'_'+Constant.bookCodeList[parseInt(this.state.bookNo, 10) - 1]);
             }
-        });       
+        });  
+        session.defaultSession.cookies.get({ url: 'http://chapter.autographa.com' }, (error, cookie) => {
+            if (cookie.length > 0) {    
+                var chap = cookie[0].value
+                console.log(cookie[0].value);
+                this.setState({chap:chap})
+                
+            }else {
+                var chap = 1;
+                this.setState({chap:chap})
+                console.log("chapter else");
+            }
+        });      
     }
 
     componentWillReceiveProps(nextProps) {
@@ -69,10 +83,11 @@ class Contentbox extends React.Component {
     }
 
     getRefContents(id) {
-        console.log(id);
+        console.log(this.state.chap);
+        var that = this;
         let refContent = refDb.get(id).then(function(doc) { //book code is hard coded for now
             for (var i = 0; i < doc.chapters.length; i++) {
-                if (doc.chapters[i].chapter == parseInt(1, 10)) { // 1 is chapter number and hardcoded for now
+                if (doc.chapters[i].chapter == parseInt(that.state.chap, 10)) { // 1 is chapter number and hardcoded for now
                     break;
                 }
             }

@@ -34,7 +34,7 @@ injectTapEventPlugin();
 class Navbar extends React.Component {
     constructor(props) {
         super(props);
-        global.bookChapter="1"  
+        global.chapter="1"  
         this.state = {
             showModal: false,
             showModalSettings: false,
@@ -42,7 +42,8 @@ class Navbar extends React.Component {
             data: Constant,
             chapData: null,
             bookNo:1,
-            defaultRef: 'eng_ulb'
+            defaultRef: 'eng_ulb',
+            chap:1
         };
         session.defaultSession.cookies.get({ url: 'http://book.autographa.com' }, (error, cookie) => {
             if (cookie.length > 0) {
@@ -52,7 +53,6 @@ class Navbar extends React.Component {
                 this.setState({currentBook: global.bookName})
                 global.bookName = this.state.data.booksList[parseInt(bookNo, 10) - 1];
             } else {
-                console.log("else");
                 this.setState({currentBookCode:this.state.data.bookCodeList[parseInt(this.state.bookNo, 10) - 1]})
                 this.setState({currentBook: this.state.data.bookCodeList[parseInt(this.state.bookNo, 10) - 1]});
                 global.bookName = this.state.data.booksList[parseInt(this.state.bookNo, 10) - 1];
@@ -68,7 +68,22 @@ class Navbar extends React.Component {
                 console.log(this.state.defaultRef+'_'+this.state.data.bookCodeList[parseInt(this.state.bookNo, 10) - 1]);
                 this.getRefContents(this.state.defaultRef+'_'+this.state.data.bookCodeList[parseInt(this.state.bookNo, 10) - 1]);
             }
-        });          
+        });
+
+        session.defaultSession.cookies.get({ url: 'http://chapter.autographa.com' }, (error, cookie) => {
+            if (cookie.length > 0) {    
+                var chap = cookie[0].value
+                global.chapter = chap;
+                console.log(cookie[0].value);
+                this.setState({chap:chap})
+                
+            }else {
+                var chap = 1;
+                this.setState({chap:chap})
+                global.chapter = chap;
+                console.log("chapter else");
+            }
+        });             
     }
 
     close() {
@@ -78,18 +93,35 @@ class Navbar extends React.Component {
     }
 
     toggleShowModal() {
-        var bookcde = this.state.data.bookCodeList[parseInt(global.book, 10) - 1]
-        this.getRefContents(this.state.defaultRef+'_'+bookcde)
-        console.log(this.state.defaultRef+'_'+bookcde);
+        if (!global.book) {
+            var bookcde = this.state.data.bookCodeList[parseInt(this.state.bookNo, 10) - 1]
+            this.getRefContents(this.state.defaultRef+'_'+bookcde)
+            global.bookName = this.state.data.booksList[parseInt(this.state.bookNo, 10) - 1];
+        } else {
+            var bookcde = this.state.data.bookCodeList[parseInt(global.book, 10) - 1]
+            this.getRefContents(this.state.defaultRef+'_'+bookcde)
+        }   
         global.bookNumber = global.book
-        this.setState({ showModalBooks: !this.state.showModalBooks });     
+        this.setState({ showModalBooks: !this.state.showModalBooks }); 
+
+        session.defaultSession.cookies.get({ url: 'http://chapter.autographa.com' }, (error, cookie) => {
+            if (cookie.length > 0) {    
+                var chap = cookie[0].value
+                global.chapter = chap;
+                this.setState({chap:chap})
+            }else {
+                var chap = 1;
+                this.setState({chap:chap})
+                global.chapter = chap;
+            }
+        });    
     }
 
     getRefContents(id) {
-        console.log(id);
+        var that = this;
         let refContent = refDb.get(id).then(function(doc) { //book code is hard coded for now
             for (var i = 0; i < doc.chapters.length; i++) {
-                if (doc.chapters[i].chapter == parseInt(1, 10)) { // 1 is chapter number and hardcoded for now
+                if (doc.chapters[i].chapter == parseInt(that.state.chap, 10)) { // 1 is chapter number and hardcoded for now
                     break;
                 }
             }
@@ -344,7 +376,7 @@ class Navbar extends React.Component {
                                 <div className="btn-group navbar-btn strong verse-diff-on" role="group" aria-label="..." id="bookBtn" style={{marginLeft:"200px"}}>
                                     <a onClick={() => this.openpopupBooks(1)} href="#" className="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Select Book"  id="book-chapter-btn">{global.bookName}</a>
                                     <span id="chapterBtnSpan">
-                                    <a onClick={() => this.openpopupBooks(2)} className="btn btn-default" id="chapterBtn" data-target="#myModal"  data-toggle="modal" data-placement="bottom"  title="Select Chapter" >{global.bookChapter}</a>
+                                    <a onClick={() => this.openpopupBooks(2)} className="btn btn-default" id="chapterBtn" data-target="#myModal"  data-toggle="modal" data-placement="bottom"  title="Select Chapter" >{global.chapter}</a>
                                     </span>
                                 </div>
                                 
@@ -374,7 +406,7 @@ class Navbar extends React.Component {
                     </div>
                 </div>
             </nav>
-            <Contentbox selectedBook = {this.state.bookNo} selectedChapter={global.bookChapter} content={this.state.content}/>
+            <Contentbox selectedBook = {this.state.bookNo} selectedChapter={global.chapter} content={this.state.content}/>
         </div>
         )
     }
