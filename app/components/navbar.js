@@ -160,8 +160,20 @@ class Navbar extends React.Component {
                 var bookNo = cookie[0].value;
                 var bookCode = this.state.data.bookCodeList[parseInt(bookNo, 10) - 1] 
                 this.setState({currentBookCode:bookCode},this.getData(bookNo));
-            } else {
+            } else {    
                 this.setState({currentBookCode: this.state.data.bookCodeList[parseInt(this.state.bookNo, 10) - 1]},this.getData(this.state.bookNo));
+            }
+        });
+
+        session.defaultSession.cookies.get({ url: 'http://chapter.autographa.com' }, (error, cookie) => {
+            if (cookie.length > 0) {    
+                var chap = cookie[0].value
+                this.setState({chap:chap})
+                
+            }else {
+                var chap = 1;
+                this.setState({chap:chap})
+                console.log("chapter else");
             }
         });
     }

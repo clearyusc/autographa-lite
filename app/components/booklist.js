@@ -21,6 +21,7 @@ import { remote } from 'electron';
 class BookList extends React.Component {
 	constructor(props) {
         super(props);
+        global.highlight = '1';
         this.onItemClick = this.onItemClick.bind(this);
         this.state = { 
             data: Constant.booksList,
@@ -44,59 +45,43 @@ class BookList extends React.Component {
                 console.log("else");
             }   
         });
+      	session.defaultSession.cookies.get({ url: 'http://chapter.autographa.com' }, (error, cookie) => {
+            if (cookie.length > 0) {    
+                global.bookChapter= cookie[0].value
+            }else {
+                global.bookChapter = 1;
+                console.log("chapter else");
+            }
 
-	}
+		})
+    }
 
 	componentWillReceiveProps(nextProps) {
       this.setState({ chap: nextProps.chap });  
       this.setState({chapterData:nextProps.chapData})
     }
 
-	getOTList(OTbooksstart, OTbooksend) {
-		var booksOT = [];
-		for (var i = OTbooksstart; i <= OTbooksend; i++) {
-			// booksList.push(i);
-			booksOT.push(booksList[i]);
-		};
-		console.log(booksOT)
-		this.setState({data:booksOT});
-    }
-
-    getNTList(NTbooksstart, NTbooksend) {
-    	var booksNT = [];
-    	for (var i = NTbooksstart; i <= NTbooksend; i++) {
-    		booksNT.push(booksList[i])
-    	};
-		console.log(booksNT)
-		this.setState({data:booksNT});
-    }
-
-    getALLList(OTbooksstart, NTbooksend) {
+    getCategoryBookList(bookStart, bookEnd) {
       	var booksALL = [];
-      	for (var i = OTbooksstart; i <= NTbooksend; i++) {
-      		booksALL.push(booksList[i])
+      	for (var i = bookStart; i <= bookEnd; i++) {
+      		booksALL.push(Constant.booksList[i])
       	};
       	this.setState({data:booksALL});
     }
 
 	onItemClick(bookNo) {
   		global.book = bookNo.toString();
-	}
-     
-	handleSelect(key) {
-		this.setState({key});
-	}
+	}	
 
 	goToTab(key) {
 		this.setState({activeTab:key});
 		var chap = [];
 		global.bookChapter ='';
+
 		let bookNo = global.book;
 		if(!bookNo){
 			bookNo = '1';
 		}
-
-		this.setState({bookNo: bookNo})
 		var id = 'eng_udb' + '_' + Constant.bookCodeList[parseInt(bookNo, 10) - 1]
 		var getData = refDb.get(id).then(function(doc) {
 			doc.chapters.forEach(function(ref_doc) {
@@ -125,8 +110,25 @@ class BookList extends React.Component {
             if (error)
             console.log(error);
         });
+         session.defaultSession.cookies.get({ url: 'http://book.autographa.com' }, (error, cookie) => {
+            if (cookie.length > 0) {
+                var bookNo = cookie[0].value;
+                this.setState({bookNo:bookNo})
+            } else {
+            	 var bookNo = cookie[0].value;
+                this.setState({bookNo:bookNo})
+                console.log("else of bookNo");
+            }   
+        });
 		global.bookChapter = chapter
-		global.bookName = this.state.data[parseInt(global.book, 10) - 1];
+		console.log(this.state.bookNo + global.book);
+		if (this.state.bookNo == global.book) {
+			console.log();
+			global.bookName = this.state.data[parseInt(this.state.bookNo, 10) - 1];
+		} else {
+			console.log("in else");
+			global.bookName = this.state.data[parseInt(global.book, 10) - 1];
+		}
 		this.state.onModalClose();
 	}
 
@@ -137,20 +139,19 @@ class BookList extends React.Component {
 		     {test ? (
 	        <div className="wrap-center">
 					    <div className="btn-group" role="group" aria-label="...">
-	                        <button className="btn btn-primary" type="button" id="allBooksBtn" data-toggle="tooltip" data-placement="bottom" title=""onClick = { this.getALLList.bind(this, this.state.OTbooksstart, this.state.NTbooksend) } data-original-title="All">ALL</button>
-	                        <button className="btn btn-primary" type="button" id="otBooksBtn" data-toggle="tooltip" data-placement="bottom" title="" onClick = { this.getOTList.bind(this, this.state.OTbooksstart, this.state.OTbooksend) } data-original-title="Old Testament">OT</button>
-	                        <button className="btn btn-primary" type="button" id="ntBooksBtn" data-toggle="tooltip" data-placement="bottom" title="" onClick = { this.getNTList.bind(this, this.state.NTbooksstart, this.state.NTbooksend) } data-original-title="New Testament">NT</button>
+	                        <button className="btn btn-primary" type="button" id="allBooksBtn" data-toggle="tooltip" data-placement="bottom" title=""onClick = { this.getCategoryBookList.bind(this, this.state.OTbooksstart, this.state.NTbooksend) } data-original-title="All">ALL</button>
+	                        <button className="btn btn-primary" type="button" id="otBooksBtn" data-toggle="tooltip" data-placement="bottom" title="" onClick = { this.getCategoryBookList.bind(this, this.state.OTbooksstart, this.state.OTbooksend) } data-original-title="Old Testament">OT</button>
+	                        <button className="btn btn-primary" type="button" id="ntBooksBtn" data-toggle="tooltip" data-placement="bottom" title="" onClick = { this.getCategoryBookList.bind(this, this.state.NTbooksstart, this.state.NTbooksend) } data-original-title="New Testament">NT</button>
 		                </div>	        
 		            </div>
-	      		) : ''
-			}
+	      		) : ''}
 		    <Tab eventKey={1} title="Book" onClick={() => this.goToTab(2)}>
 			    <div className="wrap-center"></div>
 	            <div className="row books-li" id="bookdata">
 	                <ul id="books-pane">
 	                    {
 	                    	this.state.data.map((item,index) =>{
-								return <li key={index}><a href="#" key={index} onClick = { this.onItemClick.bind(this, index+1) } value={item} className={(index+1 == this.state.bookNo) ? 'link-active': ""} >{item}
+								return <li key={index}><a href="#" key={index} onClick = { this.onItemClick.bind(this,index+1) } value={item} className={(index+1 == this.state.bookNo) ? 'link-active': ""} >{item}
 								</a></li>
 							})
 	                    }	                	
@@ -163,7 +164,7 @@ class BookList extends React.Component {
             		<ul id="chaptersList">
             			{
             				this.state.chapterData.map((item, i) => {
-								return ( <li key={i} value={i+1} ><a href="#" className={(i+1 == global.bookChapter) ? 'link-active': ""} onClick = { this.getValue.bind(this,  i+1) } >{i+1}</a></li> );
+								return ( <li key={i} value={i+1} ><a href="#" className={(i+1 == global.bookChapter) ? 'link-active': ""} onClick = { this.getValue.bind(this,  i+1) }>{i+1}</a></li> );
 							})  
             			}
             		</ul>
