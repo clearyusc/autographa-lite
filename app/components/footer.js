@@ -41,6 +41,9 @@ class Footer extends React.Component {
         this.setState({currentValue: fontSize})
         document.getElementsByClassName("col-ref")[0].style.fontSize = fontSize + "px";
     }
+    sliderFontChange(obj){
+        document.getElementsByClassName("col-ref")[0].style.fontSize = obj.target.value + "px";
+    }
 	render() {
 
 		return (
@@ -51,7 +54,7 @@ class Footer extends React.Component {
                             <span>
                                 <a className="btn btn-default font-button minus" data-toggle="tooltip" data-placement="top" title="Decrease font size" onClick= {this.fontChange.bind(this, (-2))}>A-</a>
                             </span>
-                                <ReactBootstrapSlider value = {this.state.currentValue}   step={this.state.step} max={this.state.max} min={this.state.min} orientation="horizontal"/>
+                                <ReactBootstrapSlider change={this.sliderFontChange.bind(this)} value = {this.state.currentValue}   step={this.state.step} max={this.state.max} min={this.state.min} orientation="horizontal"/>
                             <span>
                                 <a className="btn btn-default font-button plus" data-toggle="tooltip" data-placement="top" title="Increase font size" onClick= {this.fontChange.bind(this, (+2))}>A+</a>
                             </span>
