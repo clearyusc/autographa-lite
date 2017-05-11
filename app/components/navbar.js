@@ -48,6 +48,7 @@ class Navbar extends React.Component {
         session.defaultSession.cookies.get({ url: 'http://book.autographa.com' }, (error, cookie) => {
             if (cookie.length > 0) {
                 var bookNo = cookie[0].value;
+                console.log(bookNo);
                 this.setState({bookNo:bookNo})
                 this.setState({currentBookCode:this.state.data.bookCodeList[parseInt(bookNo, 10) - 1]})
                 this.setState({currentBook: global.bookName})
@@ -162,18 +163,6 @@ class Navbar extends React.Component {
                 this.setState({currentBookCode:bookCode},this.getData(bookNo));
             } else {    
                 this.setState({currentBookCode: this.state.data.bookCodeList[parseInt(this.state.bookNo, 10) - 1]},this.getData(this.state.bookNo));
-            }
-        });
-
-        session.defaultSession.cookies.get({ url: 'http://chapter.autographa.com' }, (error, cookie) => {
-            if (cookie.length > 0) {    
-                var chap = cookie[0].value
-                this.setState({chap:chap})
-                
-            }else {
-                var chap = 1;
-                this.setState({chap:chap})
-                console.log("chapter else");
             }
         });
     }
