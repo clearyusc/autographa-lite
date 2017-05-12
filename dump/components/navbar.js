@@ -16,7 +16,7 @@ const Grid = require('react-bootstrap/lib/Grid')
 const Tabs = require('react-bootstrap/lib/Tabs');
 const Tab = require('react-bootstrap/lib/Tab');
 const Constant = require("../util/constants");
-const TabModal = require("./tabmodal");
+const BookList = require("./booklist");
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 const session =  require('electron').remote.session;
@@ -33,32 +33,176 @@ injectTapEventPlugin();
 
 class Navbar extends React.Component {
     constructor(props) {
-        super(props);  
+        super(props);
+        global.chapter="1"  
         this.state = {
-      modal: { show: false,content:''}
+            showModal: false,
+            showModalSettings: false,
+            showModalBooks: false,
+            data: Constant,
+            chapData: null,
+            bookNo:1,
+            defaultRef: 'eng_ulb',
+            chap:1
+        };
+        session.defaultSession.cookies.get({ url: 'http://book.autographa.com' }, (error, cookie) => {
+            if (cookie.length > 0) {
+                var bookNo = cookie[0].value;
+                console.log(bookNo);
+                this.setState({bookNo:bookNo})
+                this.setState({currentBookCode:this.state.data.bookCodeList[parseInt(bookNo, 10) - 1]})
+                this.setState({currentBook: global.bookName})
+                global.bookName = this.state.data.booksList[parseInt(bookNo, 10) - 1];
+            } else {
+                this.setState({currentBookCode:this.state.data.bookCodeList[parseInt(this.state.bookNo, 10) - 1]})
+                this.setState({currentBook: this.state.data.bookCodeList[parseInt(this.state.bookNo, 10) - 1]});
+                global.bookName = this.state.data.booksList[parseInt(this.state.bookNo, 10) - 1];
+                console.log(this.state.currentBookCode);
+            }   
+        });
+
+        session.defaultSession.cookies.get({ url: 'http://refs.autographa.com' }, (error, cookie) => {
+            if (cookie.length > 0) {    
+                this.setState({defaultRef: cookie[0].value})
+                this.getRefContents(cookie[0].value+'_'+this.state.data.bookCodeList[parseInt(this.state.bookNo, 10) - 1]);
+            }else {
+                console.log(this.state.defaultRef+'_'+this.state.data.bookCodeList[parseInt(this.state.bookNo, 10) - 1]);
+                this.getRefContents(this.state.defaultRef+'_'+this.state.data.bookCodeList[parseInt(this.state.bookNo, 10) - 1]);
+            }
+        });
+
+        session.defaultSession.cookies.get({ url: 'http://chapter.autographa.com' }, (error, cookie) => {
+            if (cookie.length > 0) {    
+                var chap = cookie[0].value
+                global.chapter = chap;
+                console.log(cookie[0].value);
+                this.setState({chap:chap})
+                
+            }else {
+                var chap = 1;
+                this.setState({chap:chap})
+                global.chapter = chap;
+                console.log("chapter else");
+            }
+        });             
     }
- var that = this
-    this.actions = {
-      openModal: function(content) {
-        let newState = that.state
-        newState.modal = { show: true,content: Constant.booksList}
-        that.setState(newState)
-      },
-      closeModal: function() {
-        if (that.state.modal.show) {
-          let newState = that.state
-          newState.modal.show = false
-          that.setState(newState)
-        }
-      }
+
+    close() {
+        this.setState({
+            showModalBooks: false
+        });
     }
-  }
+
+    toggleShowModal() {
+        if (!global.book) {
+            var bookcde = this.state.data.bookCodeList[parseInt(this.state.bookNo, 10) - 1]
+            this.getRefContents(this.state.defaultRef+'_'+bookcde)
+            global.bookName = this.state.data.booksList[parseInt(this.state.bookNo, 10) - 1];
+        } else {
+            var bookcde = this.state.data.bookCodeList[parseInt(global.book, 10) - 1]
+            this.getRefContents(this.state.defaultRef+'_'+bookcde)
+        }   
+        global.bookNumber = global.book
+        this.setState({ showModalBooks: !this.state.showModalBooks }); 
+
+        session.defaultSession.cookies.get({ url: 'http://chapter.autographa.com' }, (error, cookie) => {
+            if (cookie.length > 0) {    
+                var chap = cookie[0].value
+                global.chapter = chap;
+                this.setState({chap:chap})
+            }else {
+                var chap = 1;
+                this.setState({chap:chap})
+                global.chapter = chap;
+            }
+        });    
+    }
+
+    getRefContents(id) {
+        var that = this;
+        let refContent = refDb.get(id).then(function(doc) { //book code is hard coded for now
+            for (var i = 0; i < doc.chapters.length; i++) {
+                if (doc.chapters[i].chapter == parseInt(that.state.chap, 10)) { // 1 is chapter number and hardcoded for now
+                    break;
+                }
+            }
+        let refString = doc.chapters[i].verses.map(function(verse, verseNum) {
+            return '<div data-verse="r' + (verseNum + 1) + '"><span class="verse-num">' + (verseNum + 1) + '</span><span>' + verse.verse + '</span></div>';
+        }).join('');
+        return refString;
+        }).catch(function(err) {
+            console.log(err)
+        });
+
+        refContent.then((content)=> {
+            this.setState({content: content})
+        })
+    }
+
+    open() {
+        this.setState({
+            showModal: true
+        });
+    }
+
+    openpopup() {
+        this.setState({
+            showModalSettings: true
+        });
+    }
+
+    openpopupBooks(tab) {
+        this.setState({
+            showModalBooks: true,
+            activeTab: tab
+        });
+        session.defaultSession.cookies.get({ url: 'http://book.autographa.com' }, (error, cookie) => {
+            if (cookie.length > 0) {
+                var bookNo = cookie[0].value;
+                var bookCode = this.state.data.bookCodeList[parseInt(bookNo, 10) - 1] 
+                this.setState({currentBookCode:bookCode},this.getData(bookNo));
+            } else {    
+                this.setState({currentBookCode: this.state.data.bookCodeList[parseInt(this.state.bookNo, 10) - 1]},this.getData(this.state.bookNo));
+            }
+        });
+    }
+
+   getData(item){
+        var chap = [];
+        var bookCode = this.state.data.bookCodeList[parseInt(item, 10) - 1]
+        refDb.get('eng_udb_' + bookCode).then(function(doc) {
+            doc.chapters.forEach(function(ref_doc) {
+                chap.push({ number: ref_doc.chapter });
+            })
+            return chap 
+        }).then((label) => {
+           this.setState({ chapData: label });
+        })
+    }
+
 
     render() {
-        const modal = this.state.modal;
+        //    const popover = (
+        //   <Popover id="modal-popover" title="popover">
+        //   </Popover>
+        // );
+        // const tooltip = (    
+        //   <Tooltip id="modal-tooltip">
+        //     wow.
+        //   </Tooltip>
+        // );
+        let close = () => this.setState({ showModal: false, showModalSettings: false, showModalBooks: false });
         return (
             <div>
-            <TabModal actions={this.actions} show={modal.show} content={modal.content}/>
+        <Modal show={this.state.showModalBooks} onHide={close} >
+            <Modal.Header closeButton>
+                <Modal.Title>Book and Chapter</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+            <BookList activeTab={this.state.activeTab} chapData={this.state.chapData} onModalClose={this.toggleShowModal.bind(this)} bookNo={global.bkno}/>
+            </Modal.Body>
+        </Modal>
+
         <Modal show={this.state.showModalSettings} onHide={close} id="tab-settings">
           <Modal.Header closeButton>
             <Modal.Title>Settings</Modal.Title>
@@ -231,9 +375,9 @@ class Navbar extends React.Component {
                             <li>
 
                                 <div className="btn-group navbar-btn strong verse-diff-on" role="group" aria-label="..." id="bookBtn" style={{marginLeft:"200px"}}>
-                                    <a href="#" className="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Select Book"  id="book-chapter-btn" onClick={()=> this.actions.openModal()}></a>
+                                    <a onClick={() => this.openpopupBooks(1)} href="#" className="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Select Book"  id="book-chapter-btn">{global.bookName}</a>
                                     <span id="chapterBtnSpan">
-                                    <a className="btn btn-default" id="chapterBtn" data-target="#myModal"  data-toggle="modal" data-placement="bottom"  title="Select Chapter" onClick={()=> this.actions.openModal()}></a>
+                                    <a onClick={() => this.openpopupBooks(2)} className="btn btn-default" id="chapterBtn" data-target="#myModal"  data-toggle="modal" data-placement="bottom"  title="Select Chapter" >{global.chapter}</a>
                                     </span>
                                 </div>
                                 
@@ -256,13 +400,14 @@ class Navbar extends React.Component {
                                 </a>
                             </li>
                             <li>
-                                <a  href="#" data-target="#aboutmodal" data-toggle="tooltip" data-placement="bottom" title="About" id="btnAbout"><i className="fa fa-info fa-2x"></i></a>
+                                <a onClick={() => this.open()} href="#" data-target="#aboutmodal" data-toggle="tooltip" data-placement="bottom" title="About" id="btnAbout"><i className="fa fa-info fa-2x"></i></a>
                             </li>
-                            <li><a href="javascript:;" id="btnSettings" data-target="#bannerformmodal" data-toggle="tooltip" data-placement="bottom" title="Settings"><i className="fa fa-cog fa-2x"></i></a></li>
+                            <li><a onClick={() => this.openpopup()} href="javascript:;" id="btnSettings" data-target="#bannerformmodal" data-toggle="tooltip" data-placement="bottom" title="Settings"><i className="fa fa-cog fa-2x"></i></a></li>
                         </ul>
                     </div>
                 </div>
             </nav>
+            <Contentbox selectedBook = {this.state.bookNo} selectedChapter={global.chapter} content={this.state.content}/>
         </div>
         )
     }

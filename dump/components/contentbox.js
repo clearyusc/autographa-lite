@@ -14,7 +14,7 @@ import ReactDOM from 'react-dom';
  const Tabs = require('react-bootstrap/lib/Tabs');
  const Tab = require('react-bootstrap/lib/Tab');
  const Constant = require("../util/constants");
- const BookList = require("./tabmodal");
+ const BookList = require("./booklist");
  // const ReactSelectize = require("react-selectize");
  // const SimpleSelect = ReactSelectize.SimpleSelect;
  const refDb = require(`${__dirname}/../util/data-provider`).referenceDb();
