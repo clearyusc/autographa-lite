@@ -64,7 +64,8 @@ class BookList extends React.Component {
     }
 
 	onItemClick(bookNo) {
-  		global.book = bookNo.toString();
+  		// global.book = bookNo.toString();
+  		this.props.store.bookId = bookNo.toString();
 	}
      
 	handleSelect(key) {
@@ -74,18 +75,12 @@ class BookList extends React.Component {
 	goToTab(key) {
 		this.setState({activeTab:key});
 		var chap = [];
-		global.bookChapter ='';
-		let bookNo = global.book;
-		if(!bookNo){
-			bookNo = '1';
-		}
-		const cookieRef = { url: 'http://book.autographa.com', name: 'book' , value: bookNo.toString() };
+		const cookieRef = { url: 'http://book.autographa.com', name: 'book' , value: this.props.bookId };
         session.defaultSession.cookies.set(cookieRef, (error) => {
             if (error)
             console.log(error);
         });
-		this.setState({bookNo: bookNo})
-		var id = 'eng_udb' + '_' + bookCodeList[parseInt(bookNo, 10) - 1]
+		var id = 'eng_udb' + '_' + bookCodeList[parseInt(this.props.store.bookId, 10) - 1]
 		var getData = refDb.get(id).then(function(doc) {
 			doc.chapters.forEach(function(ref_doc) {
 		    	chap.push({ number: chapter });
@@ -102,17 +97,18 @@ class BookList extends React.Component {
 	}
 
 	getValue(chapter){
-		global.bookChapter = chapter
+		this.props.store.chapterId = chapter;
 		const cookiechapter = { url: 'http://chapter.autographa.com', name: 'chapter' , value: chapter.toString() };
         session.defaultSession.cookies.set(cookiechapter, (error) => {
             if (error)
             console.log(error);
         });
-		global.bookName = this.state.data[parseInt(global.book, 10) - 1];
 		this.state.onModalClose();
 	}
 
 	render() {		
+	 const { bookId } = this.props.store;
+	 console.log(this.state.chapterData)
  	const test = (this.state.activeTab == 1);
 	    return ( 
 	    <Tabs animation={false} activeKey={this.state.activeTab} onSelect={() =>this.goToTab((this.state.activeTab == 1) ? 2 : 1)} id="noanim-tab-example">

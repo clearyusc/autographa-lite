@@ -20,6 +20,7 @@ const Constant = require("../util/constants");
 const BookList = require("./booklist");
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
+import TodoStore from "./TodoStore"
  // import {Tabs, Tab} from 'material-ui/Tabs';
  // const Tabsreact = require('react-bootstrap/lib/Tabs');
  // const Tabreact = require('react-bootstrap/lib/Tabs');
@@ -31,7 +32,6 @@ class Navbar extends React.Component {
     constructor(props) {
         super(props);
         this.getData = this.getData.bind(this);
-        global.bookChapter="1"  
         this.state = {
             showModal: false,
             showModalSettings: false,
@@ -41,38 +41,8 @@ class Navbar extends React.Component {
             bookNo:1,
             defaultRef: 'eng_ulb'
         };
-        session.defaultSession.cookies.get({ url: 'http://book.autographa.com' }, (error, cookie) => {
-            if (cookie.length > 0) {
-                var bookNo = cookie[0].value;
-                console.log(bookNo)
-                // this.setState({bookNo:bookNo})
-                 this.setState({currentBookCode: Constant.bookCodeList[parseInt(bookNo, 10) - 1]})
-                // this.setState({currentBook: global.bookName})
-                // global.bookName = this.state.data.booksList[parseInt(bookNo, 10) - 1];
-                // console.log(global.bookName);
-            } else {
-                // console.log("else");
-                 this.setState({currentBookCode:this.state.data.bookCodeList[parseInt(this.state.bookNo, 10) - 1]})
-                // this.setState({currentBook: this.state.data.bookCodeList[parseInt(this.state.bookNo, 10) - 1]});
-                // global.bookName = this.state.data.booksList[parseInt(this.state.bookNo, 10) - 1];
-                // console.log(global.bookName);
-            }   
-        });
-
-        session.defaultSession.cookies.get({ url: 'http://refs.autographa.com' }, (error, cookie) => {
-            if (cookie.length > 0) {    
-                this.setState({defaultRef: cookie[0].value})
-                console.log(cookie)
-                this.getRefContents(cookie[0].value+'_'+this.state.data.bookCodeList[parseInt(this.state.bookNo, 10) - 1]);
-            }else {
-                console.log("In Else of REF");
-                this.getRefContents(this.state.defaultRef+'_'+Constant.bookCodeList[parseInt(1, 10) - 1], 1);
-            }
-        });          
-    }/*
-    componentDidUpdate(prevProps, prevState) {
-    console.log(this.state.currentBookCode+prevProps, prevState);
-}*/
+             
+    }
 
     close() {
         this.setState({
@@ -81,20 +51,7 @@ class Navbar extends React.Component {
     }
 
     toggleShowModal() {
-        session.defaultSession.cookies.get({ url: 'http://book.autographa.com' }, (error, bookCookie) => {
-            if(bookCookie.length > 0 ){
-                session.defaultSession.cookies.get({url: 'http://chapter.autographa.com'}, (err, chapterCookie) => {
-                    if(chapterCookie.length > 0){
-                        this.getRefContents(this.state.defaultRef+'_'+Constant.bookCodeList[parseInt(bookCookie[0].value, 10) - 1], chapterCookie[0].value);        
-                    }else{
-                        this.getRefContents(this.state.defaultRef+'_'+Constant.bookCodeList[parseInt(bookCookie[0].value, 10) - 1], 1);
-                    }
-                })    
-            }else{
-                this.getRefContents(this.state.defaultRef+'_'+'GEN', 1);
-            }
-        });
-        global.bookNumber = global.book
+        
         this.setState({ showModalBooks: !this.state.showModalBooks });     
     }
 
@@ -137,23 +94,12 @@ class Navbar extends React.Component {
             showModalBooks: true,
             activeTab: tab
         });
-        session.defaultSession.cookies.get({ url: 'http://book.autographa.com' }, (error, cookie) => {
-            if (cookie.length > 0) {
-                var bookNo = cookie[0].value;
-                this.setState({bookNo:bookNo})
-                this.setState({currentBookCode:this.state.data.bookCodeList[parseInt(bookNo, 10) - 1]},this.getData());
-                var bookName = Constant.bookCodeList[parseInt(bookNo, 10) - 1]
-                this.setState({currentBook: bookName})
-                console.log(this.state.currentBook);       
-            } else {
-                this.setState({currentBook: Constant.bookCodeList[parseInt(this.state.bookNo, 10) - 1]},this.getData());
-            }
-        });
+        this.getData();
     }
 
     getData(){
         var chap = [];
-        refDb.get('eng_udb_' + this.state.currentBookCode).then(function(doc) {
+        refDb.get('eng_udb_' + Constant.bookCodeList[parseInt(TodoStore.bookId, 10)-1]).then(function(doc) {
         doc.chapters.forEach(function(ref_doc) {
             chap.push({ number: chapter });
         })
@@ -167,16 +113,7 @@ class Navbar extends React.Component {
     }
 
     render() {
-
-        //    const popover = (
-        //   <Popover id="modal-popover" title="popover">
-        //   </Popover>
-        // );
-        // const tooltip = (    
-        //   <Tooltip id="modal-tooltip">
-        //     wow.
-        //   </Tooltip>
-        // );
+        const bookName = Constant.booksList[parseInt(TodoStore.bookId, 10) - 1]
         let close = () => this.setState({ showModal: false, showModalSettings: false, showModalBooks: false });
         return (
             <div>
@@ -185,7 +122,7 @@ class Navbar extends React.Component {
                 <Modal.Title>Book and Chapter</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-            <BookList activeTab={this.state.activeTab} chapData={this.state.chapData} onModalClose={this.toggleShowModal.bind(this)} bookNo={this.state.bookNo}/>
+            <BookList store = {TodoStore} activeTab={this.state.activeTab} chapData={this.state.chapData} onModalClose={this.toggleShowModal.bind(this)} bookNo={this.state.bookNo}/>
             </Modal.Body>
         </Modal>
 
@@ -323,30 +260,7 @@ class Navbar extends React.Component {
                     </div>
                 </Tab>
           </Tabs>
-          {/*<Tabs id="noanim-tabexample" value={this.state.value} onChange={this.handleChange}>
-            <Tab label="Overview">
-                <div className="row">
-                    <div className="col-xs-6">
-                        <img src="../assets/images/autographa_lite_large.png" className="img-circle" alt="Cinque Terre" width="215" height="200" />
-                    </div>
-                    <div className="col-xs-6">
-                        <h3>Autographa Lite</h3>
-                        <p>Version 0.1</p>
-                        <p>Source code hosted at: https://github.com/Bridgeconn/autographa-lite</p>
-                    </div>
-                </div>
-            </Tab>
-            <Tab label="License">
-        <div >
-            <h4> The MIT License (MIT)</h4>
-                <p>Released in 2017 by Friends of Agape (www.friendsofagape.org) in partnership with RUN Ministries (www.runministries.org). </p>
-                <br />
-                <p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</p>
-                <p>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.</p>
-                <p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
-        </div>
-            </Tab>
-          </Tabs>*/}
+          
            
           </Modal.Body>
         </Modal>
@@ -361,9 +275,9 @@ class Navbar extends React.Component {
                             <li>
 
                                 <div className="btn-group navbar-btn strong verse-diff-on" role="group" aria-label="..." id="bookBtn" style={{marginLeft:"200px"}}>
-                                    <a onClick={() => this.openpopupBooks(1)} href="#" className="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Select Book"  id="book-chapter-btn">{global.bookName}</a>
+                                    <a onClick={() => this.openpopupBooks(1)} href="#" className="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Select Book"  id="book-chapter-btn">{bookName}</a>
                                     <span id="chapterBtnSpan">
-                                    <a onClick={() => this.openpopupBooks(2)} className="btn btn-default" id="chapterBtn" data-target="#myModal"  data-toggle="modal" data-placement="bottom"  title="Select Chapter" >{global.bookChapter}</a>
+                                    <a onClick={() => this.openpopupBooks(2)} className="btn btn-default" id="chapterBtn" data-target="#myModal"  data-toggle="modal" data-placement="bottom"  title="Select Chapter" >{TodoStore.chapterId}</a>
                                     </span>
                                 </div>
                                 
@@ -393,7 +307,7 @@ class Navbar extends React.Component {
                     </div>
                 </div>
             </nav>
-            <Contentbox  content = {this.state.content}/>
+            <Contentbox  content = {this.state.content} store = {TodoStore}/>
         </div>
         )
     }

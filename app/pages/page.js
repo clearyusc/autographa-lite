@@ -15,6 +15,7 @@ import Contentbox  from '../components/contentbox';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 
+
 class Page extends React.Component {
   
 render(){
