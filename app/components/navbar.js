@@ -7,7 +7,7 @@ import ReactDOM from 'react-dom';
 // const NavDropdown = require('react-bootstrap/lib/NavDropdown');
 // const MenuItem = require('react-bootstrap/lib/MenuItem');
 // const MilestoneManagement = require('./milestone_management');
-import Contentbox  from '../components/contentbox';
+
 
 const Modal = require('react-bootstrap/lib/Modal');
 const Button = require('react-bootstrap/lib/Button');
@@ -20,14 +20,18 @@ const Constant = require("../util/constants");
 const BookList = require("./booklist");
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
+import { observer } from "mobx-react"
+
+
 import TodoStore from "./TodoStore"
+import Contentbox  from '../components/contentbox';
  // import {Tabs, Tab} from 'material-ui/Tabs';
  // const Tabsreact = require('react-bootstrap/lib/Tabs');
  // const Tabreact = require('react-bootstrap/lib/Tabs');
  const injectTapEventPlugin = require("react-tap-event-plugin");
 injectTapEventPlugin();
 
-
+@observer
 class Navbar extends React.Component {
     constructor(props) {
         super(props);
@@ -35,28 +39,25 @@ class Navbar extends React.Component {
         this.state = {
             showModal: false,
             showModalSettings: false,
-            showModalBooks: false,
             data: Constant,
             chapData: [],
             bookNo:1,
             defaultRef: 'eng_ulb'
         };
+        this.getRefContents("eng_ulb_"+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1], TodoStore.chapterId.toString());
              
     }
 
     close() {
-        this.setState({
-            showModalBooks: false
-        });
+        TodoStore.showModalBooks = false
+        
     }
 
     toggleShowModal() {
-        
-        this.setState({ showModalBooks: !this.state.showModalBooks });     
+        TodoStore.showModalBooks = true
     }
 
-     getRefContents(id, chapter) {
-        console.log(chapter)
+    getRefContents(id, chapter) {
         let refContent = refDb.get(id).then(function(doc) { //book code is hard coded for now
             for (var i = 0; i < doc.chapters.length; i++) {
                 if (doc.chapters[i].chapter == parseInt(chapter, 10)) { // 1 is chapter number and hardcoded for now
@@ -72,8 +73,9 @@ class Navbar extends React.Component {
         });
 
         refContent.then((content)=> {
-            this.setState({content: content})
-        })
+            TodoStore.bookChapterContent = content;
+            this.setState({change: "test"})
+        });
     }
 
     open() {
@@ -90,39 +92,136 @@ class Navbar extends React.Component {
 
     openpopupBooks(tab) {
         var chap = [];
-        this.setState({
-            showModalBooks: true,
-            activeTab: tab
-        });
+        TodoStore.showModalBooks = true;
+        TodoStore.activeTab = tab;
         this.getData();
     }
 
     getData(){
-        var chap = [];
         refDb.get('eng_udb_' + Constant.bookCodeList[parseInt(TodoStore.bookId, 10)-1]).then(function(doc) {
-        doc.chapters.forEach(function(ref_doc) {
-            chap.push({ number: chapter });
-        })
-        return chap
-        }).then((item)=>{
-            if(item  && item.length)
-           this.setState({ chapData: item });
+            TodoStore.bookChapter["chapterLength"] = doc.chapters.length;
+            TodoStore.bookChapter["bookId"] = TodoStore.bookId;
         }).catch(function(err){
             console.log(err);
         })
     }
 
+    onItemClick(bookNo) {
+        var id = 'eng_udb' + '_' + bookCodeList[parseInt(bookNo, 10) - 1]
+        var getData = refDb.get(id).then(function(doc) {
+            return doc.chapters.length;
+        }).catch(function(err){
+            console.log(err);
+        });
+        getData.then((length) => {
+            TodoStore.bookChapter["chapterLength"] = length;
+            TodoStore.bookChapter["bookId"] = bookNo;
+        });
+
+    }
+     
+    handleSelect(key) {
+        this.setState({key});
+    }
+    goToTab(key) {
+        var _this = this;
+        TodoStore.activeTab = key;
+        this.setState({test: key})
+    }
+
+    getValue(chapter, bookId){
+        TodoStore.chapterId = chapter;
+        TodoStore.bookId = bookId;
+        const cookiechapter = { url: 'http://chapter.autographa.com', name: 'chapter' , value: chapter.toString() };
+        session.defaultSession.cookies.set(cookiechapter, (error) => {
+            if (error)
+            console.log(error);
+        });
+        const cookieRef = { url: 'http://book.autographa.com', name: 'book' , value: bookId };
+        session.defaultSession.cookies.set(cookieRef, (error) => {
+            if (error)
+            console.log(error);
+        });
+        this.getRefContents("eng_ulb_"+Constant.bookCodeList[parseInt(bookId, 10) - 1], chapter.toString());
+        TodoStore.showModalBooks = false;
+        this.setState({change: "test"})
+    }
+    getOTList(OTbooksstart, OTbooksend) {
+        var booksOT = [];
+        for (var i = OTbooksstart; i <= OTbooksend; i++) {
+            // booksList.push(i);
+            booksOT.push(booksList[i]);
+        };
+        this.setState({data:booksOT});
+    }
+
+    getNTList(NTbooksstart, NTbooksend) {
+        var booksNT = [];
+        for (var i = NTbooksstart; i <= NTbooksend; i++) {
+            booksNT.push(booksList[i])
+        };
+        this.setState({data:booksNT});
+    }
+
+    getALLList(OTbooksstart, NTbooksend) {
+        var booksALL = [];
+        for (var i = OTbooksstart; i <= NTbooksend; i++) {
+            booksALL.push(booksList[i])
+        };
+        this.setState({data:booksALL});
+    }
+
     render() {
+
         const bookName = Constant.booksList[parseInt(TodoStore.bookId, 10) - 1]
-        let close = () => this.setState({ showModal: false, showModalSettings: false, showModalBooks: false });
+        let close = () => TodoStore.showModalBooks = false;//this.setState({ showModal: false, showModalSettings: false, showModalBooks: false });
+        const test = (this.state.activeTab == 1);
+        var chapterList = [];
+        for(var i=0; i<TodoStore.bookChapter["chapterLength"]; i++){
+            chapterList.push( <li key={i} value={i+1} ><a href="#"  onClick = { this.getValue.bind(this,  i+1, TodoStore.bookChapter["bookId"]) } >{i+1}</a></li> );
+        }
+
         return (
             <div>
-        <Modal show={this.state.showModalBooks} onHide={close} >
+        <Modal show={TodoStore.showModalBooks} onHide = {close} >
             <Modal.Header closeButton>
                 <Modal.Title>Book and Chapter</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-            <BookList store = {TodoStore} activeTab={this.state.activeTab} chapData={this.state.chapData} onModalClose={this.toggleShowModal.bind(this)} bookNo={this.state.bookNo}/>
+                <Tabs animation={false} activeKey={TodoStore.activeTab} onSelect={() =>this.goToTab(TodoStore.activeTab == 1? 2 : 1)} id="noanim-tab-example">
+             {test ? (
+            <div className="wrap-center">
+                        <div className="btn-group" role="group" aria-label="...">
+                            <button className="btn btn-primary" type="button" id="allBooksBtn" data-toggle="tooltip" data-placement="bottom" title=""onClick = { this.getALLList.bind(this, this.state.OTbooksstart, this.state.NTbooksend) } data-original-title="All">ALL</button>
+                            <button className="btn btn-primary" type="button" id="otBooksBtn" data-toggle="tooltip" data-placement="bottom" title="" onClick = { this.getOTList.bind(this, this.state.OTbooksstart, this.state.OTbooksend) } data-original-title="Old Testament">OT</button>
+                            <button className="btn btn-primary" type="button" id="ntBooksBtn" data-toggle="tooltip" data-placement="bottom" title="" onClick = { this.getNTList.bind(this, this.state.NTbooksstart, this.state.NTbooksend) } data-original-title="New Testament">NT</button>
+                        </div>          
+                    </div>
+                ) : ''
+            }
+            <Tab eventKey={1} title="Book" onClick={() => this.goToTab(2)}>
+                <div className="wrap-center"></div>
+                <div className="row books-li" id="bookdata">
+                    <ul id="books-pane">
+                        {
+
+                            Constant.booksList.map((item,index) =>{
+                                return <li key={index}><a href="#" key={index} onClick = { this.onItemClick.bind(this, index+1) } value={item}  >{item}
+                                </a></li>
+                            })
+                        }                       
+                    </ul>
+                </div>
+                <div className= "clearfix"></div>
+            </Tab>
+            <Tab eventKey={2} title="Chapters" > 
+                <div className="chapter-no">
+                    <ul id="chaptersList">
+                        { chapterList }
+                    </ul>
+                </div>
+            </Tab>
+        </Tabs>
             </Modal.Body>
         </Modal>
 
@@ -307,7 +406,7 @@ class Navbar extends React.Component {
                     </div>
                 </div>
             </nav>
-            <Contentbox  content = {this.state.content} store = {TodoStore}/>
+            <Contentbox />
         </div>
         )
     }

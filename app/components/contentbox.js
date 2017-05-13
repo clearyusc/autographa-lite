@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
- const bootstrap = require('react-bootstrap');
+const bootstrap = require('react-bootstrap');
 // const style = require("./Style");
 // const Nav = require('react-bootstrap/lib/Nav');
 // const NavItem = require('react-bootstrap/lib/NavItem');
@@ -8,23 +8,25 @@ import ReactDOM from 'react-dom';
 // const NavDropdown = require('react-bootstrap/lib/NavDropdown');
 // const MenuItem = require('react-bootstrap/lib/MenuItem');
 // const MilestoneManagement = require('./milestone_management');
- const Modal = require('react-bootstrap/lib/Modal');
- const Button = require('react-bootstrap/lib/Button');
- const Col = require('react-bootstrap/lib/Col');
- const Tabs = require('react-bootstrap/lib/Tabs');
- const Tab = require('react-bootstrap/lib/Tab');
- const Constant = require("../util/constants");
- const BookList = require("./booklist");
+const Modal = require('react-bootstrap/lib/Modal');
+const Button = require('react-bootstrap/lib/Button');
+const Col = require('react-bootstrap/lib/Col');
+const Tabs = require('react-bootstrap/lib/Tabs');
+const Tab = require('react-bootstrap/lib/Tab');
+const Constant = require("../util/constants");
+const BookList = require("./booklist");
  // const ReactSelectize = require("react-selectize");
  // const SimpleSelect = ReactSelectize.SimpleSelect;
- const refDb = require(`${__dirname}/../util/data-provider`).referenceDb();
+const refDb = require(`${__dirname}/../util/data-provider`).referenceDb();
 // <<<<<<< HEAD
 // const session = require('electron').remote.session;
 // const { dialog } = require('electron').remote;
 // =======
- const session =  require('electron').remote.session;
- import { dialog } from 'electron';
- import { remote } from 'electron';
+const session =  require('electron').remote.session;
+import { dialog } from 'electron';
+import { remote } from 'electron';
+import TodoStore from "./TodoStore"
+
 
 
 class Contentbox extends React.Component {
@@ -44,47 +46,35 @@ class Contentbox extends React.Component {
 
         refLists.then((refsArray) => {
             this.setState({refList:  refsArray});
-        })
-        console.log("test")
-        // session.defaultSession.cookies.get({ url: 'http://book.autographa.com' }, (error, bookCookie) => {
-        //     if (bookCookie.length > 0) {    
-        //         session.defaultSession.cookies.get({ url: 'http://refs.autographa.com' }, (error, cookie) => {
-        //             if (cookie.length > 0) {    
-        //                 this.getRefContents(cookie[0].value+'_'+bookCodeList[parseInt(bookCookie[0], 10) - 1]);
-        //             }else {
-        //                 this.getRefContents(this.state.defaultRef+'_'+bookCodeList[parseInt('1', 10) - 1]);
-        //             }
-        //         });  
-        //     }else {
-        //         this.getRefContents(this.state.defaultRef+'_'+bookCodeList[parseInt('1', 10) - 1]);
-        //     }
-        // });
+        });
+        this.getRefContents('eng_ulb_'+bookCodeList[parseInt(TodoStore.bookId, 10) - 1], TodoStore.chapterId);
+    }
+    getRefContents(id, chapter) {
+        let refContent = refDb.get(id).then(function(doc) { //book code is hard coded for now
+            for (var i = 0; i < doc.chapters.length; i++) {
+                if (doc.chapters[i].chapter == parseInt(chapter, 10)) { // 1 is chapter number and hardcoded for now
+                    break;
+                }
+            }
+        let refString = doc.chapters[i].verses.map(function(verse, verseNum) {
+            return '<div data-verse="r' + (verseNum + 1) + '"><span class="verse-num">' + (verseNum + 1) + '</span><span>' + verse.verse + '</span></div>';
+        }).join('');
+        return refString;
+        }).catch(function(err) {
+            console.log(err)
+        });
+
+        refContent.then((content)=> {
+            console.log(content)
+            TodoStore.bookChapterContent = content;
+        });
     }
 
     componentWillReceiveProps(nextProps) {
       this.setState({ content: nextProps.content });  
     }
 
-    // getRefContents(id) {
-    //     console.log(id);
-    //     let refContent = refDb.get(id).then(function(doc) { //book code is hard coded for now
-    //         for (var i = 0; i < doc.chapters.length; i++) {
-    //             if (doc.chapters[i].chapter == parseInt(1, 10)) { // 1 is chapter number and hardcoded for now
-    //                 break;
-    //             }
-    //         }
-    //         let refString = doc.chapters[i].verses.map(function(verse, verseNum) {
-    //             return '<div data-verse="r' + (verseNum + 1) + '"><span class="verse-num">' + (verseNum + 1) + '</span><span>' + verse.verse + '</span></div>';
-    //         }).join('');
-    //         return refString;
-    //     }).catch(function(err) {
-    //         console.log(err)
-    //     });
-
-    //     refContent.then((content)=> {
-    //         this.setState({content: content})
-    //     })
-    // }
+    
 
     handleRefChange(event) {
         session.defaultSession.cookies.get({ url: 'http://book.autographa.com' }, (error, bookCookie) => {
@@ -128,7 +118,7 @@ class Contentbox extends React.Component {
                     </div>
                     <div className="row">
                         <div type="ref" className="col-12 col-ref">
-                           <div dangerouslySetInnerHTML={{__html: this.state.content}} />
+                           <div dangerouslySetInnerHTML={{__html: TodoStore.bookChapterContent}} />
                         </div>
                     </div>
                 </div>

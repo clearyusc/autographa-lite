@@ -16,6 +16,7 @@ const Constant = require("../util/constants")
 import { dialog } from 'electron';
 import { remote } from 'electron';
 
+
 class BookList extends React.Component {
 	constructor(props) {
         super(props);
@@ -25,7 +26,6 @@ class BookList extends React.Component {
             chapterData:[],
             book: 1,
             activeTab:props.activeTab,
-            chapterData:props.chapData,
             currentChapter:1,
             onModalClose:props.onModalClose,
             bookNo:'',
@@ -73,27 +73,28 @@ class BookList extends React.Component {
 	}
 
 	goToTab(key) {
+		var _this = this;
 		this.setState({activeTab:key});
 		var chap = [];
-		const cookieRef = { url: 'http://book.autographa.com', name: 'book' , value: this.props.bookId };
+		const cookieRef = { url: 'http://book.autographa.com', name: 'book' , value: this.props.store.bookId };
         session.defaultSession.cookies.set(cookieRef, (error) => {
             if (error)
             console.log(error);
         });
-		var id = 'eng_udb' + '_' + bookCodeList[parseInt(this.props.store.bookId, 10) - 1]
-		var getData = refDb.get(id).then(function(doc) {
-			doc.chapters.forEach(function(ref_doc) {
-		    	chap.push({ number: chapter });
+        
+        	console.log("key"+key)
+        	var id = 'eng_udb' + '_' + bookCodeList[parseInt(this.props.store.bookId, 10) - 1]
+			var getData = refDb.get(id).then(function(doc) {
+				return doc.chapters.length;
+			}).catch(function(err){
+				console.log(err);
 			})
-			return chap
-		}).catch(function(err){
-			console.log(err);
-		})
 
-		getData.then((item) =>{
-			if(item  && item.length)
-			this.setState({chapterData:item})
-		})
+			getData.then((length) => {
+				console.log(length)
+				_this.props.store.chapterLength = length;
+			});
+        // console.log(this.props.store.chapterLength)
 	}
 
 	getValue(chapter){
@@ -106,10 +107,17 @@ class BookList extends React.Component {
 		this.state.onModalClose();
 	}
 
-	render() {		
-	 const { bookId } = this.props.store;
-	 console.log(this.state.chapterData)
- 	const test = (this.state.activeTab == 1);
+	render() {
+
+	 	const { bookId } = this.props.store;
+	 	const { chapterLength } = this.props.store;
+	 	console.log(chapterLength)
+ 		const test = (this.state.activeTab == 1);
+ 		var chapterList = [];
+ 		for(var i=0; i<chapterLength; i++){
+			chapterList.push( <li key={i} value={i+1} ><a href="#" className={(i+1 == this.props.store.chapterId) ? 'link-active': ""} onClick = { this.getValue.bind(this,  i+1) } >{i+1}</a></li> );
+		}
+
 	    return ( 
 	    <Tabs animation={false} activeKey={this.state.activeTab} onSelect={() =>this.goToTab((this.state.activeTab == 1) ? 2 : 1)} id="noanim-tab-example">
 		     {test ? (
@@ -141,10 +149,7 @@ class BookList extends React.Component {
 		    	<div className="chapter-no">
             		<ul id="chaptersList">
             			{
-            				this.state.chapterData ? 
-            					this.state.chapterData.map((item, i) => {
-									return ( <li key={i} value={i+1} ><a href="#" className={(i+1 == global.bookChapter) ? 'link-active': ""} onClick = { this.getValue.bind(this,  i+1) } >{i+1}</a></li> );
-								})  : ''
+            				chapterList
             			}
             		</ul>
             	</div>
