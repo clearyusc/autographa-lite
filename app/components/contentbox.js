@@ -1,13 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 const bootstrap = require('react-bootstrap');
-// const style = require("./Style");
-// const Nav = require('react-bootstrap/lib/Nav');
-// const NavItem = require('react-bootstrap/lib/NavItem');
-// const Navbar = require('react-bootstrap/lib/Navbar');
-// const NavDropdown = require('react-bootstrap/lib/NavDropdown');
-// const MenuItem = require('react-bootstrap/lib/MenuItem');
-// const MilestoneManagement = require('./milestone_management');
 const Modal = require('react-bootstrap/lib/Modal');
 const Button = require('react-bootstrap/lib/Button');
 const Col = require('react-bootstrap/lib/Col');
@@ -15,13 +8,7 @@ const Tabs = require('react-bootstrap/lib/Tabs');
 const Tab = require('react-bootstrap/lib/Tab');
 const Constant = require("../util/constants");
 const BookList = require("./booklist");
- // const ReactSelectize = require("react-selectize");
- // const SimpleSelect = ReactSelectize.SimpleSelect;
 const refDb = require(`${__dirname}/../util/data-provider`).referenceDb();
-// <<<<<<< HEAD
-// const session = require('electron').remote.session;
-// const { dialog } = require('electron').remote;
-// =======
 const session =  require('electron').remote.session;
 import { dialog } from 'electron';
 import { remote } from 'electron';
@@ -49,7 +36,9 @@ class Contentbox extends React.Component {
         });
         this.getRefContents('eng_ulb_'+bookCodeList[parseInt(TodoStore.bookId, 10) - 1], TodoStore.chapterId);
     }
+
     getRefContents(id, chapter) {
+        console.log(chapter)
         let refContent = refDb.get(id).then(function(doc) { //book code is hard coded for now
             for (var i = 0; i < doc.chapters.length; i++) {
                 if (doc.chapters[i].chapter == parseInt(chapter, 10)) { // 1 is chapter number and hardcoded for now
@@ -65,7 +54,6 @@ class Contentbox extends React.Component {
         });
 
         refContent.then((content)=> {
-            console.log(content)
             TodoStore.bookChapterContent = content;
         });
     }
@@ -73,9 +61,6 @@ class Contentbox extends React.Component {
     componentWillReceiveProps(nextProps) {
       this.setState({ content: nextProps.content });  
     }
-
-    
-
     handleRefChange(event) {
         session.defaultSession.cookies.get({ url: 'http://book.autographa.com' }, (error, bookCookie) => {
             if(bookCookie.length > 0){
@@ -91,7 +76,7 @@ class Contentbox extends React.Component {
                 console.log(error);
         });
     }
-  
+
 	render (){
 		return (
 		<div className="container-fluid">

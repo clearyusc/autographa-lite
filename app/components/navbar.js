@@ -21,14 +21,9 @@ const BookList = require("./booklist");
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import { observer } from "mobx-react"
-
-
 import TodoStore from "./TodoStore"
 import Contentbox  from '../components/contentbox';
- // import {Tabs, Tab} from 'material-ui/Tabs';
- // const Tabsreact = require('react-bootstrap/lib/Tabs');
- // const Tabreact = require('react-bootstrap/lib/Tabs');
- const injectTapEventPlugin = require("react-tap-event-plugin");
+const injectTapEventPlugin = require("react-tap-event-plugin");
 injectTapEventPlugin();
 
 @observer
@@ -44,7 +39,27 @@ class Navbar extends React.Component {
             bookNo:1,
             defaultRef: 'eng_ulb'
         };
-        this.getRefContents("eng_ulb_"+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1], TodoStore.chapterId.toString());
+        session.defaultSession.cookies.get({ url: 'http://book.autographa.com' }, (error, bookCookie) => {
+            if(bookCookie.length > 0){
+                TodoStore.bookId = bookCookie[0].value;
+                session.defaultSession.cookies.get({ url: 'http://chapter.autographa.com' }, (error, chapterCookie) => {
+                  if(chapterCookie[0].value){
+                    TodoStore.chapterId = chapterCookie[0].value;
+                    this.getRefContents("eng_ulb_"+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1], TodoStore.chapterId.toString());
+                  }else{
+                    TodoStore.chapterId = '1';
+                    this.getRefContents("eng_ulb_"+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1], TodoStore.chapterId.toString());
+
+                  }
+                })
+            }else{
+                TodoStore.bookId = '1';
+                TodoStore.chapterId = '1';
+                this.getRefContents("eng_ulb_"+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1], TodoStore.chapterId.toString());
+
+            }
+        });
+        
              
     }
 
@@ -94,6 +109,8 @@ class Navbar extends React.Component {
         var chap = [];
         TodoStore.showModalBooks = true;
         TodoStore.activeTab = tab;
+        TodoStore.bookActive = TodoStore.bookId;
+        TodoStore.chapterActive = TodoStore.chapterId;
         this.getData();
     }
 
@@ -107,6 +124,8 @@ class Navbar extends React.Component {
     }
 
     onItemClick(bookNo) {
+        TodoStore.bookActive = bookNo;
+        TodoStore.chapterActive = 0;
         var id = 'eng_udb' + '_' + bookCodeList[parseInt(bookNo, 10) - 1]
         var getData = refDb.get(id).then(function(doc) {
             return doc.chapters.length;
@@ -137,7 +156,7 @@ class Navbar extends React.Component {
             if (error)
             console.log(error);
         });
-        const cookieRef = { url: 'http://book.autographa.com', name: 'book' , value: bookId };
+        const cookieRef = { url: 'http://book.autographa.com', name: 'book' , value: bookId.toString() };
         session.defaultSession.cookies.set(cookieRef, (error) => {
             if (error)
             console.log(error);
@@ -172,13 +191,12 @@ class Navbar extends React.Component {
     }
 
     render() {
-
         const bookName = Constant.booksList[parseInt(TodoStore.bookId, 10) - 1]
         let close = () => TodoStore.showModalBooks = false;//this.setState({ showModal: false, showModalSettings: false, showModalBooks: false });
         const test = (this.state.activeTab == 1);
         var chapterList = [];
         for(var i=0; i<TodoStore.bookChapter["chapterLength"]; i++){
-            chapterList.push( <li key={i} value={i+1} ><a href="#"  onClick = { this.getValue.bind(this,  i+1, TodoStore.bookChapter["bookId"]) } >{i+1}</a></li> );
+            chapterList.push( <li key={i} value={i+1} ><a href="#"  className={(i+1 == TodoStore.chapterActive) ? 'link-active': ""} onClick = { this.getValue.bind(this,  i+1, TodoStore.bookChapter["bookId"]) } >{i+1}</a></li> );
         }
 
         return (
@@ -206,7 +224,7 @@ class Navbar extends React.Component {
                         {
 
                             Constant.booksList.map((item,index) =>{
-                                return <li key={index}><a href="#" key={index} onClick = { this.onItemClick.bind(this, index+1) } value={item}  >{item}
+                                return <li key={index}><a href="#" key={index} onClick = { this.onItemClick.bind(this, index+1) } value={item} className={( TodoStore.bookActive == index + 1 ) ? 'link-active': ""}  >{item}
                                 </a></li>
                             })
                         }                       
