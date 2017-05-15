@@ -145,7 +145,6 @@ class Navbar extends React.Component {
     goToTab(key) {
         var _this = this;
         TodoStore.activeTab = key;
-        this.setState({test: key})
     }
 
     getValue(chapter, bookId){
@@ -163,7 +162,6 @@ class Navbar extends React.Component {
         });
         this.getRefContents("eng_ulb_"+Constant.bookCodeList[parseInt(bookId, 10) - 1], chapter.toString());
         TodoStore.showModalBooks = false;
-        this.setState({change: "test"})
     }
     getOTList(OTbooksstart, OTbooksend) {
         var booksOT = [];
