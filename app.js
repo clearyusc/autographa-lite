@@ -1,7 +1,9 @@
 (function() {
   require("babel-register")({
     extensions: [".js", ".jsx"],
-    presets: ['es2015', 'react']
+    presets: ['es2015', 'react'],
+    plugins: ['transform-decorators-legacy', 'transform-class-properties']
+
   });
 
   
