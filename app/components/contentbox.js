@@ -34,9 +34,7 @@ class Contentbox extends React.Component {
         refLists.then((refsArray) => {
             this.setState({refList:  refsArray});
         });
-
     
-
     session.defaultSession.cookies.get({ url: 'http://refs.autographa.com' }, (error, refCookie) => {
             if(refCookie.length > 0){
                 TodoStore.refId = refCookie[0].value;
