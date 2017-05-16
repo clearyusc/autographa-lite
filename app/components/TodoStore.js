@@ -4,6 +4,7 @@ const session =  require('electron').remote.session
 export class TodoStore {
   @observable bookId = '1'
   @observable chapterId = '1'
+  @observable refId = 'eng_ulb'
   @observable bookChapter = { bookId: 0, chapterLength: 0 }
   @observable activeTab = 1
   @observable showModalBooks = false

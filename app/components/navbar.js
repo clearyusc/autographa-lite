@@ -39,28 +39,36 @@ class Navbar extends React.Component {
             bookNo:1,
             defaultRef: 'eng_ulb'
         };
-        session.defaultSession.cookies.get({ url: 'http://book.autographa.com' }, (error, bookCookie) => {
-            if(bookCookie.length > 0){
-                TodoStore.bookId = bookCookie[0].value;
-                session.defaultSession.cookies.get({ url: 'http://chapter.autographa.com' }, (error, chapterCookie) => {
-                  if(chapterCookie[0].value){
-                    TodoStore.chapterId = chapterCookie[0].value;
-                    this.getRefContents("eng_ulb_"+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1], TodoStore.chapterId.toString());
-                  }else{
+         session.defaultSession.cookies.get({ url: 'http://refs.autographa.com' }, (error, refCookie) => {
+            if(refCookie.length > 0){
+                TodoStore.refId = refCookie[0].value;
+                session.defaultSession.cookies.get({ url: 'http://book.autographa.com' }, (error, bookCookie) => {
+                if(bookCookie.length > 0){
+                    TodoStore.bookId = bookCookie[0].value;
+                    session.defaultSession.cookies.get({ url: 'http://chapter.autographa.com' }, (error, chapterCookie) => {
+                      if(chapterCookie[0].value){
+                        TodoStore.chapterId = chapterCookie[0].value;
+                        this.getRefContents(TodoStore.refId+'_'+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1], TodoStore.chapterId.toString());
+                      }else{
+                        TodoStore.chapterId = '1';
+                        this.getRefContents(TodoStore.refId+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1], TodoStore.chapterId.toString());
+
+                      }
+                    })
+                }else{
+                    TodoStore.bookId = '1';
                     TodoStore.chapterId = '1';
                     this.getRefContents("eng_ulb_"+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1], TodoStore.chapterId.toString());
 
-                  }
-                })
+                }
+            });  
             }else{
                 TodoStore.bookId = '1';
                 TodoStore.chapterId = '1';
-                this.getRefContents("eng_ulb_"+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1], TodoStore.chapterId.toString());
-
+                TodoStore.refId = 'eng_ulb_';
+                this.getRefContents(TodoStore.refId+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1], TodoStore.chapterId.toString());
             }
         });
-        
-             
     }
 
     close() {
@@ -73,6 +81,7 @@ class Navbar extends React.Component {
     }
 
     getRefContents(id, chapter) {
+        console.log(id+chapter);
         let refContent = refDb.get(id).then(function(doc) { //book code is hard coded for now
             for (var i = 0; i < doc.chapters.length; i++) {
                 if (doc.chapters[i].chapter == parseInt(chapter, 10)) { // 1 is chapter number and hardcoded for now
@@ -160,7 +169,13 @@ class Navbar extends React.Component {
             if (error)
             console.log(error);
         });
-        this.getRefContents("eng_ulb_"+Constant.bookCodeList[parseInt(bookId, 10) - 1], chapter.toString());
+        session.defaultSession.cookies.get({ url: 'http://refs.autographa.com' }, (error, refCookie) => {
+            if(refCookie.length > 0){
+                this.getRefContents(refCookie[0].value+'_'+bookCodeList[parseInt(bookId, 10) - 1],chapter.toString())
+            }else{
+                this.getRefContents('eng_ulb'+'_'+bookCodeList[parseInt(bookId, 10) - 1],chapter.toString())
+            }    
+        })
         TodoStore.showModalBooks = false;
     }
     getOTList(OTbooksstart, OTbooksend) {
@@ -196,7 +211,6 @@ class Navbar extends React.Component {
         for(var i=0; i<TodoStore.bookChapter["chapterLength"]; i++){
             chapterList.push( <li key={i} value={i+1} ><a href="#"  className={(i+1 == TodoStore.chapterActive) ? 'link-active': ""} onClick = { this.getValue.bind(this,  i+1, TodoStore.bookChapter["bookId"]) } >{i+1}</a></li> );
         }
-
         return (
             <div>
         <Modal show={TodoStore.showModalBooks} onHide = {close} >
