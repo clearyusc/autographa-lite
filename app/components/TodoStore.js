@@ -10,6 +10,7 @@ export class TodoStore {
   @observable bookChapterContent = ''
   @observable bookActive = 1;
   @observable chapterActive = 1;
+  @observable currentRef = 'eng_ulb'
 
   constructor(bookId, chapterId, bookChapter, activeTab, showModalBooks, bookChapterContent){
 

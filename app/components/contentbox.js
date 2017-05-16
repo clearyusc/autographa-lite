@@ -34,7 +34,7 @@ class Contentbox extends React.Component {
         refLists.then((refsArray) => {
             this.setState({refList:  refsArray});
         });
-        this.getRefContents('eng_ulb_'+bookCodeList[parseInt(TodoStore.bookId, 10) - 1], TodoStore.chapterId);
+        this.getRefContents(TodoStore.currentRef+"_"+bookCodeList[parseInt(TodoStore.bookId, 10) - 1], TodoStore.chapterId);
     }
 
     getRefContents(id, chapter) {

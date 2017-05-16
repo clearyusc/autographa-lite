@@ -45,17 +45,17 @@ class Navbar extends React.Component {
                 session.defaultSession.cookies.get({ url: 'http://chapter.autographa.com' }, (error, chapterCookie) => {
                   if(chapterCookie[0].value){
                     TodoStore.chapterId = chapterCookie[0].value;
-                    this.getRefContents("eng_ulb_"+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1], TodoStore.chapterId.toString());
+                    this.getRefContents(TodoStore.currentRef+"_"+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1], TodoStore.chapterId.toString());
                   }else{
                     TodoStore.chapterId = '1';
-                    this.getRefContents("eng_ulb_"+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1], TodoStore.chapterId.toString());
+                    this.getRefContents(TodoStore.currentRef+"_"+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1], TodoStore.chapterId.toString());
 
                   }
                 })
             }else{
                 TodoStore.bookId = '1';
                 TodoStore.chapterId = '1';
-                this.getRefContents("eng_ulb_"+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1], TodoStore.chapterId.toString());
+                this.getRefContents(TodoStore.currentRef+"_"+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1], TodoStore.chapterId.toString());
 
             }
         });
@@ -115,7 +115,7 @@ class Navbar extends React.Component {
     }
 
     getData(){
-        refDb.get('eng_udb_' + Constant.bookCodeList[parseInt(TodoStore.bookId, 10)-1]).then(function(doc) {
+        refDb.get(TodoStore.currentRef +"_"+ Constant.bookCodeList[parseInt(TodoStore.bookId, 10)-1]).then(function(doc) {
             TodoStore.bookChapter["chapterLength"] = doc.chapters.length;
             TodoStore.bookChapter["bookId"] = TodoStore.bookId;
         }).catch(function(err){
@@ -126,7 +126,7 @@ class Navbar extends React.Component {
     onItemClick(bookNo) {
         TodoStore.bookActive = bookNo;
         TodoStore.chapterActive = 0;
-        var id = 'eng_udb' + '_' + bookCodeList[parseInt(bookNo, 10) - 1]
+        var id = TodoStore.currentRef + '_' + bookCodeList[parseInt(bookNo, 10) - 1]
         var getData = refDb.get(id).then(function(doc) {
             return doc.chapters.length;
         }).catch(function(err){
@@ -160,7 +160,7 @@ class Navbar extends React.Component {
             if (error)
             console.log(error);
         });
-        this.getRefContents("eng_ulb_"+Constant.bookCodeList[parseInt(bookId, 10) - 1], chapter.toString());
+        this.getRefContents(TodoStore.currentRef+"_"+Constant.bookCodeList[parseInt(bookId, 10) - 1], chapter.toString());
         TodoStore.showModalBooks = false;
     }
     getOTList(OTbooksstart, OTbooksend) {
