@@ -81,7 +81,6 @@ class Navbar extends React.Component {
     }
 
     getRefContents(id, chapter) {
-        console.log(id+chapter);
         let refContent = refDb.get(id).then(function(doc) { //book code is hard coded for now
             for (var i = 0; i < doc.chapters.length; i++) {
                 if (doc.chapters[i].chapter == parseInt(chapter, 10)) { // 1 is chapter number and hardcoded for now
