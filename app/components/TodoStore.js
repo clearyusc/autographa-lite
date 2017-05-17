@@ -8,6 +8,8 @@ export class TodoStore {
   @observable bookChapter = { bookId: 0, chapterLength: 0 }
   @observable activeTab = 1
   @observable showModalBooks = false
+  @observable showModalSettings = false
+  @observable showModalAboutUs = false
   @observable bookChapterContent = ''
   @observable chunkGroup = ''
   @observable content = ''
