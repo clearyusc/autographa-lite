@@ -70,7 +70,6 @@ class Contentbox extends React.Component {
     }
 
     getRefContents(id, chapter) {
-        console.log(id, chapter)
         let refContent = refDb.get(id).then(function(doc) { //book code is hard coded for now
             for (var i = 0; i < doc.chapters.length; i++) {
                 if (doc.chapters[i].chapter == parseInt(chapter, 10)) { // 1 is chapter number and hardcoded for now
@@ -112,7 +111,16 @@ class Contentbox extends React.Component {
     }
 
 	render (){
+
+        var verseGroup = [];
+        for (var i = 0; i < TodoStore.chunkGroup.length; i++) {
+                // console.log(i)
+                verseGroup.push(<div key={i}><span className='verse-num' key={i}>{i+1}</span><span  contentEditable={true} data-chunk-group={TodoStore.chunkGroup[i]} ></span></div>);
+            // console.log(chunkGroup)
+        }
+
         const refContent = TodoStore.content 
+
 		return (
 		<div className="container-fluid">
             <div className="row row-col-fixed rmvflex" style={{display: 'flex'}}>
@@ -150,8 +158,8 @@ class Contentbox extends React.Component {
                     </div>
                     <div className="row">
                     <div id="input-verses" className="col-12 col-ref">
+                        {verseGroup}
                         </div>
-
                     </div>
                 </div>
             </div>

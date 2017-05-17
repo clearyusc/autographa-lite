@@ -1,5 +1,6 @@
 import { computed, observable } from "mobx"
 const session =  require('electron').remote.session
+const Constant = require("../util/constants");
 
 export class TodoStore {
   @observable bookId = '1'
@@ -16,9 +17,9 @@ export class TodoStore {
   @observable bookActive = 1;
   @observable chapterActive = 1
   @observable currentRef = 'eng_ulb'
+  @observable bookData = Constant.booksList
 
-
-  constructor(bookId, chapterId, bookChapter, activeTab, showModalBooks, bookChapterContent,content){
+  constructor(bookId, chapterId, bookChapter, activeTab, showModalBooks, bookChapterContent, chunkGroup, content, currentRef, booksList){
 
   }  
 }
