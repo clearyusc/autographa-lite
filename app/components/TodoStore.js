@@ -10,20 +10,13 @@ export class TodoStore {
   @observable showModalBooks = false
   @observable bookChapterContent = ''
   @observable chunkGroup = ''
+  @observable content = ''
   @observable bookActive = 1;
-  @observable chapterActive = 1;
+  @observable chapterActive = 1
   @observable currentRef = 'eng_ulb'
-  @observable booksOT = ''
-  @observable booksNT = ''
-  @observable booksALL = ''
-  @observable OTbooksstart = 0;
-  @observable OTbooksend = 38;
-  @observable NTbooksstart= 39;
-  @observable NTbooksend= 65;
-  // @observable booksList= '';
 
-  constructor(bookId, chapterId, bookChapter, activeTab, showModalBooks, bookChapterContent,chunkGroup, booksOT, booksNT, booksALL, OTbooksstart,
-    OTbooksend, NTbooksstart, NTbooksend, booksList){
+
+  constructor(bookId, chapterId, bookChapter, activeTab, showModalBooks, bookChapterContent,chunkGroup,content){
 
   }  
 }

@@ -148,8 +148,7 @@ class Navbar extends React.Component {
         });
 
         refContent.then((content)=> {
-            TodoStore.bookChapterContent = content;
-            this.setState({change: "test"})
+           TodoStore.content = content;
         });
 
          var i;
@@ -290,6 +289,7 @@ class Navbar extends React.Component {
 
         TodoStore.showModalBooks = false;
     }
+
     getOTList(OTbooksstart, OTbooksend) {
         var booksOT = [];
         for (var i = OTbooksstart; i <= OTbooksend; i++) {
@@ -318,6 +318,7 @@ class Navbar extends React.Component {
     }
 
     render() {
+         const refContent = TodoStore.content 
         const bookName = Constant.booksList[parseInt(TodoStore.bookId, 10) - 1]
         // console.log(bookName)
         let close = () => TodoStore.showModalBooks = false;//this.setState({ showModal: false, showModalSettings: false, showModalBooks: false });

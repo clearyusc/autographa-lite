@@ -12,16 +12,18 @@ const refDb = require(`${__dirname}/../util/data-provider`).referenceDb();
 const session =  require('electron').remote.session;
 import { dialog } from 'electron';
 import { remote } from 'electron';
+import { observer } from "mobx-react"
 import TodoStore from "./TodoStore"
 
 
-
+@observer
 class Contentbox extends React.Component {
     constructor(props) {
         super(props);
         this.handleRefChange = this.handleRefChange.bind(this);
         // this.getRefContents = this.getRefContents.bind(this);
         this.state = { refList: [], verses: [], content: '',defaultRef: 'eng_ulb' }
+        
         var existRef = [];
         var i
         var refLists = refDb.get('refs').then(function(doc) {
@@ -68,6 +70,7 @@ class Contentbox extends React.Component {
     }
 
     getRefContents(id, chapter) {
+        console.log(id, chapter)
         let refContent = refDb.get(id).then(function(doc) { //book code is hard coded for now
             for (var i = 0; i < doc.chapters.length; i++) {
                 if (doc.chapters[i].chapter == parseInt(chapter, 10)) { // 1 is chapter number and hardcoded for now
@@ -82,13 +85,23 @@ class Contentbox extends React.Component {
             console.log(err)
         });
         refContent.then((content)=> {
-            TodoStore.bookChapterContent = content;
-            this.setState({change: "test"})
+             TodoStore.content = content;
         });
     }
+
+/*    componentWillReceiveProps(nextProps) {
+      this.setState({ content: nextProps.content });  
+    }*/
     handleRefChange(event) {
         event.persist()
-        this.getRefContents(event.target.value+'_'+bookCodeList[parseInt(TodoStore.bookId, 10) - 1],TodoStore.chapterId)
+        session.defaultSession.cookies.get({ url: 'http://book.autographa.com' }, (error, bookCookie) => {
+            if(bookCookie.length > 0){
+                console.log(event.target.value+'_'+bookCodeList[parseInt(bookCookie[0].value, 10) - 1]);
+                this.getRefContents(event.target.value+'_'+bookCodeList[parseInt(bookCookie[0].value, 10) - 1],TodoStore.chapterId)
+            }else{
+                this.getRefContents(event.target.value+'_'+bookCodeList[parseInt('1', 10) - 1],TodoStore.chapterId)
+            }    
+        })
         TodoStore.refId = event.target.value;
         this.setState({defaultRef: event.target.value})
         var cookieRef = { url: 'http://refs.autographa.com', name: '0' , value: event.target.value };
@@ -100,12 +113,16 @@ class Contentbox extends React.Component {
     }
 
 	render (){
+
         var verseGroup = [];
         for (var i = 0; i < TodoStore.chunkGroup.length; i++) {
                 // console.log(i)
                 verseGroup.push(<div key={i}><span className='verse-num' key={i}>{i+1}</span><span  contentEditable={true} data-chunk-group={TodoStore.chunkGroup[i]} ></span></div>);
             // console.log(chunkGroup)
         }
+
+        const refContent = TodoStore.content 
+
 		return (
 		<div className="container-fluid">
             <div className="row row-col-fixed rmvflex" style={{display: 'flex'}}>
@@ -131,7 +148,7 @@ class Contentbox extends React.Component {
                     </div>
                     <div className="row">
                         <div type="ref" className="col-12 col-ref">
-                           <div dangerouslySetInnerHTML={{__html: TodoStore.bookChapterContent}} />
+                           <div dangerouslySetInnerHTML={{__html: refContent}}></div>
                         </div>
                     </div>
                 </div>
