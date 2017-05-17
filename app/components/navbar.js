@@ -1,12 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-// const style = require("./Style");
- const Nav = require('react-bootstrap/lib/Nav');
- const NavItem = require('react-bootstrap/lib/NavItem');
-// const Navbar = require('react-bootstrap/lib/Navbar');
-// const NavDropdown = require('react-bootstrap/lib/NavDropdown');
-// const MenuItem = require('react-bootstrap/lib/MenuItem');
-// const MilestoneManagement = require('./milestone_management');
+const Nav = require('react-bootstrap/lib/Nav');
+const NavItem = require('react-bootstrap/lib/NavItem');
 const Modal = require('react-bootstrap/lib/Modal');
 const Button = require('react-bootstrap/lib/Button');
 const Col = require('react-bootstrap/lib/Col');
@@ -15,10 +10,10 @@ const Grid = require('react-bootstrap/lib/Grid')
 const Tabs = require('react-bootstrap/lib/Tabs');
 const Tab = require('react-bootstrap/lib/Tab');
 const Constant = require("../util/constants");
-import TextField from 'material-ui/TextField';
-import RaisedButton from 'material-ui/RaisedButton';
-import { observer } from "mobx-react";
-import TodoStore from "./TodoStore";
+import { observer } from "mobx-react"
+import TodoStore from "./TodoStore"
+import SettingsModal from "./settings"
+import AboutUsModal from "./about"
 import Contentbox  from '../components/contentbox';
 const refDb = require(`${__dirname}/../util/data-provider`).referenceDb();
 const db = require(`${__dirname}/../util/data-provider`).targetDb();
@@ -118,15 +113,6 @@ class Navbar extends React.Component {
         });
     }
 
-    close() {
-        TodoStore.showModalBooks = false
-        
-    }
-
-    toggleShowModal() {
-        TodoStore.showModalBooks = true
-    }
-
     getRefContents(id,chapter,verses, chunks) {
         let refContent = refDb.get(id).then(function(doc) { //book code is hard coded for now
             for (var i = 0; i < doc.chapters.length; i++) {
@@ -182,16 +168,12 @@ class Navbar extends React.Component {
 
     }
 
-    open() {
-        this.setState({
-            showModal: true
-        });
+    openpopupSettings() {
+        TodoStore.showModalSettings = true
     }
 
-    openpopup() {
-        this.setState({
-            showModalSettings: true
-        });
+    openpopupAboutUs() {
+        TodoStore.showModalAboutUs = true
     }
 
     openpopupBooks(tab) {
@@ -295,7 +277,6 @@ class Navbar extends React.Component {
         };
         // this.setState({data:booksCategory});
         TodoStore.bookData = booksCategory;
-
     }
 
     render() {
@@ -306,14 +287,14 @@ class Navbar extends React.Component {
         const bookData = TodoStore.bookData
         const refContent = TodoStore.content 
         const bookName = Constant.booksList[parseInt(TodoStore.bookId, 10) - 1]
-        console.log(TodoStore.bookName);
         let close = () => TodoStore.showModalBooks = false;//this.setState({ showModal: false, showModalSettings: false, showModalBooks: false });
         const test = (TodoStore.activeTab == 1);
+
         var chapterList = [];
         for(var i=0; i<TodoStore.bookChapter["chapterLength"]; i++){
             chapterList.push( <li key={i} value={i+1} ><a href="#"  className={(i+1 == TodoStore.chapterActive) ? 'link-active': ""} onClick = { this.getValue.bind(this,  i+1, TodoStore.bookChapter["bookId"]) } >{i+1}</a></li> );
         }
-        return (
+        return  (
             <div>
         <Modal show={TodoStore.showModalBooks} onHide = {close} >
             <Modal.Header closeButton>
@@ -357,144 +338,8 @@ class Navbar extends React.Component {
             </Modal.Body>
         </Modal>
 
-        <Modal show={this.state.showModalSettings} onHide={close} id="tab-settings">
-          <Modal.Header closeButton>
-            <Modal.Title>Settings</Modal.Title>
-                <div className="alert alert-success" role="alert" style= {{display: "none"}}><span>You successfully read this important alert message.</span></div>
-                <div className="alert alert-danger" role="alert" style= {{display: "none", position: "relative"}}><span>Change a few things up and try submitting again.</span></div>
-          </Modal.Header>
-          <Modal.Body>
-             <Tab.Container id="left-tabs-example" defaultActiveKey="first">
-                <Row className="clearfix">
-                    <Col sm={4}>
-                        <Nav bsStyle="pills" stacked>
-                          <NavItem eventKey="first">
-                            Translation Details
-                          </NavItem>
-                          <NavItem eventKey="second">
-                            Import Translation
-                          </NavItem>
-                          <NavItem eventKey="third">
-                            Import Reference Text
-                          </NavItem>
-                          <NavItem eventKey="fourth">
-                            Manage Reference Texts
-                          </NavItem>
-                        </Nav>
-                    </Col>
-                    <Col sm={8}>
-                        <Tab.Content animation>
-                          <Tab.Pane eventKey="first">
-                            <div className="form-group">
-                                   <label htmlFor="ref-lang-code">Language Code</label><br />
-                                {/*<input type="text" id="ref-lang-code" placeholder="eng" />*/}
-                                    <TextField hintText="eng" />
-                                </div>
-                                 <div id="reference-lang-result" className="lang-code">
-                                 <input type="hidden" id="langCode" />
-                                </div>
-                               <div className="form-group">
-                                    <label>Version</label><br />
-                                    {/*<input type="text" id="ref-version" placeholder="NET-S3" />*/}
-                                    <TextField hintText="NET-S3" />
-                                </div>
-                           <div className="form-group">
-                                    <label htmlFor="ref-path">Path to Folder Location</label><br />
-                                    {/*<input type="text" id="ref-path" placeholder="Path of folder containing USFM files" />*/}
-                                    <TextField hintText="Path of folder containing USFM files" />
-                          </div>
-                        {/*<button style={{float:"right", marginRight: "33px"}} className="btn btn-success" id="save-settings">Save</button>*/}
-                        <RaisedButton label="Save" primary={true}/>  
-                          </Tab.Pane>
-                          <Tab.Pane eventKey="second">
-                             <div className="form-group">
-                                <label>Folder Location</label><br />
-                                {/*<input type="text" id="ref-path" placeholder="Path of folder containing USFM files" />*/}
-                                <TextField hintText="Path of folder containing USFM files" />
-                            </div>
-                          </Tab.Pane>
-                          <Tab.Pane eventKey="third">
-                            <div className="form-group">
-                                <div >
-                                    <label htmlFor="ref-name">Bible name</label><br />
-                                    {/*<input  className="mdl-textfield__input" type="text" id="ref-name" placeholder="New English Translation" />*/}
-                                    <TextField hintText="New English Translation" />
-
-                                </div>
-            
-                                <div >
-                                   <label htmlFor="ref-lang-code">Language Code</label><br />
-                                   {/*<input type="text" id="ref-lang-code" placeholder="eng" />*/}  
-                                   <TextField hintText="eng" />
-                                </div>
-                                <div id="reference-lang-result" className="lang-code"></div>
-                                <input type="hidden" id="langCode" />
-            
-                                <div >
-                                    <label  htmlFor="version">Version</label><br />
-                                    {/*<input type="text" id="ref-version" placeholder="NET-S3" />*/}
-                                    <TextField hintText="NET-S3" />
-                                </div>
-            
-                                <div >
-                                    <label htmlFor="ref-path">Folder Location</label><br />
-                                    {/*<input type="text" id="ref-path" placeholder="Path of folder containing USFM files" />*/}
-                                    <TextField hintText="Path of folder containing USFM files" />
-                                </div>
-                                {/*<button style={{float:"right", marginRight: "33px"}} class="btn btn-success" id="ref-import-btn">Import</button>*/}
-                                <RaisedButton label="Import" primary={true}/>
-                            </div>
-                          </Tab.Pane>
-                          <Tab.Pane eventKey="fourth">
-                            <div>
-                                <table className="table table-bordered table-hover table-striped">
-                                    <th>Name</th>
-                                    <th>Language Code</th>
-                                    <th>Version</th>
-                                    <th>Action</th>
-                                    <tbody id="reference-list">
-                                    </tbody>
-                                </table>
-                            </div>
-                          </Tab.Pane>
-                        </Tab.Content>
-                    </Col>
-                </Row>
-            </Tab.Container>
-          </Modal.Body>
-        </Modal>
-         <Modal show={this.state.showModal} onHide={close} id="tab-about">
-          <Modal.Header closeButton>
-            <Modal.Title>About</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-          <Tabs defaultActiveKey={1} id="uncontrolled-tab-example">
-                <Tab eventKey={1} title="Overview"><div className="row">
-                    <div className="col-xs-6">
-                            <img src="../assets/images/autographa_lite_large.png" className="img-circle" alt="Cinque Terre" width="215" height="200" />
-                        </div>
-                        <div className="col-xs-6">
-                            <h3>Autographa Lite</h3>
-                            <p>Version 0.1</p>
-                            <p>Source code hosted at: https://github.com/Bridgeconn/autographa-lite</p>
-                        </div>
-                    </div>
-                </Tab>
-                <Tab eventKey={2} title="License">
-                    <div style={{overflowY: "scroll", height: "255px"}}>
-                        <h4> The MIT License (MIT)</h4>
-                            <p>Released in 2017 by Friends of Agape (www.friendsofagape.org) in partnership with RUN Ministries (www.runministries.org). </p>
-                            <br />
-                            <p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</p>
-                            <p>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.</p>
-                            <p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
-                    </div>
-                </Tab>
-          </Tabs>
-          
-           
-          </Modal.Body>
-        </Modal>
+         <SettingsModal show={TodoStore.showModalSettings} />
+         <AboutUsModal show={TodoStore.showModalAboutUs} />
             <nav className="navbar navbar-inverse navbar-fixed-top" role="navigation">
                 <div className="container-fluid">
                     <div className="navbar-header">
@@ -531,9 +376,9 @@ class Navbar extends React.Component {
                                 </a>
                             </li>
                             <li>
-                                <a onClick={() => this.open()} href="#" data-target="#aboutmodal" data-toggle="tooltip" data-placement="bottom" title="About" id="btnAbout"><i className="fa fa-info fa-2x"></i></a>
+                                <a onClick={() => this.openpopupAboutUs()} href="#" data-target="#aboutmodal" data-toggle="tooltip" data-placement="bottom" title="About" id="btnAbout"><i className="fa fa-info fa-2x"></i></a>
                             </li>
-                            <li><a onClick={() => this.openpopup()} href="javascript:;" id="btnSettings" data-target="#bannerformmodal" data-toggle="tooltip" data-placement="bottom" title="Settings"><i className="fa fa-cog fa-2x"></i></a></li>
+                            <li><a onClick={() => this.openpopupSettings()} href="javascript:;" id="btnSettings" data-target="#bannerformmodal" data-toggle="tooltip" data-placement="bottom" title="Settings"><i className="fa fa-cog fa-2x"></i></a></li>
                         </ul>
                     </div>
                 </div>
