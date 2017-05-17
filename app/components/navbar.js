@@ -15,7 +15,6 @@ const Grid = require('react-bootstrap/lib/Grid')
 const Tabs = require('react-bootstrap/lib/Tabs');
 const Tab = require('react-bootstrap/lib/Tab');
 const Constant = require("../util/constants");
-const BookList = require("./booklist");
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import { observer } from "mobx-react";
@@ -54,7 +53,6 @@ class Navbar extends React.Component {
                         TodoStore.chapterId = chapterCookie[0].value;
                                         var that = this;
                                         var verses,chunks,chapter;
-
                         db.get(TodoStore.bookId).then(function(doc) {
                             refDb.get('refChunks').then(function(chunkDoc) {
                                 verses = doc.chapters[parseInt(TodoStore.chapterId, 10) - 1].verses;
@@ -67,20 +65,17 @@ class Navbar extends React.Component {
                         
                       }else{
                         TodoStore.chapterId = '1';
-                                        var that = this;
-                                        var verses,chunks,chapter;
+                        var that = this;
+                        var verses,chunks,chapter;
 
                         db.get(TodoStore.bookId).then(function(doc) {
                             refDb.get('refChunks').then(function(chunkDoc) {
                                 verses = doc.chapters[parseInt(TodoStore.chapterId, 10) - 1].verses;
                                 chunks = chunkDoc.chunks[parseInt(TodoStore.bookId, 10) - 1];
                                 chapter = TodoStore.chapterId
-                                that.getRefContents(TodoStore.refId+'_'+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1],chapter.toString(),verses, chunks);
-                        //that.createVerseInputs(verses, chunks, chapter);                    
+                                that.getRefContents(TodoStore.refId+'_'+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1],chapter.toString(),verses, chunks);                  
                             })
                         })
-                        //this.getRefContents(TodoStore.refId+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1], TodoStore.chapterId.toString());
-
                       }
                     })
                 }else{
@@ -204,6 +199,7 @@ class Navbar extends React.Component {
         TodoStore.showModalBooks = true;
         TodoStore.activeTab = tab;
         TodoStore.bookActive = TodoStore.bookId;
+        TodoStore.bookName = Constant.booksList[parseInt(TodoStore.bookId, 10) - 1] 
         TodoStore.chapterActive = TodoStore.chapterId;
         this.getData();
     }
@@ -219,6 +215,7 @@ class Navbar extends React.Component {
 
     onItemClick(bookNo) {
         TodoStore.bookActive = bookNo;
+        TodoStore.bookName = Constant.booksList[parseInt(bookNo, 10) - 1] 
         TodoStore.chapterActive = 0;
         var id = TodoStore.currentRef + '_' + bookCodeList[parseInt(bookNo, 10) - 1]
         var getData = refDb.get(id).then(function(doc) {
@@ -309,6 +306,7 @@ class Navbar extends React.Component {
         const bookData = TodoStore.bookData
         const refContent = TodoStore.content 
         const bookName = Constant.booksList[parseInt(TodoStore.bookId, 10) - 1]
+        console.log(TodoStore.bookName);
         let close = () => TodoStore.showModalBooks = false;//this.setState({ showModal: false, showModalSettings: false, showModalBooks: false });
         const test = (TodoStore.activeTab == 1);
         var chapterList = [];
@@ -340,7 +338,7 @@ class Navbar extends React.Component {
                         {
 
                             bookData.map((item,index) =>{
-                                return <li key={index}><a href="#" key={index} onClick = { this.onItemClick.bind(this, index+1) } value={item} className={( TodoStore.bookActive == index + 1 ) ? 'link-active': ""}  >{item}
+                                return <li key={index}><a href="#" key={index} onClick = { this.onItemClick.bind(this, index+1) } value={item} className={( TodoStore.bookName == item ) ? 'link-active': ""}  >{item}
                                 </a></li>
                             })
                         }                       
