@@ -70,7 +70,6 @@ class Contentbox extends React.Component {
     }
 
     getRefContents(id, chapter) {
-        console.log(id, chapter)
         let refContent = refDb.get(id).then(function(doc) { //book code is hard coded for now
             for (var i = 0; i < doc.chapters.length; i++) {
                 if (doc.chapters[i].chapter == parseInt(chapter, 10)) { // 1 is chapter number and hardcoded for now
@@ -105,7 +104,6 @@ class Contentbox extends React.Component {
         TodoStore.refId = event.target.value;
         this.setState({defaultRef: event.target.value})
         var cookieRef = { url: 'http://refs.autographa.com', name: '0' , value: event.target.value };
-        console.log(cookieRef)
         session.defaultSession.cookies.set(cookieRef, (error) => {
             if (error)
                 console.log(error);
