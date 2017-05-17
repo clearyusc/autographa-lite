@@ -21,7 +21,6 @@ const BookList = require("./booklist");
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import { observer } from "mobx-react"
-import {observable} from "mobx"
 import TodoStore from "./TodoStore"
 import Contentbox  from '../components/contentbox';
 const injectTapEventPlugin = require("react-tap-event-plugin");
@@ -206,7 +205,7 @@ class Navbar extends React.Component {
     }
 
     render() {
-        const refContent = TodoStore.content 
+        // const refContent = TodoStore.content 
         const bookName = Constant.booksList[parseInt(TodoStore.bookId, 10) - 1]
         let close = () => TodoStore.showModalBooks = false;//this.setState({ showModal: false, showModalSettings: false, showModalBooks: false });
         const test = (this.state.activeTab == 1);
