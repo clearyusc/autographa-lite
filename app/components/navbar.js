@@ -30,6 +30,7 @@ injectTapEventPlugin();
 class Navbar extends React.Component {
     constructor(props) {
         super(props);
+        
         this.getData = this.getData.bind(this);
         // this.onItemClick = this.onItemClick.bind(this);
         this.state = {
@@ -109,7 +110,6 @@ class Navbar extends React.Component {
                                 var verses,chunks,chapter;
                                 var that = this;
                 db.get(TodoStore.bookId).then(function(doc) {
-                    console.log("in else 1")
                             refDb.get('refChunks').then(function(chunkDoc) {
                                 verses = doc.chapters[parseInt(TodoStore.chapterId, 10) - 1].verses;
                                 chunks = chunkDoc.chunks[parseInt(TodoStore.bookId, 10) - 1];
@@ -179,7 +179,7 @@ class Navbar extends React.Component {
             }
         }
         var chunk = chunkVerseStart + '-' + chunkVerseEnd;
-        var spanVerse = chunk + "id=v" + i + ">";
+        var spanVerse = chunk + "\"" + " id=\"v" + i+"\"" + ">";
         chunkGroup.push(spanVerse);
         }
         TodoStore.chunkGroup = chunkGroup;
@@ -290,37 +290,25 @@ class Navbar extends React.Component {
         TodoStore.showModalBooks = false;
     }
 
-    getOTList(OTbooksstart, OTbooksend) {
-        var booksOT = [];
-        for (var i = OTbooksstart; i <= OTbooksend; i++) {
+    getbookCategory(booksstart, booksend) {
+        var booksCategory = [];
+        for (var i = booksstart; i <= booksend; i++) {
             // booksList.push(i);
-            booksOT.push(booksList[i]);
+            booksCategory.push(booksList[i]);
         };
-        console.log(booksOT)
-        TodoStore.booksOT = booksOT
-    }
+        // this.setState({data:booksCategory});
+        TodoStore.bookData = booksCategory;
 
-    getNTList(NTbooksstart, NTbooksend) {
-        var booksNT = [];
-        for (var i = NTbooksstart; i <= NTbooksend; i++) {
-            booksNT.push(booksList[i])
-        };
-        TodoStore.booksNT = booksNT
-    }
-
-    getALLList(OTbooksstart, NTbooksend) {
-        console.log("All books")
-        var booksALL = [];
-        for (var i = OTbooksstart; i <= NTbooksend; i++) {
-            booksALL.push(booksList[i])
-        };
-        TodoStore.booksALL = booksALL
     }
 
     render() {
-         const refContent = TodoStore.content 
+        var OTbooksstart = 0;
+        var OTbooksend = 38;
+        var NTbooksstart= 39;
+        var NTbooksend= 65;
+        const bookData = TodoStore.bookData
+        const refContent = TodoStore.content 
         const bookName = Constant.booksList[parseInt(TodoStore.bookId, 10) - 1]
-        // console.log(bookName)
         let close = () => TodoStore.showModalBooks = false;//this.setState({ showModal: false, showModalSettings: false, showModalBooks: false });
         const test = (TodoStore.activeTab == 1);
         var chapterList = [];
@@ -338,9 +326,9 @@ class Navbar extends React.Component {
              {test ? (
             <div className="wrap-center">
                         <div className="btn-group" role="group" aria-label="...">
-                            <button className="btn btn-primary" type="button" id="allBooksBtn" data-toggle="tooltip" data-placement="bottom" title=""onClick = { this.getALLList.bind(this, TodoStore.OTbooksstart, TodoStore.NTbooksend) } data-original-title="All">ALL</button>
-                            <button className="btn btn-primary" type="button" id="otBooksBtn" data-toggle="tooltip" data-placement="bottom" title="" onClick = { this.getOTList.bind(this, TodoStore.OTbooksstart, TodoStore.OTbooksend) } data-original-title="Old Testament">OT</button>
-                            <button className="btn btn-primary" type="button" id="ntBooksBtn" data-toggle="tooltip" data-placement="bottom" title="" onClick = { this.getNTList.bind(this, TodoStore.NTbooksstart, TodoStore.NTbooksend) } data-original-title="New Testament">NT</button>
+                            <button className="btn btn-primary" type="button" id="allBooksBtn" data-toggle="tooltip" data-placement="bottom" title=""onClick = { this.getbookCategory.bind(this, OTbooksstart, NTbooksend) } data-original-title="All">ALL</button>
+                            <button className="btn btn-primary" type="button" id="otBooksBtn" data-toggle="tooltip" data-placement="bottom" title="" onClick = { this.getbookCategory.bind(this, OTbooksstart, OTbooksend) } data-original-title="Old Testament">OT</button>
+                            <button className="btn btn-primary" type="button" id="ntBooksBtn" data-toggle="tooltip" data-placement="bottom" title="" onClick = { this.getbookCategory.bind(this, NTbooksstart, NTbooksend) } data-original-title="New Testament">NT</button>
                         </div>          
                     </div>
                 ) : ''
@@ -351,7 +339,7 @@ class Navbar extends React.Component {
                     <ul id="books-pane">
                         {
 
-                            Constant.booksList.map((item,index) =>{
+                            bookData.map((item,index) =>{
                                 return <li key={index}><a href="#" key={index} onClick = { this.onItemClick.bind(this, index+1) } value={item} className={( TodoStore.bookActive == index + 1 ) ? 'link-active': ""}  >{item}
                                 </a></li>
                             })
@@ -374,8 +362,8 @@ class Navbar extends React.Component {
         <Modal show={this.state.showModalSettings} onHide={close} id="tab-settings">
           <Modal.Header closeButton>
             <Modal.Title>Settings</Modal.Title>
-                <div class="alert alert-success" role="alert" style= {{display: "none"}}><span>You successfully read this important alert message.</span></div>
-                <div class="alert alert-danger" role="alert" style= {{display: "none", position: "relative"}}><span>Change a few things up and try submitting again.</span></div>
+                <div className="alert alert-success" role="alert" style= {{display: "none"}}><span>You successfully read this important alert message.</span></div>
+                <div className="alert alert-danger" role="alert" style= {{display: "none", position: "relative"}}><span>Change a few things up and try submitting again.</span></div>
           </Modal.Header>
           <Modal.Body>
              <Tab.Container id="left-tabs-example" defaultActiveKey="first">
