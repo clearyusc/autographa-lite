@@ -23,8 +23,6 @@ class Contentbox extends React.Component {
         // this.getRefContents = this.getRefContents.bind(this);
         this.state = { refList: [], verses: [], content: '',defaultRef: 'eng_ulb' }
         
-        this.selection = '';
-
         var existRef = [];
         var i
         var refLists = refDb.get('refs').then(function(doc) {

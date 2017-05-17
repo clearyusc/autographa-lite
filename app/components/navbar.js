@@ -206,6 +206,7 @@ class Navbar extends React.Component {
     }
 
     render() {
+        const refContent = TodoStore.content 
         const bookName = Constant.booksList[parseInt(TodoStore.bookId, 10) - 1]
         let close = () => TodoStore.showModalBooks = false;//this.setState({ showModal: false, showModalSettings: false, showModalBooks: false });
         const test = (this.state.activeTab == 1);
