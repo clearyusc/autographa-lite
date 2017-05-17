@@ -92,6 +92,7 @@ class Contentbox extends React.Component {
         TodoStore.refId = event.target.value;
         this.setState({defaultRef: event.target.value})
         var cookieRef = { url: 'http://refs.autographa.com', name: '0' , value: event.target.value };
+        console.log(cookieRef)
         session.defaultSession.cookies.set(cookieRef, (error) => {
             if (error)
                 console.log(error);
@@ -99,6 +100,12 @@ class Contentbox extends React.Component {
     }
 
 	render (){
+        var verseGroup = [];
+        for (var i = 0; i < TodoStore.chunkGroup.length; i++) {
+                // console.log(i)
+                verseGroup.push(<div key={i}><span className='verse-num' key={i}>{i+1}</span><span  contentEditable={true} data-chunk-group={TodoStore.chunkGroup[i]} ></span></div>);
+            // console.log(chunkGroup)
+        }
 		return (
 		<div className="container-fluid">
             <div className="row row-col-fixed rmvflex" style={{display: 'flex'}}>
@@ -136,8 +143,8 @@ class Contentbox extends React.Component {
                     </div>
                     <div className="row">
                     <div id="input-verses" className="col-12 col-ref">
+                        {verseGroup}
                         </div>
-
                     </div>
                 </div>
             </div>

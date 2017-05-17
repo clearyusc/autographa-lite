@@ -7,8 +7,6 @@ import ReactDOM from 'react-dom';
 // const NavDropdown = require('react-bootstrap/lib/NavDropdown');
 // const MenuItem = require('react-bootstrap/lib/MenuItem');
 // const MilestoneManagement = require('./milestone_management');
-
-
 const Modal = require('react-bootstrap/lib/Modal');
 const Button = require('react-bootstrap/lib/Button');
 const Col = require('react-bootstrap/lib/Col');
@@ -20,9 +18,11 @@ const Constant = require("../util/constants");
 const BookList = require("./booklist");
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
-import { observer } from "mobx-react"
-import TodoStore from "./TodoStore"
+import { observer } from "mobx-react";
+import TodoStore from "./TodoStore";
 import Contentbox  from '../components/contentbox';
+const refDb = require(`${__dirname}/../util/data-provider`).referenceDb();
+const db = require(`${__dirname}/../util/data-provider`).targetDb();
 const injectTapEventPlugin = require("react-tap-event-plugin");
 injectTapEventPlugin();
 
@@ -31,6 +31,7 @@ class Navbar extends React.Component {
     constructor(props) {
         super(props);
         this.getData = this.getData.bind(this);
+        // this.onItemClick = this.onItemClick.bind(this);
         this.state = {
             showModal: false,
             showModalSettings: false,
@@ -41,24 +42,63 @@ class Navbar extends React.Component {
         };
          session.defaultSession.cookies.get({ url: 'http://refs.autographa.com' }, (error, refCookie) => {
             if(refCookie.length > 0){
+                // console.log(refCookie)
                 TodoStore.refId = refCookie[0].value;
                 session.defaultSession.cookies.get({ url: 'http://book.autographa.com' }, (error, bookCookie) => {
                 if(bookCookie.length > 0){
                     TodoStore.bookId = bookCookie[0].value;
+                    // console.log(bookCookie)
                     session.defaultSession.cookies.get({ url: 'http://chapter.autographa.com' }, (error, chapterCookie) => {
                       if(chapterCookie[0].value){
                         TodoStore.chapterId = chapterCookie[0].value;
-                        this.getRefContents(TodoStore.refId+'_'+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1], TodoStore.chapterId.toString());
+                                        var that = this;
+                                        var verses,chunks,chapter;
+
+                        db.get(TodoStore.bookId).then(function(doc) {
+                            refDb.get('refChunks').then(function(chunkDoc) {
+                                verses = doc.chapters[parseInt(TodoStore.chapterId, 10) - 1].verses;
+                                chunks = chunkDoc.chunks[parseInt(TodoStore.bookId, 10) - 1];
+                                chapter = TodoStore.chapterId
+                                that.getRefContents(TodoStore.refId+'_'+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1],chapter.toString(),verses, chunks);
+                        //that.createVerseInputs(verses, chunks, chapter);                    
+                            })
+                        })
+                        
                       }else{
                         TodoStore.chapterId = '1';
-                        this.getRefContents(TodoStore.refId+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1], TodoStore.chapterId.toString());
+                                        var that = this;
+                                        var verses,chunks,chapter;
+
+                        db.get(TodoStore.bookId).then(function(doc) {
+                            refDb.get('refChunks').then(function(chunkDoc) {
+                                verses = doc.chapters[parseInt(TodoStore.chapterId, 10) - 1].verses;
+                                chunks = chunkDoc.chunks[parseInt(TodoStore.bookId, 10) - 1];
+                                chapter = TodoStore.chapterId
+                                that.getRefContents(TodoStore.refId+'_'+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1],chapter.toString(),verses, chunks);
+                        //that.createVerseInputs(verses, chunks, chapter);                    
+                            })
+                        })
+                        //this.getRefContents(TodoStore.refId+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1], TodoStore.chapterId.toString());
 
                       }
                     })
                 }else{
                     TodoStore.bookId = '1';
                     TodoStore.chapterId = '1';
-                    this.getRefContents(TodoStore.currentRef+"_"+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1], TodoStore.chapterId.toString());
+                                    var that = this;
+                                    var verses,chunks,chapter;
+
+                    db.get(TodoStore.bookId).then(function(doc) {
+                        console.log("in else")
+                            refDb.get('refChunks').then(function(chunkDoc) {
+                                verses = doc.chapters[parseInt(TodoStore.chapterId, 10) - 1].verses;
+                                chunks = chunkDoc.chunks[parseInt(TodoStore.bookId, 10) - 1];
+                                chapter = TodoStore.chapterId
+                                that.getRefContents(TodoStore.refId+'_'+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1],chapter.toString(),verses, chunks);
+                        //that.createVerseInputs(verses, chunks, chapter);                    
+                            })
+                        })
+                    //this.getRefContents(TodoStore.currentRef+"_"+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1], TodoStore.chapterId.toString());
 
                 }
             });  
@@ -66,7 +106,19 @@ class Navbar extends React.Component {
                 TodoStore.bookId = '1';
                 TodoStore.chapterId = '1';
                 TodoStore.refId = 'eng_ulb_';
-                this.getRefContents(TodoStore.refId+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1], TodoStore.chapterId.toString());
+                                var verses,chunks,chapter;
+                                var that = this;
+                db.get(TodoStore.bookId).then(function(doc) {
+                    console.log("in else 1")
+                            refDb.get('refChunks').then(function(chunkDoc) {
+                                verses = doc.chapters[parseInt(TodoStore.chapterId, 10) - 1].verses;
+                                chunks = chunkDoc.chunks[parseInt(TodoStore.bookId, 10) - 1];
+                                chapter = TodoStore.chapterId
+                                that.getRefContents(TodoStore.refId+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1],chapter.toString(),verses, chunks);
+                        //that.createVerseInputs(verses, chunks, chapter);                    
+                            })
+                        })
+                //this.getRefContents(TodoStore.refId+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1], TodoStore.chapterId.toString());
             }
         });
     }
@@ -80,7 +132,7 @@ class Navbar extends React.Component {
         TodoStore.showModalBooks = true
     }
 
-    getRefContents(id, chapter) {
+    getRefContents(id,chapter,verses, chunks) {
         let refContent = refDb.get(id).then(function(doc) { //book code is hard coded for now
             for (var i = 0; i < doc.chapters.length; i++) {
                 if (doc.chapters[i].chapter == parseInt(chapter, 10)) { // 1 is chapter number and hardcoded for now
@@ -99,6 +151,41 @@ class Navbar extends React.Component {
             TodoStore.bookChapterContent = content;
             this.setState({change: "test"})
         });
+
+         var i;
+        var chunkIndex = 0;
+        var chunkVerseStart; 
+        var chunkVerseEnd;
+        var chunkGroup = [];
+        for (i = 0; i < chunks.length; i++) {
+            if (parseInt(chunks[i].chp, 10) === parseInt(chapter, 10)) {
+                chunkIndex = i + 1;
+                chunkVerseStart = parseInt(chunks[i].firstvs, 10);
+                chunkVerseEnd = parseInt(chunks[i + 1].firstvs, 10) - 1;
+                break;
+            }
+        }
+
+        for (i = 1; i <= verses.length; i++) {
+        var spanVerseNum = '';
+
+        if (i > chunkVerseEnd) {
+            chunkVerseStart = parseInt(chunks[chunkIndex].firstvs, 10);
+            if (chunkIndex === chunks.length - 1 || parseInt((chunks[chunkIndex + 1].chp), 10) != chapter) {
+                chunkVerseEnd = verses.length;
+                
+            } else {
+                chunkIndex++;
+                chunkVerseEnd = parseInt(chunks[chunkIndex].firstvs, 10) - 1;
+            }
+        }
+        var chunk = chunkVerseStart + '-' + chunkVerseEnd;
+        var spanVerse = chunk + "id=v" + i + ">";
+        chunkGroup.push(spanVerse);
+        }
+        TodoStore.chunkGroup = chunkGroup;
+        // this.setState({chunkGroup: chunkGroup})
+
     }
 
     open() {
@@ -163,16 +250,41 @@ class Navbar extends React.Component {
             if (error)
             console.log(error);
         });
+
         const cookieRef = { url: 'http://book.autographa.com', name: 'book' , value: bookId.toString() };
         session.defaultSession.cookies.set(cookieRef, (error) => {
             if (error)
             console.log(error);
         });
+
         session.defaultSession.cookies.get({ url: 'http://refs.autographa.com' }, (error, refCookie) => {
             if(refCookie.length > 0){
-                this.getRefContents(refCookie[0].value+'_'+bookCodeList[parseInt(bookId, 10) - 1],chapter.toString())
+                var that = this;   
+                var verses,chunks,chapter;
+                var bkId = TodoStore.bookId.toString();
+                db.get(bkId).then(function(doc) {
+                    refDb.get('refChunks').then(function(chunkDoc) {
+                    verses = doc.chapters[parseInt(TodoStore.chapterId, 10) - 1].verses;
+                    chunks = chunkDoc.chunks[parseInt(TodoStore.bookId, 10) - 1];
+                    chapter = TodoStore.chapterId
+                    that.getRefContents(TodoStore.refId+'_'+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1],chapter.toString(),verses, chunks);
+                    //that.createVerseInputs(verses, chunks, chapter);                    
+                });
+            })
             }else{
-                this.getRefContents('eng_ulb'+'_'+bookCodeList[parseInt(bookId, 10) - 1],chapter.toString())
+                var that = this; 
+                var bkId = TodoStore.bookId.toString();  
+                var verses,chunks,chapter;
+                db.get(bkId).then(function(doc) {
+                    refDb.get('refChunks').then(function(chunkDoc) {
+                    verses = doc.chapters[parseInt(TodoStore.chapterId, 10) - 1].verses;
+                    chunks = chunkDoc.chunks[parseInt(TodoStore.bookId, 10) - 1];
+                    // console.log(chunks)
+                    chapter = TodoStore.chapterId;
+                    that.getRefContents('eng_ulb'+'_'+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1],chapter.toString(),verses, chunks,);
+                    //that.createVerseInputs(verses, chunks, chapter);                    
+                });
+            })
             }    
         })
 
@@ -184,7 +296,8 @@ class Navbar extends React.Component {
             // booksList.push(i);
             booksOT.push(booksList[i]);
         };
-        this.setState({data:booksOT});
+        console.log(booksOT)
+        TodoStore.booksOT = booksOT
     }
 
     getNTList(NTbooksstart, NTbooksend) {
@@ -192,21 +305,23 @@ class Navbar extends React.Component {
         for (var i = NTbooksstart; i <= NTbooksend; i++) {
             booksNT.push(booksList[i])
         };
-        this.setState({data:booksNT});
+        TodoStore.booksNT = booksNT
     }
 
     getALLList(OTbooksstart, NTbooksend) {
+        console.log("All books")
         var booksALL = [];
         for (var i = OTbooksstart; i <= NTbooksend; i++) {
             booksALL.push(booksList[i])
         };
-        this.setState({data:booksALL});
+        TodoStore.booksALL = booksALL
     }
 
     render() {
         const bookName = Constant.booksList[parseInt(TodoStore.bookId, 10) - 1]
+        // console.log(bookName)
         let close = () => TodoStore.showModalBooks = false;//this.setState({ showModal: false, showModalSettings: false, showModalBooks: false });
-        const test = (this.state.activeTab == 1);
+        const test = (TodoStore.activeTab == 1);
         var chapterList = [];
         for(var i=0; i<TodoStore.bookChapter["chapterLength"]; i++){
             chapterList.push( <li key={i} value={i+1} ><a href="#"  className={(i+1 == TodoStore.chapterActive) ? 'link-active': ""} onClick = { this.getValue.bind(this,  i+1, TodoStore.bookChapter["bookId"]) } >{i+1}</a></li> );
@@ -222,9 +337,9 @@ class Navbar extends React.Component {
              {test ? (
             <div className="wrap-center">
                         <div className="btn-group" role="group" aria-label="...">
-                            <button className="btn btn-primary" type="button" id="allBooksBtn" data-toggle="tooltip" data-placement="bottom" title=""onClick = { this.getALLList.bind(this, this.state.OTbooksstart, this.state.NTbooksend) } data-original-title="All">ALL</button>
-                            <button className="btn btn-primary" type="button" id="otBooksBtn" data-toggle="tooltip" data-placement="bottom" title="" onClick = { this.getOTList.bind(this, this.state.OTbooksstart, this.state.OTbooksend) } data-original-title="Old Testament">OT</button>
-                            <button className="btn btn-primary" type="button" id="ntBooksBtn" data-toggle="tooltip" data-placement="bottom" title="" onClick = { this.getNTList.bind(this, this.state.NTbooksstart, this.state.NTbooksend) } data-original-title="New Testament">NT</button>
+                            <button className="btn btn-primary" type="button" id="allBooksBtn" data-toggle="tooltip" data-placement="bottom" title=""onClick = { this.getALLList.bind(this, TodoStore.OTbooksstart, TodoStore.NTbooksend) } data-original-title="All">ALL</button>
+                            <button className="btn btn-primary" type="button" id="otBooksBtn" data-toggle="tooltip" data-placement="bottom" title="" onClick = { this.getOTList.bind(this, TodoStore.OTbooksstart, TodoStore.OTbooksend) } data-original-title="Old Testament">OT</button>
+                            <button className="btn btn-primary" type="button" id="ntBooksBtn" data-toggle="tooltip" data-placement="bottom" title="" onClick = { this.getNTList.bind(this, TodoStore.NTbooksstart, TodoStore.NTbooksend) } data-original-title="New Testament">NT</button>
                         </div>          
                     </div>
                 ) : ''
