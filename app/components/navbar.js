@@ -21,6 +21,7 @@ const BookList = require("./booklist");
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import { observer } from "mobx-react"
+import {observable} from "mobx"
 import TodoStore from "./TodoStore"
 import Contentbox  from '../components/contentbox';
 const injectTapEventPlugin = require("react-tap-event-plugin");
@@ -96,8 +97,7 @@ class Navbar extends React.Component {
         });
 
         refContent.then((content)=> {
-            TodoStore.bookChapterContent = content;
-            this.setState({change: "test"})
+           TodoStore.content = content;
         });
     }
 
@@ -163,6 +163,7 @@ class Navbar extends React.Component {
             if (error)
             console.log(error);
         });
+
         const cookieRef = { url: 'http://book.autographa.com', name: 'book' , value: bookId.toString() };
         session.defaultSession.cookies.set(cookieRef, (error) => {
             if (error)
@@ -178,6 +179,7 @@ class Navbar extends React.Component {
 
         TodoStore.showModalBooks = false;
     }
+
     getOTList(OTbooksstart, OTbooksend) {
         var booksOT = [];
         for (var i = OTbooksstart; i <= OTbooksend; i++) {

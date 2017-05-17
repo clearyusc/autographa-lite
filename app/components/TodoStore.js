@@ -9,11 +9,14 @@ export class TodoStore {
   @observable activeTab = 1
   @observable showModalBooks = false
   @observable bookChapterContent = ''
+  @observable chunkGroup = ''
+  @observable content = ''
   @observable bookActive = 1;
-  @observable chapterActive = 1;
+  @observable chapterActive = 1
   @observable currentRef = 'eng_ulb'
 
-  constructor(bookId, chapterId, bookChapter, activeTab, showModalBooks, bookChapterContent){
+
+  constructor(bookId, chapterId, bookChapter, activeTab, showModalBooks, bookChapterContent,content){
 
   }  
 }
