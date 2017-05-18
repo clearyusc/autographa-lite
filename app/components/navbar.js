@@ -10,7 +10,6 @@ const Grid = require('react-bootstrap/lib/Grid')
 const Tabs = require('react-bootstrap/lib/Tabs');
 const Tab = require('react-bootstrap/lib/Tab');
 const Constant = require("../util/constants");
-// const BookList = require("./booklist");
 import { observer } from "mobx-react"
 import TodoStore from "./TodoStore"
 import SettingsModal from "./settings"
@@ -36,6 +35,29 @@ class Navbar extends React.Component {
             bookNo:1,
             defaultRef: 'eng_ulb'
         };
+
+         refDb.get("ref_history")
+        .then(function(doc) {
+            console.log(doc);
+            var bookName = doc.visit_history[0].book; 
+            book = doc.visit_history[0].bookId;
+            chapter = doc.visit_history[0].chapter;
+            TodoStore.bookId = book;
+            TodoStore.chapterId = chapter;
+            var cookie = { url: 'http://book.autographa.com', name: 'book', value: book };
+            session.defaultSession.cookies.set(cookie, (error) => {
+                if (error)
+                    console.error(error);
+                var cookie = { url: 'http://chapter.autographa.com', name: 'chapter', value: chapter };
+                session.defaultSession.cookies.set(cookie, (error) => {
+                    if (error)
+                        console.error(error);
+                });
+            });
+        }).catch(function(err) {
+            console.log('Error: While retrieving document. ' + err);
+        });
+
         var verses,chunks,chapter;
         var that = this;
         session.defaultSession.cookies.get({ url: 'http://refs.autographa.com' }, (error, refCookie) => {
@@ -53,6 +75,7 @@ class Navbar extends React.Component {
                 TodoStore.chapterId = chapterCookie[0].value;
             }
         });
+        console.log(TodoStore.bookId);
         db.get(TodoStore.bookId).then(function(doc) {
             refDb.get('refChunks').then(function(chunkDoc) {
                 verses = doc.chapters[parseInt(TodoStore.chapterId, 10) - 1].verses;
@@ -82,7 +105,7 @@ class Navbar extends React.Component {
            TodoStore.content = content;
         });
 
-         var i;
+        var i;
         var chunkIndex = 0;
         var chunkVerseStart; 
         var chunkVerseEnd;
@@ -210,7 +233,7 @@ class Navbar extends React.Component {
                     chunks = chunkDoc.chunks[parseInt(TodoStore.bookId, 10) - 1];
                     chapter = TodoStore.chapterId
                     that.getRefContents(TodoStore.refId+'_'+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1],chapter.toString(),verses, chunks);
-                    //that.createVerseInputs(verses, chunks, chapter);                    
+                    that.saveLastVisit(bkId,chapter);                    
                 });
             })
             }else{
@@ -225,13 +248,22 @@ class Navbar extends React.Component {
                     // console.log(chunks)
                     chapter = TodoStore.chapterId;
                     that.getRefContents('eng_ulb'+'_'+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1],chapter.toString(),verses, chunks,);
-                    //that.createVerseInputs(verses, chunks, chapter);                    
+                    //that.createVerseInputs(verses, chunks, chapter);
+                    that.saveLastVisit(bkId,chapter);                                    
                 });
             })
             }    
         })
-
         TodoStore.showModalBooks = false;
+    }
+
+    saveLastVisit(book, chapter) {
+        refDb.get('ref_history').then(function(doc) {
+            doc.visit_history = [{ "book": TodoStore.bookName, "chapter": chapter, "bookId": book }]
+            refDb.put(doc).then(function(response) {}).catch(function(err) {
+            console.log(err);
+            });
+        });
     }
 
     getbookCategory(booksstart, booksend) {

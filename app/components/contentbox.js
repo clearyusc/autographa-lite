@@ -51,7 +51,8 @@ class Contentbox extends React.Component {
                     TodoStore.chapterId = chapterCookie[0].value;
                 }
             });
-            this.getRefContents(TodoStore.refId+"_"+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1], TodoStore.chapterId.toString());
+            //console.log(TodoStore.refId+"_"+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1], TodoStore.chapterId.toString());
+            //this.getRefContents(TodoStore.refId+"_"+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1], TodoStore.chapterId.toString());
     
         // session.defaultSession.cookies.get({ url: 'http://refs.autographa.com' }, (error, refCookie) => {
         //     if(refCookie.length > 0){
