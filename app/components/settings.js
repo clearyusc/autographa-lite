@@ -22,7 +22,7 @@ import TodoStore from "./TodoStore"
 var SettingsModal = function(props) {
     let closeSetting = () => TodoStore.showModalSettings = false
   return (  
-    <Modal show={props.show} onHide={closeSetting} >
+    <Modal show={props.show} onHide={closeSetting} id="tab-settings">
         <Modal.Header closeButton>
             <Modal.Title>Settings</Modal.Title>
                 <div className="alert alert-success" role="alert" style= {{display: "none"}}><span>You successfully read this important alert message.</span></div>

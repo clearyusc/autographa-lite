@@ -326,7 +326,7 @@ class Navbar extends React.Component {
         }
         return  (
             <div>
-        <Modal show={TodoStore.showModalBooks} onHide = {close} >
+        <Modal show={TodoStore.showModalBooks} onHide = {close} id="tab-books">
             <Modal.Header closeButton>
                 <Modal.Title>Book and Chapter</Modal.Title>
             </Modal.Header>
