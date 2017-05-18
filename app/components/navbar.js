@@ -58,80 +58,32 @@ class Navbar extends React.Component {
             console.log('Error: While retrieving document. ' + err);
         });
 
-         session.defaultSession.cookies.get({ url: 'http://refs.autographa.com' }, (error, refCookie) => {
+        var verses,chunks,chapter;
+        var that = this;
+        session.defaultSession.cookies.get({ url: 'http://refs.autographa.com' }, (error, refCookie) => {
             if(refCookie.length > 0){
-                // console.log(refCookie)
                 TodoStore.refId = refCookie[0].value;
-                session.defaultSession.cookies.get({ url: 'http://book.autographa.com' }, (error, bookCookie) => {
-                if(bookCookie.length > 0){
-                    TodoStore.bookId = bookCookie[0].value;
-                    // console.log(bookCookie)
-                    session.defaultSession.cookies.get({ url: 'http://chapter.autographa.com' }, (error, chapterCookie) => {
-                      if(chapterCookie[0].value){
-                        TodoStore.chapterId = chapterCookie[0].value;
-                        var that = this;
-                        var verses,chunks,chapter;
-                        db.get(TodoStore.bookId).then(function(doc) {
-                            refDb.get('refChunks').then(function(chunkDoc) {
-                                verses = doc.chapters[parseInt(TodoStore.chapterId, 10) - 1].verses;
-                                chunks = chunkDoc.chunks[parseInt(TodoStore.bookId, 10) - 1];
-                                chapter = TodoStore.chapterId
-                                that.getRefContents(TodoStore.refId+'_'+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1],chapter.toString(),verses, chunks);
-                        //that.createVerseInputs(verses, chunks, chapter);                    
-                            })
-                        })
-                        
-                      }else{
-                        TodoStore.chapterId = '1';
-                        var that = this;
-                        var verses,chunks,chapter;
-                        db.get(TodoStore.bookId).then(function(doc) {
-                            refDb.get('refChunks').then(function(chunkDoc) {
-                                verses = doc.chapters[parseInt(TodoStore.chapterId, 10) - 1].verses;
-                                chunks = chunkDoc.chunks[parseInt(TodoStore.bookId, 10) - 1];
-                                chapter = TodoStore.chapterId
-                                that.getRefContents(TodoStore.refId+'_'+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1],chapter.toString(),verses, chunks);                  
-                            })
-                        })
-                      }
-                    })
-                }else{
-                    TodoStore.bookId = '1';
-                    TodoStore.chapterId = '1';
-                                    var that = this;
-                                    var verses,chunks,chapter;
-
-                    db.get(TodoStore.bookId).then(function(doc) {
-                        console.log("in else")
-                            refDb.get('refChunks').then(function(chunkDoc) {
-                                verses = doc.chapters[parseInt(TodoStore.chapterId, 10) - 1].verses;
-                                chunks = chunkDoc.chunks[parseInt(TodoStore.bookId, 10) - 1];
-                                chapter = TodoStore.chapterId
-                                that.getRefContents(TodoStore.refId+'_'+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1],chapter.toString(),verses, chunks);
-                        //that.createVerseInputs(verses, chunks, chapter);                    
-                            })
-                        })
-                    //this.getRefContents(TodoStore.currentRef+"_"+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1], TodoStore.chapterId.toString());
-                }
-            });  
-            }else{
-                TodoStore.bookId = '1';
-                TodoStore.chapterId = '1';
-                TodoStore.refId = 'eng_ulb_';
-                                var verses,chunks,chapter;
-                                var that = this;
-                db.get(TodoStore.bookId).then(function(doc) {
-                            refDb.get('refChunks').then(function(chunkDoc) {
-                                verses = doc.chapters[parseInt(TodoStore.chapterId, 10) - 1].verses;
-                                chunks = chunkDoc.chunks[parseInt(TodoStore.bookId, 10) - 1];
-                                chapter = TodoStore.chapterId
-                                that.getRefContents(TodoStore.refId+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1],chapter.toString(),verses, chunks);
-                        //that.createVerseInputs(verses, chunks, chapter);                    
-                            })
-                        })
-                //this.getRefContents(TodoStore.refId+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1], TodoStore.chapterId.toString());
             }
         });
+        session.defaultSession.cookies.get({ url: 'http://book.autographa.com' }, (error, bookCookie) => {
+            if(bookCookie.length > 0){
+                TodoStore.bookId = bookCookie[0].value;
+            }
+        });
+        session.defaultSession.cookies.get({ url: 'http://chapter.autographa.com' }, (error, chapterCookie) => {
+            if(chapterCookie[0].value){
+                TodoStore.chapterId = chapterCookie[0].value;
+            }
+        });
+        console.log(TodoStore.bookId);
+        db.get(TodoStore.bookId).then(function(doc) {
+            refDb.get('refChunks').then(function(chunkDoc) {
+                verses = doc.chapters[parseInt(TodoStore.chapterId, 10) - 1].verses;
+                chunks = chunkDoc.chunks[parseInt(TodoStore.bookId, 10) - 1];
+                chapter = TodoStore.chapterId
+                that.getRefContents(TodoStore.refId+'_'+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1],chapter.toString(),verses, chunks);
+            })
+        })
     }
 
     getRefContents(id,chapter,verses, chunks) {
