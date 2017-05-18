@@ -42,6 +42,8 @@ class Navbar extends React.Component {
             var bookName = doc.visit_history[0].book; 
             book = doc.visit_history[0].bookId;
             chapter = doc.visit_history[0].chapter;
+            TodoStore.bookId = book;
+            TodoStore.chapterId = chapter;
             var cookie = { url: 'http://book.autographa.com', name: 'book', value: book };
             session.defaultSession.cookies.set(cookie, (error) => {
                 if (error)
@@ -50,7 +52,6 @@ class Navbar extends React.Component {
                 session.defaultSession.cookies.set(cookie, (error) => {
                     if (error)
                         console.error(error);
-                    success(book, chapter);
                 });
             });
         }).catch(function(err) {
@@ -68,8 +69,8 @@ class Navbar extends React.Component {
                     session.defaultSession.cookies.get({ url: 'http://chapter.autographa.com' }, (error, chapterCookie) => {
                       if(chapterCookie[0].value){
                         TodoStore.chapterId = chapterCookie[0].value;
-                                        var that = this;
-                                        var verses,chunks,chapter;
+                        var that = this;
+                        var verses,chunks,chapter;
                         db.get(TodoStore.bookId).then(function(doc) {
                             refDb.get('refChunks').then(function(chunkDoc) {
                                 verses = doc.chapters[parseInt(TodoStore.chapterId, 10) - 1].verses;
@@ -84,7 +85,6 @@ class Navbar extends React.Component {
                         TodoStore.chapterId = '1';
                         var that = this;
                         var verses,chunks,chapter;
-
                         db.get(TodoStore.bookId).then(function(doc) {
                             refDb.get('refChunks').then(function(chunkDoc) {
                                 verses = doc.chapters[parseInt(TodoStore.chapterId, 10) - 1].verses;
@@ -112,7 +112,6 @@ class Navbar extends React.Component {
                             })
                         })
                     //this.getRefContents(TodoStore.currentRef+"_"+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1], TodoStore.chapterId.toString());
-
                 }
             });  
             }else{
@@ -288,12 +287,10 @@ class Navbar extends React.Component {
             })
             }    
         })
-
         TodoStore.showModalBooks = false;
     }
 
     saveLastVisit(book, chapter) {
-        console.log("hi");
         refDb.get('ref_history').then(function(doc) {
             doc.visit_history = [{ "book": TodoStore.bookName, "chapter": chapter, "bookId": book }]
             refDb.put(doc).then(function(response) {}).catch(function(err) {
