@@ -354,7 +354,7 @@ class Navbar extends React.Component {
                             bookData.map((item,index) =>{
                                 return <li key={index}><a href="#" key={index} onClick = { this.onItemClick.bind(this, index+1) } value={item} className={( TodoStore.bookName == item ) ? 'link-active': ""}  >{item}
                                 </a></li>
-                            })
+                           })
                         }                       
                     </ul>
                 </div>
