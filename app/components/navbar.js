@@ -10,7 +10,7 @@ const Grid = require('react-bootstrap/lib/Grid')
 const Tabs = require('react-bootstrap/lib/Tabs');
 const Tab = require('react-bootstrap/lib/Tab');
 const Constant = require("../util/constants");
-const BookList = require("./booklist");
+// const BookList = require("./booklist");
 import { observer } from "mobx-react"
 import TodoStore from "./TodoStore"
 import SettingsModal from "./settings"
@@ -131,6 +131,7 @@ class Navbar extends React.Component {
         TodoStore.showModalBooks = true;
         TodoStore.activeTab = tab;
         TodoStore.bookActive = TodoStore.bookId;
+        TodoStore.bookName = Constant.booksList[parseInt(TodoStore.bookId, 10) - 1] 
         TodoStore.chapterActive = TodoStore.chapterId;
         this.getData();
     }
@@ -146,6 +147,7 @@ class Navbar extends React.Component {
 
     onItemClick(bookNo) {
         TodoStore.bookActive = bookNo;
+        TodoStore.bookName = Constant.booksList[parseInt(bookNo, 10) - 1] 
         TodoStore.chapterActive = 0;
         var id = TodoStore.currentRef + '_' + bookCodeList[parseInt(bookNo, 10) - 1]
         var getData = refDb.get(id).then(function(doc) {
@@ -267,9 +269,9 @@ class Navbar extends React.Component {
                         {
 
                             bookData.map((item,index) =>{
-                                return <li key={index}><a href="#" key={index} onClick = { this.onItemClick.bind(this, index+1) } value={item} className={( TodoStore.bookActive == index + 1 ) ? 'link-active': ""}  >{item}
+                                return <li key={index}><a href="#" key={index} onClick = { this.onItemClick.bind(this, index+1) } value={item} className={( TodoStore.bookName == item ) ? 'link-active': ""}  >{item}
                                 </a></li>
-                            })
+                           })
                         }                       
                     </ul>
                 </div>
