@@ -35,29 +35,6 @@ class Navbar extends React.Component {
             bookNo:1,
             defaultRef: 'eng_ulb'
         };
-
-         refDb.get("ref_history")
-        .then(function(doc) {
-            console.log(doc);
-            var bookName = doc.visit_history[0].book; 
-            book = doc.visit_history[0].bookId;
-            chapter = doc.visit_history[0].chapter;
-            TodoStore.bookId = book;
-            TodoStore.chapterId = chapter;
-            var cookie = { url: 'http://book.autographa.com', name: 'book', value: book };
-            session.defaultSession.cookies.set(cookie, (error) => {
-                if (error)
-                    console.error(error);
-                var cookie = { url: 'http://chapter.autographa.com', name: 'chapter', value: chapter };
-                session.defaultSession.cookies.set(cookie, (error) => {
-                    if (error)
-                        console.error(error);
-                });
-            });
-        }).catch(function(err) {
-            console.log('Error: While retrieving document. ' + err);
-        });
-
         var verses,chunks,chapter;
         var that = this;
         session.defaultSession.cookies.get({ url: 'http://refs.autographa.com' }, (error, refCookie) => {
@@ -68,13 +45,35 @@ class Navbar extends React.Component {
         session.defaultSession.cookies.get({ url: 'http://book.autographa.com' }, (error, bookCookie) => {
             if(bookCookie.length > 0){
                 TodoStore.bookId = bookCookie[0].value;
+                session.defaultSession.cookies.get({ url: 'http://chapter.autographa.com' }, (error, chapterCookie) => {
+                    if(chapterCookie[0].value){
+                        TodoStore.chapterId = chapterCookie[0].value;
+                    }
+                });
+            }else{
+                refDb.get("ref_history").then(function(doc) {
+                    console.log(doc);
+                    var bookName = doc.visit_history[0].book; 
+                    book = doc.visit_history[0].bookId;
+                    chapter = doc.visit_history[0].chapter;
+                    TodoStore.bookId = book;
+                    TodoStore.chapterId = chapter;
+                    var cookie = { url: 'http://book.autographa.com', name: 'book', value: book };
+                    session.defaultSession.cookies.set(cookie, (error) => {
+                        if (error)
+                            console.error(error);
+                        var cookie = { url: 'http://chapter.autographa.com', name: 'chapter', value: chapter };
+                        session.defaultSession.cookies.set(cookie, (error) => {
+                            if (error)
+                                console.error(error);
+                        });
+                    });
+                }).catch(function(err) {
+                    console.log('Error: While retrieving document. ' + err);
+                });
             }
         });
-        session.defaultSession.cookies.get({ url: 'http://chapter.autographa.com' }, (error, chapterCookie) => {
-            if(chapterCookie[0].value){
-                TodoStore.chapterId = chapterCookie[0].value;
-            }
-        });
+        
         console.log(TodoStore.bookId);
         db.get(TodoStore.bookId).then(function(doc) {
             refDb.get('refChunks').then(function(chunkDoc) {
@@ -210,6 +209,7 @@ class Navbar extends React.Component {
     getValue(chapter, bookId){
         TodoStore.chapterId = chapter;
         TodoStore.bookId = bookId;
+        this.saveLastVisit(bookId,chapter);
         const cookiechapter = { url: 'http://chapter.autographa.com', name: 'chapter' , value: chapter.toString() };
         session.defaultSession.cookies.set(cookiechapter, (error) => {
             if (error)
@@ -233,7 +233,6 @@ class Navbar extends React.Component {
                     chunks = chunkDoc.chunks[parseInt(TodoStore.bookId, 10) - 1];
                     chapter = TodoStore.chapterId
                     that.getRefContents(TodoStore.refId+'_'+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1],chapter.toString(),verses, chunks);
-                    that.saveLastVisit(bkId,chapter);                    
                 });
             })
             }else{
@@ -245,11 +244,9 @@ class Navbar extends React.Component {
                     refDb.get('refChunks').then(function(chunkDoc) {
                     verses = doc.chapters[parseInt(TodoStore.chapterId, 10) - 1].verses;
                     chunks = chunkDoc.chunks[parseInt(TodoStore.bookId, 10) - 1];
-                    // console.log(chunks)
                     chapter = TodoStore.chapterId;
                     that.getRefContents('eng_ulb'+'_'+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1],chapter.toString(),verses, chunks,);
                     //that.createVerseInputs(verses, chunks, chapter);
-                    that.saveLastVisit(bkId,chapter);                                    
                 });
             })
             }    
