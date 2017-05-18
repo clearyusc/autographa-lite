@@ -7,7 +7,6 @@ const Col = require('react-bootstrap/lib/Col');
 const Tabs = require('react-bootstrap/lib/Tabs');
 const Tab = require('react-bootstrap/lib/Tab');
 const Constant = require("../util/constants");
-const BookList = require("./booklist");
 const refDb = require(`${__dirname}/../util/data-provider`).referenceDb();
 const session =  require('electron').remote.session;
 import { dialog } from 'electron';
