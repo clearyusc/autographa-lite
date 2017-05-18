@@ -35,37 +35,55 @@ class Contentbox extends React.Component {
         refLists.then((refsArray) => {
             this.setState({refList:  refsArray});
         });
-    
-    session.defaultSession.cookies.get({ url: 'http://refs.autographa.com' }, (error, refCookie) => {
-            if(refCookie.length > 0){
-                TodoStore.refId = refCookie[0].value;
-                session.defaultSession.cookies.get({ url: 'http://book.autographa.com' }, (error, bookCookie) => {
+
+            session.defaultSession.cookies.get({ url: 'http://refs.autographa.com' }, (error, refCookie) => {
+                if(refCookie.length > 0){
+                    TodoStore.refId = refCookie[0].value;
+                }
+            });
+            session.defaultSession.cookies.get({ url: 'http://book.autographa.com' }, (error, bookCookie) => {
                 if(bookCookie.length > 0){
                     TodoStore.bookId = bookCookie[0].value;
-                    session.defaultSession.cookies.get({ url: 'http://chapter.autographa.com' }, (error, chapterCookie) => {
-                      if(chapterCookie[0].value){
-                        TodoStore.chapterId = chapterCookie[0].value;
-                        this.getRefContents(TodoStore.refId+'_'+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1], TodoStore.chapterId.toString());
-                      }else{
-                        TodoStore.chapterId = '1';
-                        this.getRefContents(TodoStore.refId+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1], TodoStore.chapterId.toString());
-
-                      }
-                    })
-                }else{
-                    TodoStore.bookId = '1';
-                    TodoStore.chapterId = '1';
-                    this.getRefContents("eng_ulb_"+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1], TodoStore.chapterId.toString());
-
                 }
-            });  
-            }else{
-                TodoStore.bookId = '1';
-                TodoStore.chapterId = '1';
-                TodoStore.refId = 'eng_ulb_';
-                this.getRefContents(TodoStore.refId+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1], TodoStore.chapterId.toString());
-            }
-        });
+            });
+            session.defaultSession.cookies.get({ url: 'http://chapter.autographa.com' }, (error, chapterCookie) => {
+                if(chapterCookie[0].value){
+                    TodoStore.chapterId = chapterCookie[0].value;
+                }
+            });
+            this.getRefContents(TodoStore.refId+"_"+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1], TodoStore.chapterId.toString());
+    
+        // session.defaultSession.cookies.get({ url: 'http://refs.autographa.com' }, (error, refCookie) => {
+        //     if(refCookie.length > 0){
+        //         TodoStore.refId = refCookie[0].value;
+        //         session.defaultSession.cookies.get({ url: 'http://book.autographa.com' }, (error, bookCookie) => {
+        //         if(bookCookie.length > 0){
+        //             TodoStore.bookId = bookCookie[0].value;
+        //             session.defaultSession.cookies.get({ url: 'http://chapter.autographa.com' }, (error, chapterCookie) => {
+        //               if(chapterCookie[0].value){
+        //                 TodoStore.chapterId = chapterCookie[0].value;
+        //                 this.getRefContents(TodoStore.refId+'_'+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1], TodoStore.chapterId.toString());
+        //               }else{
+        //                 TodoStore.chapterId = '1';
+        //                 this.getRefContents(TodoStore.refId+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1], TodoStore.chapterId.toString());
+
+        //               }
+        //             })
+        //         }else{
+        //             TodoStore.bookId = '1';
+        //             TodoStore.chapterId = '1';
+        //             this.getRefContents("eng_ulb_"+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1], TodoStore.chapterId.toString());
+
+        //         }
+        //     });  
+        //     }else{
+        //         TodoStore.bookId = '1';
+        //         TodoStore.chapterId = '1';
+        //         TodoStore.refId = 'eng_ulb_';
+        //         this.getRefContents(TodoStore.refId+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1], TodoStore.chapterId.toString());
+        //     }
+        // });
+
     }
 
     getRefContents(id, chapter) {

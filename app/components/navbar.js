@@ -42,7 +42,7 @@ class Navbar extends React.Component {
             var bookName = doc.visit_history[0].book; 
             book = doc.visit_history[0].bookId;
             chapter = doc.visit_history[0].chapter;
-            /*var cookie = { url: 'http://book.autographa.com', name: 'book', value: book };
+            var cookie = { url: 'http://book.autographa.com', name: 'book', value: book };
             session.defaultSession.cookies.set(cookie, (error) => {
                 if (error)
                     console.error(error);
@@ -52,8 +52,7 @@ class Navbar extends React.Component {
                         console.error(error);
                     success(book, chapter);
                 });
-            });*/
-            console.log(book+chapter+bookName);
+            });
         }).catch(function(err) {
             console.log('Error: While retrieving document. ' + err);
         });
