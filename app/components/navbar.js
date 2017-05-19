@@ -52,17 +52,16 @@ class Navbar extends React.Component {
                 });
             }else{
                 refDb.get("ref_history").then(function(doc) {
-                    console.log(doc);
                     var bookName = doc.visit_history[0].book; 
                     book = doc.visit_history[0].bookId;
                     chapter = doc.visit_history[0].chapter;
-                    TodoStore.bookId = book;
+                    TodoStore.bookId = book.toString();
                     TodoStore.chapterId = chapter;
-                    var cookie = { url: 'http://book.autographa.com', name: 'book', value: book };
+                    var cookie = { url: 'http://book.autographa.com', name: 'book', value: book.toString() };
                     session.defaultSession.cookies.set(cookie, (error) => {
                         if (error)
                             console.error(error);
-                        var cookie = { url: 'http://chapter.autographa.com', name: 'chapter', value: chapter };
+                        var cookie = { url: 'http://chapter.autographa.com', name: 'chapter', value: chapter.toString() };
                         session.defaultSession.cookies.set(cookie, (error) => {
                             if (error)
                                 console.error(error);
@@ -74,7 +73,6 @@ class Navbar extends React.Component {
             }
         });
         
-        console.log(TodoStore.bookId);
         db.get(TodoStore.bookId).then(function(doc) {
             refDb.get('refChunks').then(function(chunkDoc) {
                 verses = doc.chapters[parseInt(TodoStore.chapterId, 10) - 1].verses;

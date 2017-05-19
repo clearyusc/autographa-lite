@@ -36,21 +36,21 @@ class Contentbox extends React.Component {
             this.setState({refList:  refsArray});
         });
 
-            session.defaultSession.cookies.get({ url: 'http://refs.autographa.com' }, (error, refCookie) => {
-                if(refCookie.length > 0){
-                    TodoStore.refId = refCookie[0].value;
-                }
-            });
-            session.defaultSession.cookies.get({ url: 'http://book.autographa.com' }, (error, bookCookie) => {
-                if(bookCookie.length > 0){
-                    TodoStore.bookId = bookCookie[0].value;
-                }
-            });
-            session.defaultSession.cookies.get({ url: 'http://chapter.autographa.com' }, (error, chapterCookie) => {
-                if(chapterCookie[0].value){
-                    TodoStore.chapterId = chapterCookie[0].value;
-                }
-            });
+        session.defaultSession.cookies.get({ url: 'http://refs.autographa.com' }, (error, refCookie) => {
+            if(refCookie.length > 0){
+                TodoStore.refId = refCookie[0].value;
+            }
+        });
+        session.defaultSession.cookies.get({ url: 'http://book.autographa.com' }, (error, bookCookie) => {
+            if(bookCookie.length > 0){
+                TodoStore.bookId = bookCookie[0].value;
+            }
+        });
+        session.defaultSession.cookies.get({ url: 'http://chapter.autographa.com' }, (error, chapterCookie) => {
+            if(chapterCookie.length > 0){
+                TodoStore.chapterId = chapterCookie[0].value;
+            }
+        });
     }
 
     getRefContents(id, chapter) {
