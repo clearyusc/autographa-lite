@@ -48,6 +48,14 @@ class Navbar extends React.Component {
                 session.defaultSession.cookies.get({ url: 'http://chapter.autographa.com' }, (error, chapterCookie) => {
                     if(chapterCookie[0].value){
                         TodoStore.chapterId = chapterCookie[0].value;
+                        db.get(TodoStore.bookId).then(function(doc) {
+            refDb.get('refChunks').then(function(chunkDoc) {
+                verses = doc.chapters[parseInt(TodoStore.chapterId, 10) - 1].verses;
+                chunks = chunkDoc.chunks[parseInt(TodoStore.bookId, 10) - 1];
+                chapter = TodoStore.chapterId
+                that.getRefContents(TodoStore.refId+'_'+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1],chapter.toString(),verses, chunks);
+            })
+        })
                     }
                 });
             }else{
@@ -57,6 +65,14 @@ class Navbar extends React.Component {
                     chapter = doc.visit_history[0].chapter;
                     TodoStore.bookId = book.toString();
                     TodoStore.chapterId = chapter;
+                    db.get(TodoStore.bookId).then(function(doc) {
+                    refDb.get('refChunks').then(function(chunkDoc) {
+                        verses = doc.chapters[parseInt(TodoStore.chapterId, 10) - 1].verses;
+                        chunks = chunkDoc.chunks[parseInt(TodoStore.bookId, 10) - 1];
+                        chapter = TodoStore.chapterId
+                        that.getRefContents(TodoStore.refId+'_'+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1],chapter.toString(),verses, chunks);
+                    })
+                })
                     var cookie = { url: 'http://book.autographa.com', name: 'book', value: book.toString() };
                     session.defaultSession.cookies.set(cookie, (error) => {
                         if (error)
@@ -73,14 +89,7 @@ class Navbar extends React.Component {
             }
         });
         
-        db.get(TodoStore.bookId).then(function(doc) {
-            refDb.get('refChunks').then(function(chunkDoc) {
-                verses = doc.chapters[parseInt(TodoStore.chapterId, 10) - 1].verses;
-                chunks = chunkDoc.chunks[parseInt(TodoStore.bookId, 10) - 1];
-                chapter = TodoStore.chapterId
-                that.getRefContents(TodoStore.refId+'_'+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1],chapter.toString(),verses, chunks);
-            })
-        })
+        
     }
 
     getRefContents(id,chapter,verses, chunks) {
