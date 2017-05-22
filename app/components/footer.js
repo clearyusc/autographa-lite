@@ -1,15 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ReactBootstrapSlider from 'react-bootstrap-slider';
+import TodoStore from "./TodoStore";
 
 class Footer extends React.Component {
     constructor(props){
         super(props);
         this.fontChange = this.fontChange.bind(this);
         this.state = {
-            step: 1,
-            max: 40,
-            min: 14,
+            // step: 1,
+            // max: 40,
+            // min: 14,
             currentValue: 14,
             onSave: props.onSave
         }
@@ -18,7 +19,7 @@ class Footer extends React.Component {
     }
 
     fontChange(multiplier) {
-        let fontSize = 14;
+         let fontSize = 14;
         if (document.getElementsByClassName("col-ref")[0].style.fontSize == "") {
             document.getElementsByClassName("col-ref")[0].style.fontSize = "14px";
         }else{
@@ -39,11 +40,18 @@ class Footer extends React.Component {
                 fontSize = multiplier + fontSize
             }
         }
-        this.setState({currentValue: fontSize})
+         this.setState({currentValue: fontSize})
+        // TodoStore.currentValue = TodoStore.fontSize;
         document.getElementsByClassName("col-ref")[0].style.fontSize = fontSize + "px";
     }
-	render() {
+    sliderFontChange(obj){
+        // console.log(obj)
+        document.getElementsByClassName("col-ref")[0].style.fontSize = obj.target.value + "px";
+    }
 
+	render() {
+        // var currentValue = TodoStore.currentValue
+        // console.log(currentValue)
 		return (
 		<nav className="navbar navbar-default navbar-fixed-bottom">
             <div className="container-fluid">
@@ -52,7 +60,7 @@ class Footer extends React.Component {
                             <span>
                                 <a className="btn btn-default font-button minus" data-toggle="tooltip" data-placement="top" title="Decrease font size" onClick= {this.fontChange.bind(this, (-2))}>A-</a>
                             </span>
-                                <ReactBootstrapSlider value = {this.state.currentValue}   step={this.state.step} max={this.state.max} min={this.state.min} orientation="horizontal"/>
+                                <ReactBootstrapSlider change={this.sliderFontChange.bind(this)} value={this.state.currentValue}   step={TodoStore.step} max={TodoStore.max} min={TodoStore.min} orientation="horizontal"/>
                             <span>
                                 <a className="btn btn-default font-button plus" data-toggle="tooltip" data-placement="top" title="Increase font size" onClick= {this.fontChange.bind(this, (+2))}>A+</a>
                             </span>
@@ -70,7 +78,7 @@ class Footer extends React.Component {
                             
                           <li><a id="save-btn" data-toggle="tooltip" data-placement="top" title="Save changes" className="btn btn-success btn-save navbar-btn navbar-right" href="#" role="button" onClick={this.state.onSave}>Save</a></li>
                         </ul>
-                </div>
+              ss  </div>
             </div>
         </nav> )
 	}
