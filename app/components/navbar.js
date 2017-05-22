@@ -99,10 +99,10 @@ class Navbar extends React.Component {
                     break;
                 }
             }
-        let refString = doc.chapters[i].verses.map(function(verse, verseNum) {
-            return '<div data-verse="r' + (verseNum + 1) + '"><span class="verse-num">' + (verseNum + 1) + '</span><span>' + verse.verse + '</span></div>';
-        }).join('');
-        return refString;
+            let refString = doc.chapters[i].verses.map(function(verse, verseNum) {
+                return '<div data-verse="r' + (verseNum + 1) + '"><span class="verse-num">' + (verseNum + 1) + '</span><span>' + verse.verse + '</span></div>';
+            }).join('');
+            return refString;
         }).catch(function(err) {
             console.log(err)
         });
@@ -137,11 +137,14 @@ class Navbar extends React.Component {
                     chunkVerseEnd = parseInt(chunks[chunkIndex].firstvs, 10) - 1;
                 }
             }
-            chunkGroup.push(chunkVerseStart + '-' + chunkVerseEnd);
+            // chunkGroup.push(chunkVerseStart + '-' + chunkVerseEnd);
+            console.log(verses[i-1])
+            var chunk = chunkVerseStart + '-' + chunkVerseEnd;
+            var spanVerse = chunk + document.createTextNode(verses[i - 1].verse);
+            chunkGroup.push(spanVerse);
         }
         TodoStore.chunkGroup = chunkGroup;
         // this.setState({chunkGroup: chunkGroup})
-
     }
 
     openpopupSettings() {
@@ -320,7 +323,6 @@ class Navbar extends React.Component {
         </Tabs>
             </Modal.Body>
         </Modal>
-
          <SettingsModal show={TodoStore.showModalSettings} />
          <AboutUsModal show={TodoStore.showModalAboutUs} />
             <nav className="navbar navbar-inverse navbar-fixed-top" role="navigation">
@@ -332,14 +334,12 @@ class Navbar extends React.Component {
                     <div className="navbar-collapse collapse" id="navbar">
                         <ul className="nav navbar-nav" style={{padding: "3px 0 0 0px"}}>
                             <li>
-
                                 <div className="btn-group navbar-btn strong verse-diff-on" role="group" aria-label="..." id="bookBtn" style={{marginLeft:"200px"}}>
                                     <a onClick={() => this.openpopupBooks(1)} href="#" className="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Select Book"  id="book-chapter-btn">{bookName}</a>
                                     <span id="chapterBtnSpan">
                                     <a onClick={() => this.openpopupBooks(2)} className="btn btn-default" id="chapterBtn" data-target="#myModal"  data-toggle="modal" data-placement="bottom"  title="Select Chapter" >{TodoStore.chapterId}</a>
                                     </span>
-                                </div>
-                                
+                                </div>                               
                             </li>
                         </ul>
                         <ul className="nav navbar-nav navbar-right nav-pills verse-diff-on">

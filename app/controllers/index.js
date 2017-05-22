@@ -41,7 +41,7 @@ var stringReplace = require('../util/string_replace.js'),
     constants = require(`${__dirname}/../util/constants.js`),
     removeReferenceLink = '',
     ref_select = '';
-
+/*
  $(document).ready(function(){
 document.getElementById("save-btn").addEventListener("click", function(e) {
     var verses = currentBook.chapters[parseInt(chapter, 10) - 1].verses;
@@ -62,7 +62,7 @@ document.getElementById("save-btn").addEventListener("click", function(e) {
         console.log('Error: While retrieving document. ' + err);
     });
 });
-});
+});*/
 
 function createVerseInputs(verses, chunks, chapter) {
     document.getElementById('input-verses').innerHTML = "";
@@ -149,6 +149,7 @@ function lastVisitFromDB(success) {
 
 
 function initializeTextInUI(book, chapter) {
+    console.log(book);
     document.getElementById('book-chapter-btn').innerHTML = booksList[parseInt(book, 10) - 1];
     document.getElementById('chapterBtnSpan').innerHTML = '<a  id="chapterBtn" data-toggle="tooltip" data-placement="bottom"  title="Select Chapter" class="btn btn-default" href="javascript:getBookChapterList(' + "'" + book + "'" + ');" >' + chapter + '</a>'
     $('[data-toggle=tooltip]').tooltip();
@@ -1295,32 +1296,32 @@ $(".navigation-btn").click(function() {
 });
 
 
-function saveTarget() {
-    var verses = currentBook.chapters[parseInt(chapter, 10) - 1].verses;
-    verses.forEach(function(verse, index) {
-        var vId = 'v' + (index + 1);
-        verse.verse = document.getElementById(vId).textContent;
-    });
-    currentBook.chapters[parseInt(chapter, 10) - 1].verses = verses;
-    db.get(currentBook._id).then(function(book) {
-        currentBook._rev = book._rev;
-        db.put(currentBook).then(function(response) {
-            var dateTime = new Date();
-            $("#saved-time").html("Changes last saved on " + formatDate(dateTime));
-            setAutoSaveTime(formatDate(dateTime));
-            clearInterval(intervalId);
-        }).catch(function(err) {
+    /*function saveTarget() {
+        var verses = currentBook.chapters[parseInt(chapter, 10) - 1].verses;
+        verses.forEach(function(verse, index) {
+            var vId = 'v' + (index + 1);
+            verse.verse = document.getElementById(vId).textContent;
+        });
+        currentBook.chapters[parseInt(chapter, 10) - 1].verses = verses;
+        db.get(currentBook._id).then(function(book) {
+            currentBook._rev = book._rev;
             db.put(currentBook).then(function(response) {
                 var dateTime = new Date();
                 $("#saved-time").html("Changes last saved on " + formatDate(dateTime));
                 setAutoSaveTime(formatDate(dateTime));
+                clearInterval(intervalId);
             }).catch(function(err) {
+                db.put(currentBook).then(function(response) {
+                    var dateTime = new Date();
+                    $("#saved-time").html("Changes last saved on " + formatDate(dateTime));
+                    setAutoSaveTime(formatDate(dateTime));
+                }).catch(function(err) {
+                    clearInterval(intervalId);
+                });
                 clearInterval(intervalId);
             });
-            clearInterval(intervalId);
         });
-    });
-}
+    }*/
 // save last visit in database
 function saveLastVisit(book, chapter) {
     refDb.get('ref_history').then(function(doc) {
