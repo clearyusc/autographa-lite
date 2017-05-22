@@ -176,9 +176,23 @@ class Navbar extends React.Component {
         })
     }
 
-    onItemClick(bookNo) {
+    onItemClick(bookName) {
+        var bookNo;
+        console.log(bookName)
+        console.log(Constant.booksList)
+                for (var i = 0; i < Constant.booksList.length; i++) {
+            bookName == Constant.booksList[i]
+            console.log(bookName == Constant.booksList[i])
+            if (bookName == Constant.booksList[i]) {
+                 // console.log(i)
+                var bookNo = i+1;
+                 console.log(bookNo)
+                break;
+
+            };
+        };
         TodoStore.bookActive = bookNo;
-        TodoStore.bookName = Constant.booksList[parseInt(bookNo, 10) - 1] 
+        TodoStore.bookName = bookName;
         TodoStore.chapterActive = 0;
         var id = TodoStore.currentRef + '_' + bookCodeList[parseInt(bookNo, 10) - 1]
         var getData = refDb.get(id).then(function(doc) {
@@ -190,8 +204,8 @@ class Navbar extends React.Component {
             TodoStore.bookChapter["chapterLength"] = length;
             TodoStore.bookChapter["bookId"] = bookNo;
         });
-
     }
+
      
     handleSelect(key) {
         this.setState({key});
@@ -234,6 +248,7 @@ class Navbar extends React.Component {
                 var that = this; 
                 var bkId = TodoStore.bookId.toString();  
                 var verses,chunks,chapter;
+                TodoStore.bookName = Constant.booksList[parseInt(TodoStore.bookId, 10) - 1] 
                 db.get(bkId).then(function(doc) {
                     refDb.get('refChunks').then(function(chunkDoc) {
                     verses = doc.chapters[parseInt(TodoStore.chapterId, 10) - 1].verses;
@@ -307,7 +322,7 @@ class Navbar extends React.Component {
                         {
 
                             bookData.map((item,index) =>{
-                                return <li key={index}><a href="#" key={index} onClick = { this.onItemClick.bind(this, index+1) } value={item} className={( TodoStore.bookName == item ) ? 'link-active': ""}  >{item}
+                                return <li key={index}><a href="#" key={index} onClick = { this.onItemClick.bind(this, item) } value={item} className={( TodoStore.bookName == item ) ? 'link-active': ""}  >{item}
                                 </a></li>
                            })
                         }                       
