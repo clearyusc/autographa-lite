@@ -49,13 +49,13 @@ class Navbar extends React.Component {
                     if(chapterCookie[0].value){
                         TodoStore.chapterId = chapterCookie[0].value;
                         db.get(TodoStore.bookId).then(function(doc) {
-            refDb.get('refChunks').then(function(chunkDoc) {
-                verses = doc.chapters[parseInt(TodoStore.chapterId, 10) - 1].verses;
-                chunks = chunkDoc.chunks[parseInt(TodoStore.bookId, 10) - 1];
-                chapter = TodoStore.chapterId
-                that.getRefContents(TodoStore.refId+'_'+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1],chapter.toString(),verses, chunks);
-            })
-        })
+                            refDb.get('refChunks').then(function(chunkDoc) {
+                                verses = doc.chapters[parseInt(TodoStore.chapterId, 10) - 1].verses;
+                                chunks = chunkDoc.chunks[parseInt(TodoStore.bookId, 10) - 1];
+                                chapter = TodoStore.chapterId
+                                that.getRefContents(TodoStore.refId+'_'+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1],chapter.toString(),verses, chunks);
+                            })
+                        })
                     }
                 });
             }else{
@@ -126,21 +126,18 @@ class Navbar extends React.Component {
         }
 
         for (i = 1; i <= verses.length; i++) {
-        var spanVerseNum = '';
-
-        if (i > chunkVerseEnd) {
-            chunkVerseStart = parseInt(chunks[chunkIndex].firstvs, 10);
-            if (chunkIndex === chunks.length - 1 || parseInt((chunks[chunkIndex + 1].chp), 10) != chapter) {
-                chunkVerseEnd = verses.length;
-                
-            } else {
-                chunkIndex++;
-                chunkVerseEnd = parseInt(chunks[chunkIndex].firstvs, 10) - 1;
+            var spanVerseNum = '';
+            if (i > chunkVerseEnd) {
+                chunkVerseStart = parseInt(chunks[chunkIndex].firstvs, 10);
+                if (chunkIndex === chunks.length - 1 || parseInt((chunks[chunkIndex + 1].chp), 10) != chapter) {
+                    chunkVerseEnd = verses.length;
+                    
+                } else {
+                    chunkIndex++;
+                    chunkVerseEnd = parseInt(chunks[chunkIndex].firstvs, 10) - 1;
+                }
             }
-        }
-        var chunk = chunkVerseStart + '-' + chunkVerseEnd;
-        var spanVerse = chunk + "\"" + " id=\"v" + i+"\"" + ">";
-        chunkGroup.push(spanVerse);
+            chunkGroup.push(chunkVerseStart + '-' + chunkVerseEnd);
         }
         TodoStore.chunkGroup = chunkGroup;
         // this.setState({chunkGroup: chunkGroup})
@@ -264,7 +261,7 @@ class Navbar extends React.Component {
         // this.setState({data:booksCategory});
         TodoStore.bookData = booksCategory;
     }
-
+    
     render() {
         var OTbooksstart = 0;
         var OTbooksend = 38;
