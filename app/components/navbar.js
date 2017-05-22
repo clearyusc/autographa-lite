@@ -49,13 +49,13 @@ class Navbar extends React.Component {
                     if(chapterCookie[0].value){
                         TodoStore.chapterId = chapterCookie[0].value;
                         db.get(TodoStore.bookId).then(function(doc) {
-            refDb.get('refChunks').then(function(chunkDoc) {
-                verses = doc.chapters[parseInt(TodoStore.chapterId, 10) - 1].verses;
-                chunks = chunkDoc.chunks[parseInt(TodoStore.bookId, 10) - 1];
-                chapter = TodoStore.chapterId
-                that.getRefContents(TodoStore.refId+'_'+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1],chapter.toString(),verses, chunks);
-            })
-        })
+                            refDb.get('refChunks').then(function(chunkDoc) {
+                                verses = doc.chapters[parseInt(TodoStore.chapterId, 10) - 1].verses;
+                                chunks = chunkDoc.chunks[parseInt(TodoStore.bookId, 10) - 1];
+                                chapter = TodoStore.chapterId
+                                that.getRefContents(TodoStore.refId+'_'+Constant.bookCodeList[parseInt(TodoStore.bookId, 10) - 1],chapter.toString(),verses, chunks);
+                            })
+                        })
                     }
                 });
             }else{
@@ -99,10 +99,10 @@ class Navbar extends React.Component {
                     break;
                 }
             }
-        let refString = doc.chapters[i].verses.map(function(verse, verseNum) {
-            return '<div data-verse="r' + (verseNum + 1) + '"><span class="verse-num">' + (verseNum + 1) + '</span><span>' + verse.verse + '</span></div>';
-        }).join('');
-        return refString;
+            let refString = doc.chapters[i].verses.map(function(verse, verseNum) {
+                return '<div data-verse="r' + (verseNum + 1) + '"><span class="verse-num">' + (verseNum + 1) + '</span><span>' + verse.verse + '</span></div>';
+            }).join('');
+            return refString;
         }).catch(function(err) {
             console.log(err)
         });
@@ -126,25 +126,25 @@ class Navbar extends React.Component {
         }
 
         for (i = 1; i <= verses.length; i++) {
-        var spanVerseNum = '';
+            var spanVerseNum = '';
 
-        if (i > chunkVerseEnd) {
-            chunkVerseStart = parseInt(chunks[chunkIndex].firstvs, 10);
-            if (chunkIndex === chunks.length - 1 || parseInt((chunks[chunkIndex + 1].chp), 10) != chapter) {
-                chunkVerseEnd = verses.length;
-                
-            } else {
-                chunkIndex++;
-                chunkVerseEnd = parseInt(chunks[chunkIndex].firstvs, 10) - 1;
+            if (i > chunkVerseEnd) {
+                chunkVerseStart = parseInt(chunks[chunkIndex].firstvs, 10);
+                if (chunkIndex === chunks.length - 1 || parseInt((chunks[chunkIndex + 1].chp), 10) != chapter) {
+                    chunkVerseEnd = verses.length;
+                    
+                } else {
+                    chunkIndex++;
+                    chunkVerseEnd = parseInt(chunks[chunkIndex].firstvs, 10) - 1;
+                }
             }
-        }
-        var chunk = chunkVerseStart + '-' + chunkVerseEnd;
-        var spanVerse = chunk + "\"" + " id=\"v" + i+"\"" + ">";
-        chunkGroup.push(spanVerse);
+            console.log(verses[i-1])
+            var chunk = chunkVerseStart + '-' + chunkVerseEnd;
+            var spanVerse = chunk + "\"" + ">"+ document.createTextNode(verses[i - 1].verse);
+            chunkGroup.push(spanVerse);
         }
         TodoStore.chunkGroup = chunkGroup;
         // this.setState({chunkGroup: chunkGroup})
-
     }
 
     openpopupSettings() {
@@ -323,7 +323,6 @@ class Navbar extends React.Component {
         </Tabs>
             </Modal.Body>
         </Modal>
-
          <SettingsModal show={TodoStore.showModalSettings} />
          <AboutUsModal show={TodoStore.showModalAboutUs} />
             <nav className="navbar navbar-inverse navbar-fixed-top" role="navigation">
@@ -335,14 +334,12 @@ class Navbar extends React.Component {
                     <div className="navbar-collapse collapse" id="navbar">
                         <ul className="nav navbar-nav" style={{padding: "3px 0 0 0px"}}>
                             <li>
-
                                 <div className="btn-group navbar-btn strong verse-diff-on" role="group" aria-label="..." id="bookBtn" style={{marginLeft:"200px"}}>
                                     <a onClick={() => this.openpopupBooks(1)} href="#" className="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Select Book"  id="book-chapter-btn">{bookName}</a>
                                     <span id="chapterBtnSpan">
                                     <a onClick={() => this.openpopupBooks(2)} className="btn btn-default" id="chapterBtn" data-target="#myModal"  data-toggle="modal" data-placement="bottom"  title="Select Chapter" >{TodoStore.chapterId}</a>
                                     </span>
-                                </div>
-                                
+                                </div>                               
                             </li>
                         </ul>
                         <ul className="nav navbar-nav navbar-right nav-pills verse-diff-on">
