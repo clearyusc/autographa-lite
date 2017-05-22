@@ -11,6 +11,7 @@ class Footer extends React.Component {
             max: 40,
             min: 14,
             currentValue: 14,
+            onSave: props.onSave
         }
        
         // console.log(mySlider)
@@ -67,7 +68,7 @@ class Footer extends React.Component {
                     <span id="saved-time"></span>
                         <ul style={{marginRight: "30px", float: "right"}} className="nav navbar-nav navbar-right">
                             
-                          <li><a id="save-btn" data-toggle="tooltip" data-placement="top" title="Save changes" className="btn btn-success btn-save navbar-btn navbar-right" href="#" role="button">Save</a></li>
+                          <li><a id="save-btn" data-toggle="tooltip" data-placement="top" title="Save changes" className="btn btn-success btn-save navbar-btn navbar-right" href="#" role="button" onClick={this.state.onSave}>Save</a></li>
                         </ul>
                 </div>
             </div>
