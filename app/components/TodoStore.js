@@ -19,6 +19,7 @@ export class TodoStore {
   @observable currentRef = 'eng_ulb'
   @observable bookData = Constant.booksList
   @observable bookName = ''
+  @observable translationContent =  ''
 
   constructor(bookId, chapterId, bookChapter, activeTab, showModalBooks, bookChapterContent, chunkGroup, content, currentRef, booksList){
 

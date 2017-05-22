@@ -14,7 +14,7 @@ import { observer } from "mobx-react"
 import TodoStore from "./TodoStore"
 import SettingsModal from "./settings"
 import AboutUsModal from "./about"
-import Contentbox  from '../components/contentbox';
+import TranslationPanel  from '../components/translation_panel';
 const refDb = require(`${__dirname}/../util/data-provider`).referenceDb();
 const db = require(`${__dirname}/../util/data-provider`).targetDb();
 const injectTapEventPlugin = require("react-tap-event-plugin");
@@ -111,6 +111,7 @@ class Navbar extends React.Component {
            TodoStore.content = content;
         });
 
+        var translationContent = [];
         var i;
         var chunkIndex = 0;
         var chunkVerseStart; 
@@ -138,12 +139,13 @@ class Navbar extends React.Component {
                 }
             }
             // chunkGroup.push(chunkVerseStart + '-' + chunkVerseEnd);
-            console.log(verses[i-1])
             var chunk = chunkVerseStart + '-' + chunkVerseEnd;
-            var spanVerse = chunk + document.createTextNode(verses[i - 1].verse);
+            translationContent.push(verses[i - 1].verse).toString();
+            var spanVerse = chunk 
             chunkGroup.push(spanVerse);
         }
         TodoStore.chunkGroup = chunkGroup;
+        TodoStore.translationContent= translationContent;
         // this.setState({chunkGroup: chunkGroup})
     }
 
@@ -366,7 +368,7 @@ class Navbar extends React.Component {
                     </div>
                 </div>
             </nav>
-            <Contentbox />
+            <TranslationPanel />
         </div>
         )
     }

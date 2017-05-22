@@ -14,10 +14,10 @@ import { remote } from 'electron';
 import { observer } from "mobx-react"
 import TodoStore from "./TodoStore"
 import  Footer  from '../components/footer';
-
+import  ReferencePanel  from '../components/reference_panel';
 
 @observer
-class Contentbox extends React.Component {
+class TranslationPanel extends React.Component {
     constructor(props) {
         super(props);
         this.handleRefChange = this.handleRefChange.bind(this);
@@ -53,11 +53,6 @@ class Contentbox extends React.Component {
             }
         });
     }
-     componentDidMount(){
-        // s = document.getElementsByClassName("verse-num");
-                
-    }
-
 
     getRefContents(id, chapter) {
         let refContent = refDb.get(id).then(function(doc) { //book code is hard coded for now
@@ -77,6 +72,7 @@ class Contentbox extends React.Component {
              TodoStore.content = content;
         });
     }
+
     handleRefChange(event) {
         event.persist()
         session.defaultSession.cookies.get({ url: 'http://book.autographa.com' }, (error, bookCookie) => {
@@ -134,35 +130,15 @@ class Contentbox extends React.Component {
             console.log('Error: While retrieving document. ' + err);
         });
     }
-    highlightRef(obj){
-        var content = ReactDOM.findDOMNode(this);
-        let verses = content.getElementsByClassName("verse-input")[0].querySelectorAll("span[id^=v]");
-        let refContent = (content.getElementsByClassName('ref-contents')[0].children[0]);
-        for (var i = 0; i < verses.length; i++) {
-            let refDiv = refContent.querySelectorAll('div[data-verse^='+'"'+"r"+(i+1)+'"'+']');
-            if (refDiv != 'undefined'){
-                refDiv[0].style="background-color:none;font-weight:none;padding-left:10px;padding-right:10px";
-            }            
-        };
-
-        let chunk = document.getElementById(obj).getAttribute("data-chunk-group")
-        if(chunk){
-            refContent.querySelectorAll('div[data-verse^="r"]').style="background-color: '';font-weight: '';padding-left:10px;padding-right:10px";
-            var limits = chunk.split("-").map(function(element) {
-                return parseInt(element, 10) - 1;
-            });
-            for(var j=limits[0]; j<=limits[1];j++){
-                refContent.querySelectorAll("div[data-verse=r"+(j+1)+"]")[0].style = "background-color: rgba(11, 130, 255, 0.1);padding-left:10px;padding-right:10px;margin-right:10px";
-            }
-
-        }
-    }
-
+    
 	render (){
+        var translationContent = TodoStore.translationContent   ;
+        console.log(translationContent);
         var verseGroup = [];
         for (var i = 0; i < TodoStore.chunkGroup.length; i++) {
-                var id="v"+(i+1);
-                verseGroup.push(<div  onClick = {this.highlightRef.bind(this, id)} key={i}><span className='verse-num' key={i}>{i+1}</span><span  contentEditable={true}  data-chunk-group={TodoStore.chunkGroup[i]} id={id}></span></div>);
+                // console.log(i)
+                verseGroup.push(<div key={i}><span className='verse-num' key={i}>{i+1}</span><span contentEditable={true} id={"v"+(i+1)} data-chunk-group={TodoStore.chunkGroup[i]}>{TodoStore.translationContent[i]}</span></div>);
+            // console.log(chunkGroup)
         }
         const refContent = TodoStore.content 
 		return (
@@ -188,24 +164,13 @@ class Contentbox extends React.Component {
                              </div>
                         </div>
                     </div>
-                    <div className="row" >
-                        <div type="ref"  className="col-12 col-ref ref-contents">
+                    <div className="row">
+                        <div type="ref" className="col-12 col-ref">
                            <div dangerouslySetInnerHTML={{__html: refContent}}></div>
                         </div>
                     </div>
                 </div>
-                <div className="col-sm-6 col-fixed col-editor">
-                    <div className="row">
-                        <div className="col-12 center-align">
-                            <p className="translation">Translation</p>
-                        </div>
-                    </div>
-                    <div className="row">
-                    <div ref="verseInput" id="input-verses" className="col-12 col-ref verse-input">
-                        {verseGroup}
-                        </div>
-                    </div>
-                </div>
+                <ReferencePanel />
             </div>
             <Footer onSave={this.saveTarget}/>
         </div>
@@ -215,4 +180,4 @@ class Contentbox extends React.Component {
 	}
 }
 
-module.exports = Contentbox
+module.exports = TranslationPanel
