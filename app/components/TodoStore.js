@@ -24,7 +24,6 @@ export class TodoStore {
   @observable fontMax = 40
   @observable fontMin = 14
   @observable currentFontValue = 14
-  @observable fontSize = 14
 
   constructor(bookId, chapterId, bookChapter, activeTab, showModalBooks, bookChapterContent, chunkGroup, content, currentRef, booksList){
 
