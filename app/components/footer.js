@@ -1,57 +1,47 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ReactBootstrapSlider from 'react-bootstrap-slider';
+import { observer } from "mobx-react"
 import TodoStore from "./TodoStore";
 
+@observer
 class Footer extends React.Component {
     constructor(props){
         super(props);
         this.fontChange = this.fontChange.bind(this);
         this.state = {
-            // step: 1,
-            // max: 40,
-            // min: 14,
-            currentValue: 14,
             onSave: props.onSave
-        }
-       
-        // console.log(mySlider)
+        }       
     }
 
     fontChange(multiplier) {
-         let fontSize = 14;
+        let fontSize = TodoStore.fontMin;
         if (document.getElementsByClassName("col-ref")[0].style.fontSize == "") {
             document.getElementsByClassName("col-ref")[0].style.fontSize = "14px";
         }else{
             fontSize = parseInt(document.getElementsByClassName("col-ref")[0].style.fontSize)
         }
-        // console.log((multiplier+this.state.fontSize ))
         if(multiplier < 0){
-            if((multiplier+fontSize) <= 14 ){
-                fontSize = 14
+            if((multiplier+fontSize) <= TodoStore.fontMin ){
+                fontSize = TodoStore.fontMin
             }else{
                 fontSize = multiplier + fontSize
-                // this.setState({fontSize: (multiplier+this.state.fontSize )})
             }
         }else{
-            if((multiplier+fontSize) >= 40 ){
-                fontSize = 40
+            if((multiplier+fontSize) >= TodoStore.fontMax ){
+                fontSize = TodoStore.fontMax
             }else{
                 fontSize = multiplier + fontSize
             }
         }
-         this.setState({currentValue: fontSize})
-        // TodoStore.currentValue = TodoStore.fontSize;
+        TodoStore.currentFontValue = fontSize
         document.getElementsByClassName("col-ref")[0].style.fontSize = fontSize + "px";
     }
     sliderFontChange(obj){
-        // console.log(obj)
         document.getElementsByClassName("col-ref")[0].style.fontSize = obj.target.value + "px";
     }
 
 	render() {
-        // var currentValue = TodoStore.currentValue
-        // console.log(currentValue)
 		return (
 		<nav className="navbar navbar-default navbar-fixed-bottom">
             <div className="container-fluid">
@@ -60,7 +50,7 @@ class Footer extends React.Component {
                             <span>
                                 <a className="btn btn-default font-button minus" data-toggle="tooltip" data-placement="top" title="Decrease font size" onClick= {this.fontChange.bind(this, (-2))}>A-</a>
                             </span>
-                                <ReactBootstrapSlider change={this.sliderFontChange.bind(this)} value={this.state.currentValue}   step={TodoStore.step} max={TodoStore.max} min={TodoStore.min} orientation="horizontal"/>
+                                <ReactBootstrapSlider change={this.sliderFontChange.bind(this)} value={TodoStore.currentFontValue}   step={TodoStore.fontStep} max={TodoStore.fontMax} min={TodoStore.fontMin} orientation="horizontal"/>
                             <span>
                                 <a className="btn btn-default font-button plus" data-toggle="tooltip" data-placement="top" title="Increase font size" onClick= {this.fontChange.bind(this, (+2))}>A+</a>
                             </span>
@@ -78,7 +68,7 @@ class Footer extends React.Component {
                             
                           <li><a id="save-btn" data-toggle="tooltip" data-placement="top" title="Save changes" className="btn btn-success btn-save navbar-btn navbar-right" href="#" role="button" onClick={this.state.onSave}>Save</a></li>
                         </ul>
-              ss  </div>
+                </div>
             </div>
         </nav> )
 	}

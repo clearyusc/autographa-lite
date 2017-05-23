@@ -20,11 +20,11 @@ export class TodoStore {
   @observable bookData = Constant.booksList
   @observable bookName = ''
   @observable translationContent =  ''
-  @observable step = 1
-  @observable max = 40
-  @observable min = 14
-  // @observable currentValue = 14
-  // @observable fontSize = 14
+  @observable fontStep = 1
+  @observable fontMax = 40
+  @observable fontMin = 14
+  @observable currentFontValue = 14
+  @observable fontSize = 14
 
   constructor(bookId, chapterId, bookChapter, activeTab, showModalBooks, bookChapterContent, chunkGroup, content, currentRef, booksList){
 
