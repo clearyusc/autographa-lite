@@ -93,9 +93,7 @@ class Navbar extends React.Component {
                     console.log('Error: While retrieving document. ' + err);
                 });
             }
-        });
-        
-        
+        });        
     }
 
     getRefContents(id,chapter,verses, chunks) {
@@ -103,7 +101,7 @@ class Navbar extends React.Component {
             for (var i = 0; i < doc.chapters.length; i++) {
                 if (doc.chapters[i].chapter == parseInt(chapter, 10)) { // 1 is chapter number and hardcoded for now
                     break;
-                }
+                    }
             }
             let refString = doc.chapters[i].verses.map(function(verse, verseNum) {
                 return '<div data-verse="r' + (verseNum + 1) + '"><span class="verse-num">' + (verseNum + 1) + '</span><span>' + verse.verse + '</span></div>';
@@ -204,7 +202,7 @@ class Navbar extends React.Component {
         TodoStore.bookActive = bookNo;
         TodoStore.bookName = bookName;
         TodoStore.chapterActive = 0;
-        var id = TodoStore.currentRef + '_' + bookCodeList[parseInt(bookNo, 10) - 1]
+        var id = TodoStore.currentRef + '_' + Constant.bookCodeList[parseInt(bookNo, 10) - 1]
         var getData = refDb.get(id).then(function(doc) {
             return doc.chapters.length;
         }).catch(function(err){
@@ -360,9 +358,7 @@ class Navbar extends React.Component {
     }
     
     render() {
-        console.log(TodoStore.layout);
         const layout = TodoStore.layout;
-        console.log(layout);
         var OTbooksstart = 0;
         var OTbooksend = 38;
         var NTbooksstart= 39;

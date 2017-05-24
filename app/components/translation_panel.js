@@ -88,12 +88,10 @@ class TranslationPanel extends React.Component {
             if (error)
             console.log(error);
         });
-    }
-
-
+    } 
+    
 	render (){
         var translationContent = TodoStore.translationContent;
-        console.log(translationContent);
         const refContent = TodoStore.content 
 		return (
 		<div className="container-fluid">
