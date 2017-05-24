@@ -19,7 +19,7 @@ class TranslationPanel extends React.Component {
     constructor(props) {
         super(props);
         this.handleRefChange = this.handleRefChange.bind(this);
-        this.saveTarget = this.saveTarget.bind(this);
+        //this.saveTarget = this.saveTarget.bind(this);
         this.state = { refList: [], verses: [], content: '',defaultRef: 'eng_ulb' }
         
         var existRef = [];
@@ -90,44 +90,7 @@ class TranslationPanel extends React.Component {
         });
     }
 
-    saveTarget() {
-        var bookNo = TodoStore.bookId.toString();
-        db.get(bookNo).then(function(doc) {
-            refDb.get('refChunks').then(function(chunkDoc) {
-                console.log(TodoStore.bookId);
-                // createRefSelections();
-                //console.log(TodoStore.bookId.chapters[parseInt(1, 10) - 1].verses);
-                var verses = doc.chapters[parseInt(TodoStore.chapterId, 10) - 1].verses;
-                console.log(verses);
-                verses.forEach(function(verse, index) {
-                    var vId = 'v' + (index + 1);
-                    console.log(vId);
-                    verse.verse = document.getElementById(vId).textContent;
-                    doc.chapters[parseInt(TodoStore.chapterId, 10) - 1].verses = verses;
-                    db.get(doc._id).then(function(book) {
-                        doc._rev = book._rev;
-                        db.put(doc).then(function(response) {
-                            var dateTime = new Date();
-                            $("#saved-time").html("Changes last saved on " + formatDate(dateTime));
-                            setAutoSaveTime(formatDate(dateTime));
-                            clearInterval(intervalId);
-                        }).catch(function(err) {
-                            db.put(doc).then(function(response) {
-                                var dateTime = new Date();
-                                $("#saved-time").html("Changes last saved on " + formatDate(dateTime));
-                                setAutoSaveTime(formatDate(dateTime));
-                            }).catch(function(err) {
-                                clearInterval(intervalId);
-                            });
-                            clearInterval(intervalId);
-                        });
-                    });
-                });
-            });
-        }).catch(function(err) {
-            console.log('Error: While retrieving document. ' + err);
-        });
-    }
+   
     
 	render (){
         var translationContent = TodoStore.translationContent;

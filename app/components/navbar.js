@@ -18,8 +18,9 @@ import TranslationPanel  from '../components/translation_panel';
 const refDb = require(`${__dirname}/../util/data-provider`).referenceDb();
 const db = require(`${__dirname}/../util/data-provider`).targetDb();
 const injectTapEventPlugin = require("react-tap-event-plugin");
-import  Footer  from '../components/footer';
 import  ReferencePanel  from '../components/reference_panel';
+import  Footer  from '../components/footer';
+
 injectTapEventPlugin();
 
 @observer
@@ -284,32 +285,71 @@ class Navbar extends React.Component {
         TodoStore.bookData = booksCategory;
     }
 
-    highlightRef(obj){
-        console.log(obj)
-        var content = ReactDOM.findDOMNode(this);
-/*        let verses = content.getElementsByClassName("verse-input")[0].querySelectorAll("span[id^=v]");
-        let refContent = (content.getElementsByClassName('ref-contents')[0].children[0]);
-        for (var i = 0; i < verses.length; i++) {
-            let refDiv = refContent.DOM.ready('div[data-verse^='+'"'+"r"+(i+1)+'"'+']');
-            if (refDiv != 'undefined'){
-                refDiv[0].style="background-color:none;font-weight:none;padding-left:10px;padding-right:10px";
-            }            
-        };*/
+        highlightRef(obj){
+            console.log(obj)
+            var content = ReactDOM.findDOMNode(this);
+            let verses = content.getElementsByClassName("verse-input")[0].querySelectorAll("span[id^=v]");
+            let refContent = (content.getElementsByClassName('ref-contents')[0].children[0]);
+            for (var i = 0; i < verses.length; i++) {
+                let refDiv = refContent.DOM.ready('div[data-verse^='+'"'+"r"+(i+1)+'"'+']');
+                if (refDiv != 'undefined'){
+                    refDiv[0].style="background-color:none;font-weight:none;padding-left:10px;padding-right:10px";
+                }            
+            };
 
-        let chunk = document.getElementById(obj).getAttribute("data-chunk-group")
-        if(chunk){
-            refContent.querySelectorAll('div[data-verse^="r"]').style="background-color: '';font-weight: '';padding-left:10px;padding-right:10px";
-            var limits = chunk.split("-").map(function(element) {
-                return parseInt(element, 10) - 1;
-            });
-            for(var j=limits[0]; j<=limits[1];j++){
-                refContent.querySelectorAll("div[data-verse=r"+(j+1)+"]")[0].style = "background-color: rgba(11, 130, 255, 0.1);padding-left:10px;padding-right:10px;margin-right:10px";
-                                           
+            let chunk = document.getElementById(obj).getAttribute("data-chunk-group")
+            if(chunk){
+                refContent.querySelectorAll('div[data-verse^="r"]').style="background-color: '';font-weight: '';padding-left:10px;padding-right:10px";
+                var limits = chunk.split("-").map(function(element) {
+                    return parseInt(element, 10) - 1;
+                });
+                for(var j=limits[0]; j<=limits[1];j++){
+                    refContent.querySelectorAll("div[data-verse=r"+(j+1)+"]")[0].style = "background-color: rgba(11, 130, 255, 0.1);padding-left:10px;padding-right:10px;margin-right:10px";
+                                               
+                }
+               // refContent.querySelectorAll("div[data-verse=r"+(limits[0] + 1) + "]").style = "border-radius: 10px 10px 0px 0px";
+               // $('div[data-verse="r' + (limits[0] + 1) + '"]').css({ "border-radius": "10px 10px 0px 0px" });
+               //  $('div[data-verse="r' + (limits[1] + 1) + '"]').css({ "border-radius": "0px 0px 10px 10px" });
             }
-           // refContent.querySelectorAll("div[data-verse=r"+(limits[0] + 1) + "]").style = "border-radius: 10px 10px 0px 0px";
-           // $('div[data-verse="r' + (limits[0] + 1) + '"]').css({ "border-radius": "10px 10px 0px 0px" });
-           //  $('div[data-verse="r' + (limits[1] + 1) + '"]').css({ "border-radius": "0px 0px 10px 10px" });
         }
+
+         saveTarget() {
+        var bookNo = TodoStore.bookId.toString();
+        db.get(bookNo).then(function(doc) {
+            refDb.get('refChunks').then(function(chunkDoc) {
+                console.log(TodoStore.bookId);
+                // createRefSelections();
+                //console.log(TodoStore.bookId.chapters[parseInt(1, 10) - 1].verses);
+                var verses = doc.chapters[parseInt(TodoStore.chapterId, 10) - 1].verses;
+                console.log(verses);
+                verses.forEach(function(verse, index) {
+                    var vId = 'v' + (index + 1);
+                    console.log(vId);
+                    verse.verse = document.getElementById(vId).textContent;
+                    doc.chapters[parseInt(TodoStore.chapterId, 10) - 1].verses = verses;
+                    db.get(doc._id).then(function(book) {
+                        doc._rev = book._rev;
+                        db.put(doc).then(function(response) {
+                            var dateTime = new Date();
+                            $("#saved-time").html("Changes last saved on " + formatDate(dateTime));
+                            setAutoSaveTime(formatDate(dateTime));
+                            clearInterval(intervalId);
+                        }).catch(function(err) {
+                            db.put(doc).then(function(response) {
+                                var dateTime = new Date();
+                                $("#saved-time").html("Changes last saved on " + formatDate(dateTime));
+                                setAutoSaveTime(formatDate(dateTime));
+                            }).catch(function(err) {
+                                clearInterval(intervalId);
+                            });
+                            clearInterval(intervalId);
+                        });
+                    });
+                });
+            });
+        }).catch(function(err) {
+            console.log('Error: While retrieving document. ' + err);
+        });
     }
     
     render() {
@@ -420,7 +460,7 @@ class Navbar extends React.Component {
                     <Row>
                         <Col sm={4}><TranslationPanel /></Col>
                         <Col sm={4}><TranslationPanel /></Col>
-                        <Col sm={4}><ReferencePanel  /></Col>
+                        <Col sm={4}><ReferencePanel highlightRef={highlightRef.bind(this)}  /></Col>
                     </Row>
                 </Grid>
                   }
@@ -430,19 +470,20 @@ class Navbar extends React.Component {
                         <Col sm={3}><TranslationPanel /></Col>
                         <Col sm={3}><TranslationPanel /></Col>
                         <Col sm={3}><TranslationPanel /></Col>
-                        <Col sm={3}><ReferencePanel  /></Col>                    
+                        <Col sm={3}><ReferencePanel highlightRef={highlightRef.bind(this)} /></Col>                    
                     </Row>
                 </Grid>
                 } 
                 {layout == 1   &&
-               <Grid>
+                <Grid>
                     <Row>
-                        <Col sm={6}><TranslationPanel/></Col>
-                        <Col sm={6}><ReferencePanel  highlightRef={this.highlightRef.bind(this)}/></Col>
+                        <Col sm={6}><TranslationPanel /></Col>
+                        <Col sm={3}><ReferencePanel highlightRef={highlightRef.bind(this)} /></Col>                    
                     </Row>
                 </Grid>
-                  }  
-            <Footer onSave={this.saveTarget}/>
+                }  
+              <Footer onSave={this.saveTarget}/>
+
         </div>
         )
     }
