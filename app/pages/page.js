@@ -8,7 +8,6 @@
 // // const getMuiTheme = require('material-ui/styles/getMuiTheme')
 import React from 'react';
 import  NavBar  from '../components/navbar';
-import Contentbox  from '../components/contentbox';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 

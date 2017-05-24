@@ -13,11 +13,9 @@ import { dialog } from 'electron';
 import { remote } from 'electron';
 import { observer } from "mobx-react"
 import TodoStore from "./TodoStore"
-import  Footer  from '../components/footer';
-
 
 @observer
-class Contentbox extends React.Component {
+class TranslationPanel extends React.Component {
     constructor(props) {
         super(props);
         this.handleRefChange = this.handleRefChange.bind(this);
@@ -53,11 +51,6 @@ class Contentbox extends React.Component {
             }
         });
     }
-     componentDidMount(){
-        // s = document.getElementsByClassName("verse-num");
-                
-    }
-
 
     getRefContents(id, chapter) {
         let refContent = refDb.get(id).then(function(doc) { //book code is hard coded for now
@@ -77,6 +70,7 @@ class Contentbox extends React.Component {
              TodoStore.content = content;
         });
     }
+
     handleRefChange(event) {
         event.persist()
         session.defaultSession.cookies.get({ url: 'http://book.autographa.com' }, (error, bookCookie) => {
@@ -92,7 +86,7 @@ class Contentbox extends React.Component {
         var cookieRef = { url: 'http://refs.autographa.com', name: '0' , value: event.target.value };
         session.defaultSession.cookies.set(cookieRef, (error) => {
             if (error)
-                console.log(error);
+            console.log(error);
         });
     }
 
@@ -162,11 +156,8 @@ class Contentbox extends React.Component {
     }
 
 	render (){
-        var verseGroup = [];
-        for (var i = 0; i < TodoStore.chunkGroup.length; i++) {
-                var id="v"+(i+1);
-                verseGroup.push(<div  onClick = {this.highlightRef.bind(this, id)} key={i}><span className='verse-num' key={i}>{i+1}</span><span  contentEditable={true}  data-chunk-group={TodoStore.chunkGroup[i]} id={id}></span></div>);
-        }
+        var translationContent = TodoStore.translationContent;
+        console.log(translationContent);
         const refContent = TodoStore.content 
 		return (
 		<div className="container-fluid">
@@ -175,7 +166,6 @@ class Contentbox extends React.Component {
                     <div className="row">
                         <div className="col-12 center-align">
                             <div className="btn-group">
-
                                     <select className="ref-drop-down" title="Select Reference Text" onChange={this.handleRefChange} value ={TodoStore.refId}>
                                         {
                                             this.state.refList.map(function(refDoc, index){
@@ -191,26 +181,13 @@ class Contentbox extends React.Component {
                              </div>
                         </div>
                     </div>
-                    <div className="row" >
-                        <div type="ref"  className="col-12 col-ref ref-contents">
+                    <div className="row">
+                        <div type="ref" className="col-12 col-ref">
                            <div dangerouslySetInnerHTML={{__html: refContent}}></div>
                         </div>
                     </div>
                 </div>
-                <div className="col-sm-6 col-fixed col-editor">
-                    <div className="row">
-                        <div className="col-12 center-align">
-                            <p className="translation">Translation</p>
-                        </div>
-                    </div>
-                    <div className="row">
-                    <div ref="verseInput" id="input-verses" className="col-12 col-ref verse-input">
-                        {verseGroup}
-                        </div>
-                    </div>
-                </div>
             </div>
-            <Footer onSave={this.saveTarget}/>
         </div>
 
 		) 
@@ -218,4 +195,4 @@ class Contentbox extends React.Component {
 	}
 }
 
-module.exports = Contentbox
+module.exports = TranslationPanel

@@ -19,9 +19,11 @@ export class TodoStore {
   @observable currentRef = 'eng_ulb'
   @observable bookData = Constant.booksList
   @observable bookName = ''
+  @observable translationContent =  ''
   @observable step = 1
   @observable max = 40
   @observable min = 14
+  @observable layout = 1
   // @observable currentValue = 14
   // @observable fontSize = 14
 

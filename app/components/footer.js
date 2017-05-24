@@ -18,6 +18,11 @@ class Footer extends React.Component {
         // console.log(mySlider)
     }
 
+    handleChange(key) {
+        console.log(key);
+        TodoStore.layout = key;
+    }
+
     fontChange(multiplier) {
          let fontSize = 14;
         if (document.getElementsByClassName("col-ref")[0].style.fontSize == "") {
@@ -67,10 +72,10 @@ class Footer extends React.Component {
                         </div>
                     <div className="nav navbar-nav navbar-center verse-diff-on">
                         <div className="btn-group navbar-btn layout" role="group" aria-label="...">
-                            <a className="btn btn-primary btn-default" href="#" data-output="2x" role="multi-window-btn" data-toggle="tooltip" data-placement="top" title="2-column layout">2x &nbsp;<i className="fa fa-columns fa-lg"></i></a>
-                            <a className="btn btn-primary btn-default" href="#" data-output="3x" role="multi-window-btn" data-toggle="tooltip" data-placement="top" title="3-column layout">3x &nbsp;<i className="fa fa-columns fa-lg"></i>
+                            <a className="btn btn-primary btn-default" onClick = {this.handleChange.bind(this,1)} href="#" data-output="2x" role="multi-window-btn" data-toggle="tooltip" data-placement="top" title="2-column layout">2x &nbsp;<i className="fa fa-columns fa-lg"></i></a>
+                            <a className="btn btn-primary btn-default" onClick = {this.handleChange.bind(this,2)} href="#" data-output="3x" role="multi-window-btn" data-toggle="tooltip" data-placement="top" title="3-column layout">3x &nbsp;<i className="fa fa-columns fa-lg"></i>
                             </a>
-                            <a className="btn btn-primary btn-default" href="#" data-output="4x" role="multi-window-btn" data-toggle="tooltip" data-placement="top" title="4-column layout">4x &nbsp;<i className="fa fa-columns fa-lg"></i></a>
+                            <a className="btn btn-primary btn-default" onClick = {this.handleChange.bind(this,3)} href="#" data-output="4x" role="multi-window-btn" data-toggle="tooltip" data-placement="top" title="4-column layout">4x &nbsp;<i className="fa fa-columns fa-lg"></i></a>
                         </div>
                     </div>
                     <span id="saved-time"></span>
