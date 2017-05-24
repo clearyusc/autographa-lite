@@ -75,10 +75,10 @@ class TranslationPanel extends React.Component {
         event.persist()
         session.defaultSession.cookies.get({ url: 'http://book.autographa.com' }, (error, bookCookie) => {
             if(bookCookie.length > 0){
-                console.log(event.target.value+'_'+bookCodeList[parseInt(bookCookie[0].value, 10) - 1]);
-                this.getRefContents(event.target.value+'_'+bookCodeList[parseInt(bookCookie[0].value, 10) - 1],TodoStore.chapterId)
+                console.log(event.target.value+'_'+Constant.bookCodeList[parseInt(bookCookie[0].value, 10) - 1]);
+                this.getRefContents(event.target.value+'_'+Constant.bookCodeList[parseInt(bookCookie[0].value, 10) - 1],TodoStore.chapterId)
             }else{
-                this.getRefContents(event.target.value+'_'+bookCodeList[parseInt('1', 10) - 1],TodoStore.chapterId)
+                this.getRefContents(event.target.value+'_'+Constant.bookCodeList[parseInt('1', 10) - 1],TodoStore.chapterId)
             }    
         })
         TodoStore.refId = event.target.value;
@@ -88,13 +88,10 @@ class TranslationPanel extends React.Component {
             if (error)
             console.log(error);
         });
-    }
-
-   
+    } 
     
 	render (){
         var translationContent = TodoStore.translationContent;
-        console.log(translationContent);
         const refContent = TodoStore.content 
 		return (
 		<div className="container-fluid">
