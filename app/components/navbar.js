@@ -10,6 +10,7 @@ const Grid = require('react-bootstrap/lib/Grid')
 const Tabs = require('react-bootstrap/lib/Tabs');
 const Tab = require('react-bootstrap/lib/Tab');
 const Constant = require("../util/constants");
+const session = require('electron').remote.session;
 import { observer } from "mobx-react"
 import TodoStore from "./TodoStore"
 import SettingsModal from "./settings"
@@ -64,7 +65,7 @@ class Navbar extends React.Component {
             }else{
                 refDb.get("ref_history").then(function(doc) {
                     var bookName = doc.visit_history[0].book; 
-                    book = doc.visit_history[0].bookId;
+                    var book = doc.visit_history[0].bookId;
                     chapter = doc.visit_history[0].chapter;
                     TodoStore.bookId = book.toString();
                     TodoStore.chapterId = chapter;
@@ -460,7 +461,7 @@ class Navbar extends React.Component {
                     <div className="parentdiv">
                         <div className="layout2x"><TranslationPanel /></div>
                         <div className="layout2x"><TranslationPanel /></div>
-                        <div style={{padding: "10px"}} className="layout2x"><ReferencePanel highlightRef={highlightRef.bind(this)}  /></div>
+                        <div style={{padding: "10px"}} className="layout2x"><ReferencePanel /></div>
                     </div>
                 </div>
                   }
@@ -470,7 +471,7 @@ class Navbar extends React.Component {
                         <div className="layout3x"><TranslationPanel /></div>
                         <div className="layout3x"><TranslationPanel /></div>
                         <div className="layout3x"><TranslationPanel /></div>
-                        <div style={{ padding: "10px"}} className="layout3x"><ReferencePanel highlightRef={highlightRef.bind(this)} /></div>                    
+                        <div style={{ padding: "10px"}} className="layout3x"><ReferencePanel /></div>                    
                     </div>
                 </div>
                 } 
@@ -478,7 +479,7 @@ class Navbar extends React.Component {
                 <div className="parentdiv">
                     <div className="parentdiv">
                         <div className="layoutx"><TranslationPanel /></div>
-                        <div style={{padding: "10px"}} className="layoutx"><ReferencePanel highlightRef={highlightRef.bind(this)} /></div>                    
+                        <div style={{padding: "10px"}} className="layoutx"><ReferencePanel /></div>                    
                     </div>
                 </div>
                 }  
