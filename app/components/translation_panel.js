@@ -119,7 +119,7 @@ class TranslationPanel extends React.Component {
                         </div>
                     </div>
                     <div className="row">
-                        <div type="ref" className="col-12 col-ref">
+                        <div type="ref" className="col-12 col-ref ref-contents">
                            <div dangerouslySetInnerHTML={{__html: refContent}}></div>
                         </div>
                     </div>

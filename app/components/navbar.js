@@ -10,6 +10,7 @@ const Grid = require('react-bootstrap/lib/Grid')
 const Tabs = require('react-bootstrap/lib/Tabs');
 const Tab = require('react-bootstrap/lib/Tab');
 const Constant = require("../util/constants");
+const session = require('electron').remote.session;
 import { observer } from "mobx-react"
 import TodoStore from "./TodoStore"
 import SettingsModal from "./settings"
@@ -460,7 +461,7 @@ class Navbar extends React.Component {
                     <Row>
                         <Col sm={4}><TranslationPanel /></Col>
                         <Col sm={4}><TranslationPanel /></Col>
-                        <Col sm={4}><ReferencePanel highlightRef={highlightRef.bind(this)}  /></Col>
+                        <Col sm={4}><ReferencePanel  /></Col>
                     </Row>
                 </Grid>
                   }
@@ -470,7 +471,7 @@ class Navbar extends React.Component {
                         <Col sm={3}><TranslationPanel /></Col>
                         <Col sm={3}><TranslationPanel /></Col>
                         <Col sm={3}><TranslationPanel /></Col>
-                        <Col sm={3}><ReferencePanel highlightRef={highlightRef.bind(this)} /></Col>                    
+                        <Col sm={3}><ReferencePanel  /></Col>                    
                     </Row>
                 </Grid>
                 } 
@@ -478,7 +479,7 @@ class Navbar extends React.Component {
                 <Grid>
                     <Row>
                         <Col sm={6}><TranslationPanel /></Col>
-                        <Col sm={3}><ReferencePanel highlightRef={highlightRef.bind(this)} /></Col>                    
+                        <Col sm={3}><ReferencePanel /></Col>                    
                     </Row>
                 </Grid>
                 }  
