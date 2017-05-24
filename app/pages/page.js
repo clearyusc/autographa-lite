@@ -17,9 +17,7 @@ class Page extends React.Component {
 render(){
     return (
     <MuiThemeProvider>
-     <div>
-     	<NavBar />
-     </div>   
+     	<NavBar /> 
      </ MuiThemeProvider>
     )
   } 

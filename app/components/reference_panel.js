@@ -20,10 +20,10 @@ class ReferencePanel extends React.Component {
         var verseGroup = [];
         for (var i = 0; i < TodoStore.chunkGroup.length; i++) {
             var vid="v"+(i+1);  
-            verseGroup.push(<div key={i}><span className='verse-num' key={i}  onMouseEnter = {this.props.highlightRef(vid)}>{i+1}</span><span contentEditable={true} id={"v"+(i+1)} data-chunk-group={TodoStore.chunkGroup[i]}>{TodoStore.translationContent[i]}</span></div>);
+            verseGroup.push(<div key={i}><span className='verse-num' key={i}  onChange = {this.props.highlightRef(vid)}>{i+1}</span><span contentEditable={true} id={"v"+(i+1)} data-chunk-group={TodoStore.chunkGroup[i]}>{TodoStore.translationContent[i]}</span></div>);
         }
     return (  
-        <div className="col-editor">
+        <div className="col-editor container-fluid">
             <div className="row">
                 <div className="col-12 center-align">
                     <p className="translation">Translation</p>
