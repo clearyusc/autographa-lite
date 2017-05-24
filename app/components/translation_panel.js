@@ -13,8 +13,6 @@ import { dialog } from 'electron';
 import { remote } from 'electron';
 import { observer } from "mobx-react"
 import TodoStore from "./TodoStore"
-import  Footer  from '../components/footer';
-import  ReferencePanel  from '../components/reference_panel';
 
 @observer
 class TranslationPanel extends React.Component {
@@ -88,7 +86,7 @@ class TranslationPanel extends React.Component {
         var cookieRef = { url: 'http://refs.autographa.com', name: '0' , value: event.target.value };
         session.defaultSession.cookies.set(cookieRef, (error) => {
             if (error)
-                console.log(error);
+            console.log(error);
         });
     }
 
@@ -132,14 +130,8 @@ class TranslationPanel extends React.Component {
     }
     
 	render (){
-        var translationContent = TodoStore.translationContent   ;
+        var translationContent = TodoStore.translationContent;
         console.log(translationContent);
-        var verseGroup = [];
-        for (var i = 0; i < TodoStore.chunkGroup.length; i++) {
-                // console.log(i)
-                verseGroup.push(<div key={i}><span className='verse-num' key={i}>{i+1}</span><span contentEditable={true} id={"v"+(i+1)} data-chunk-group={TodoStore.chunkGroup[i]}>{TodoStore.translationContent[i]}</span></div>);
-            // console.log(chunkGroup)
-        }
         const refContent = TodoStore.content 
 		return (
 		<div className="container-fluid">
@@ -148,7 +140,6 @@ class TranslationPanel extends React.Component {
                     <div className="row">
                         <div className="col-12 center-align">
                             <div className="btn-group">
-
                                     <select className="ref-drop-down" title="Select Reference Text" onChange={this.handleRefChange} value ={TodoStore.refId}>
                                         {
                                             this.state.refList.map(function(refDoc, index){
@@ -170,9 +161,7 @@ class TranslationPanel extends React.Component {
                         </div>
                     </div>
                 </div>
-                <ReferencePanel />
             </div>
-            <Footer onSave={this.saveTarget}/>
         </div>
 
 		) 

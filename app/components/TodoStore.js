@@ -23,6 +23,7 @@ export class TodoStore {
   @observable step = 1
   @observable max = 40
   @observable min = 14
+  @observable layout = 1
   // @observable currentValue = 14
   // @observable fontSize = 14
 

@@ -13,29 +13,29 @@ import { dialog } from 'electron';
 import { remote } from 'electron';
 import { observer } from "mobx-react"
 import TodoStore from "./TodoStore"
+@observer
+class ReferencePanel extends React.Component {
 
-var ReferencePanel = function(props) {
-var verseGroup = [];
+    render (){
+        var verseGroup = [];
         for (var i = 0; i < TodoStore.chunkGroup.length; i++) {
-                // console.log(i)
-                verseGroup.push(<div key={i}><span className='verse-num' key={i}>{i+1}</span><span contentEditable={true} id={"v"+(i+1)} data-chunk-group={TodoStore.chunkGroup[i]}>{TodoStore.translationContent[i]}</span></div>);
-            // console.log(chunkGroup)
+            var vid="v"+(i+1);  
+            verseGroup.push(<div key={i}><span className='verse-num' key={i}  onMouseEnter = {this.props.highlightRef(vid)}>{i+1}</span><span contentEditable={true} id={"v"+(i+1)} data-chunk-group={TodoStore.chunkGroup[i]}>{TodoStore.translationContent[i]}</span></div>);
         }
-  return (  
-        <div className="col-sm-6 col-fixed col-editor">
+    return (  
+        <div className="col-editor">
             <div className="row">
                 <div className="col-12 center-align">
                     <p className="translation">Translation</p>
                 </div>
             </div>
             <div className="row">
-            <div id="input-verses" className="col-12 col-ref">
-                {verseGroup}
-                </div>
+            <div id="input-verses" className="col-12 col-ref">{verseGroup}</div>
             </div>
         </div>
         ) 
     }
+}
 
 
 module.exports = ReferencePanel

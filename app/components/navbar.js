@@ -18,6 +18,8 @@ import TranslationPanel  from '../components/translation_panel';
 const refDb = require(`${__dirname}/../util/data-provider`).referenceDb();
 const db = require(`${__dirname}/../util/data-provider`).targetDb();
 const injectTapEventPlugin = require("react-tap-event-plugin");
+import  Footer  from '../components/footer';
+import  ReferencePanel  from '../components/reference_panel';
 injectTapEventPlugin();
 
 @observer
@@ -281,8 +283,39 @@ class Navbar extends React.Component {
         // this.setState({data:booksCategory});
         TodoStore.bookData = booksCategory;
     }
+
+    highlightRef(obj){
+        console.log(obj)
+        var content = ReactDOM.findDOMNode(this);
+/*        let verses = content.getElementsByClassName("verse-input")[0].querySelectorAll("span[id^=v]");
+        let refContent = (content.getElementsByClassName('ref-contents')[0].children[0]);
+        for (var i = 0; i < verses.length; i++) {
+            let refDiv = refContent.DOM.ready('div[data-verse^='+'"'+"r"+(i+1)+'"'+']');
+            if (refDiv != 'undefined'){
+                refDiv[0].style="background-color:none;font-weight:none;padding-left:10px;padding-right:10px";
+            }            
+        };*/
+
+        let chunk = document.getElementById(obj).getAttribute("data-chunk-group")
+        if(chunk){
+            refContent.querySelectorAll('div[data-verse^="r"]').style="background-color: '';font-weight: '';padding-left:10px;padding-right:10px";
+            var limits = chunk.split("-").map(function(element) {
+                return parseInt(element, 10) - 1;
+            });
+            for(var j=limits[0]; j<=limits[1];j++){
+                refContent.querySelectorAll("div[data-verse=r"+(j+1)+"]")[0].style = "background-color: rgba(11, 130, 255, 0.1);padding-left:10px;padding-right:10px;margin-right:10px";
+                                           
+            }
+           // refContent.querySelectorAll("div[data-verse=r"+(limits[0] + 1) + "]").style = "border-radius: 10px 10px 0px 0px";
+           // $('div[data-verse="r' + (limits[0] + 1) + '"]').css({ "border-radius": "10px 10px 0px 0px" });
+           //  $('div[data-verse="r' + (limits[1] + 1) + '"]').css({ "border-radius": "0px 0px 10px 10px" });
+        }
+    }
     
     render() {
+        console.log(TodoStore.layout);
+        const layout = TodoStore.layout;
+        console.log(layout);
         var OTbooksstart = 0;
         var OTbooksend = 38;
         var NTbooksstart= 39;
@@ -320,7 +353,6 @@ class Navbar extends React.Component {
                 <div className="row books-li" id="bookdata">
                     <ul id="books-pane">
                         {
-
                             bookData.map((item,index) =>{
                                 return <li key={index}><a href="#" key={index} onClick = { this.onItemClick.bind(this, item) } value={item} className={( TodoStore.bookName == item ) ? 'link-active': ""}  >{item}
                                 </a></li>
@@ -362,9 +394,9 @@ class Navbar extends React.Component {
                         <ul className="nav navbar-nav navbar-right nav-pills verse-diff-on">
                             <li style={{padding: "17px 5px 0 0", color: "#fff", fontWeight: "bold"}}><span>OFF</span></li>
                             <li>
-                                <label style={{marginTop:"17px"}} className="mdl-switch mdl-js-switch mdl-js-ripple-effect" htmlFor="switch-2" id="switchLable" data-toggle='tooltip' data-placement='bottom' title="Compare mode">
-                                    <input type="checkbox" id="switch-2" className="mdl-switch__input check-diff"/>
-                                    <span className="mdl-switch__label"></span>
+                                <label style={{marginTop:"17px"}} className="sml-switch sml-js-switch sml-js-ripple-effect" htmlFor="switch-2" id="switchLable" data-toggle='tooltip' data-placement='bottom' title="Compare mode">
+                                    <input type="checkbox" id="switch-2" className="sml-switch__input check-diff"/>
+                                    <span className="sml-switch__label"></span>
                                 </label>                               
                             </li>
                             <li style={{padding:"17px 0 0 0", color: "#fff", fontWeight: "bold"}}><span>ON</span></li>
@@ -383,7 +415,34 @@ class Navbar extends React.Component {
                     </div>
                 </div>
             </nav>
-            <TranslationPanel />
+            {layout == 2 &&
+                  <Grid>
+                    <Row>
+                        <Col sm={4}><TranslationPanel /></Col>
+                        <Col sm={4}><TranslationPanel /></Col>
+                        <Col sm={4}><ReferencePanel  /></Col>
+                    </Row>
+                </Grid>
+                  }
+            {layout == 3 &&
+                 <Grid>
+                    <Row>
+                        <Col sm={3}><TranslationPanel /></Col>
+                        <Col sm={3}><TranslationPanel /></Col>
+                        <Col sm={3}><TranslationPanel /></Col>
+                        <Col sm={3}><ReferencePanel  /></Col>                    
+                    </Row>
+                </Grid>
+                } 
+                {layout == 1   &&
+               <Grid>
+                    <Row>
+                        <Col sm={6}><TranslationPanel/></Col>
+                        <Col sm={6}><ReferencePanel  highlightRef={this.highlightRef.bind(this)}/></Col>
+                    </Row>
+                </Grid>
+                  }  
+            <Footer onSave={this.saveTarget}/>
         </div>
         )
     }

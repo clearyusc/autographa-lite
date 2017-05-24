@@ -548,7 +548,7 @@ function highlightRef() {
 // Multi-reference windows
 function setMultiwindowReference(layout) {
 
-    var children = $('div.row-col-fixed').children(),
+    /*var children = $('div.row-col-fixed').children(),
         editor = children[children.length - 1],
         i,
         clone,
@@ -627,7 +627,7 @@ function setMultiwindowReference(layout) {
             }
             count = count + 1;
         }
-    }
+    }*/
 
 }
 
