@@ -11,6 +11,7 @@ export class TodoStore {
   @observable showModalBooks = false
   @observable showModalSettings = false
   @observable showModalAboutUs = false
+  @observable showModalSearch = false
   @observable bookChapterContent = ''
   @observable chunkGroup = ''
   @observable content = ''

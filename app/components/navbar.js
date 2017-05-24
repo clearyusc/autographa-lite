@@ -15,6 +15,7 @@ import { observer } from "mobx-react"
 import TodoStore from "./TodoStore"
 import SettingsModal from "./settings"
 import AboutUsModal from "./about"
+import SearchModal from "./search"
 import TranslationPanel  from '../components/translation_panel';
 const refDb = require(`${__dirname}/../util/data-provider`).referenceDb();
 const db = require(`${__dirname}/../util/data-provider`).targetDb();
@@ -34,6 +35,7 @@ class Navbar extends React.Component {
         this.state = {
             showModal: false,
             showModalSettings: false,
+            showModalSearch: false,
             data: Constant,
             chapData: [],
             bookNo:1,
@@ -155,6 +157,10 @@ class Navbar extends React.Component {
 
     openpopupSettings() {
         TodoStore.showModalSettings = true
+    }
+
+    openpopupSearch() {
+        TodoStore.showModalSearch = true
     }
 
     openpopupAboutUs() {
@@ -294,18 +300,18 @@ class Navbar extends React.Component {
             for (var i = 0; i < verses.length; i++) {
                 let refDiv = refContent.DOM.ready('div[data-verse^='+'"'+"r"+(i+1)+'"'+']');
                 if (refDiv != 'undefined'){
-                    refDiv[0].style="background-divor:none;font-weight:none;padding-left:10px;padding-right:10px";
+                    refDiv[0].style="background-color:none;font-weight:none;padding-left:10px;padding-right:10px";
                 }            
             };
 
             let chunk = document.getElementById(obj).getAttribute("data-chunk-group")
             if(chunk){
-                refContent.querySelectorAll('div[data-verse^="r"]').style="background-divor: '';font-weight: '';padding-left:10px;padding-right:10px";
+                refContent.querySelectorAll('div[data-verse^="r"]').style="background-color: '';font-weight: '';padding-left:10px;padding-right:10px";
                 var limits = chunk.split("-").map(function(element) {
                     return parseInt(element, 10) - 1;
                 });
                 for(var j=limits[0]; j<=limits[1];j++){
-                    refContent.querySelectorAll("div[data-verse=r"+(j+1)+"]")[0].style = "background-divor: rgba(11, 130, 255, 0.1);padding-left:10px;padding-right:10px;margin-right:10px";
+                    refContent.querySelectorAll("div[data-verse=r"+(j+1)+"]")[0].style = "background-color: rgba(11, 130, 255, 0.1);padding-left:10px;padding-right:10px;margin-right:10px";
                                                
                 }
                // refContent.querySelectorAll("div[data-verse=r"+(limits[0] + 1) + "]").style = "border-radius: 10px 10px 0px 0px";
@@ -415,13 +421,14 @@ class Navbar extends React.Component {
         </Modal>
          <SettingsModal show={TodoStore.showModalSettings} />
          <AboutUsModal show={TodoStore.showModalAboutUs} />
+         <SearchModal show={TodoStore.showModalSearch} />
             <nav className="navbar navbar-inverse navbar-fixed-top" role="navigation">
                 <div className="container-fluid">
                     <div className="navbar-header">
-                        <button className="navbar-toggle divlapsed" type="button" data-toggle="divlapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span className="sr-only">Toggle navigation</span><span className="icon-bar"></span><span className="icon-bar"></span><span className="icon-bar"></span></button>
+                        <button className="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span className="sr-only">Toggle navigation</span><span className="icon-bar"></span><span className="icon-bar"></span><span className="icon-bar"></span></button>
                         <a href="javascript:;" className="navbar-brand" ><img alt="Brand" src="../assets/images/logo.png"/></a>
                     </div>
-                    <div className="navbar-divlapse divlapse" id="navbar">
+                    <div className="navbar-collapse collapse" id="navbar">
                         <ul className="nav navbar-nav" style={{padding: "3px 0 0 0px"}}>
                             <li>
                                 <div className="btn-group navbar-btn strong verse-diff-on" role="group" aria-label="..." id="bookBtn" style={{marginLeft:"200px"}}>
@@ -433,16 +440,16 @@ class Navbar extends React.Component {
                             </li>
                         </ul>
                         <ul className="nav navbar-nav navbar-right nav-pills verse-diff-on">
-                            <li style={{padding: "17px 5px 0 0", divor: "#fff", fontWeight: "bold"}}><span>OFF</span></li>
+                            <li style={{padding: "17px 5px 0 0", color: "#fff", fontWeight: "bold"}}><span>OFF</span></li>
                             <li>
-                                <label style={{marginTop:"17px"}} className="sml-switch sml-js-switch sml-js-ripple-effect" htmlFor="switch-2" id="switchLable" data-toggle='tooltip' data-placement='bottom' title="Compare mode">
-                                    <input type="checkbox" id="switch-2" className="sml-switch__input check-diff"/>
-                                    <span className="sml-switch__label"></span>
+                                <label style={{marginTop:"17px"}} className="mdl-switch mdl-js-switch mdl-js-ripple-effect" htmlFor="switch-2" id="switchLable" data-toggle='tooltip' data-placement='bottom' title="Compare mode">
+                                    <input type="checkbox" id="switch-2" className="mdl-switch__input check-diff"/>
+                                    <span className="mdl-switch__label"></span>
                                 </label>                               
                             </li>
-                            <li style={{padding:"17px 0 0 0", divor: "#fff", fontWeight: "bold"}}><span>ON</span></li>
+                            <li style={{padding:"17px 0 0 0", color: "#fff", fontWeight: "bold"}}><span>ON</span></li>
                             <li>
-                                <a href="javascript:;" data-toggle="tooltip" data-placement="bottom" title="Find and replace" id="searchText"><i className="fa fa-search fa-2x"></i></a>
+                                <a onClick={() => this.openpopupSearch()} href="javascript:;" data-toggle="tooltip" data-placement="bottom" title="Find and replace" id="searchText"><i className="fa fa-search fa-2x"></i></a>
                             </li>
                             <li>
                                 <a href="#" data-toggle="tooltip" data-placement="bottom" title="Export as USFM" id="export-usfm"><i className="fa fa-cloud-download fa-2x"></i>
