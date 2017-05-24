@@ -292,18 +292,18 @@ class Navbar extends React.Component {
             for (var i = 0; i < verses.length; i++) {
                 let refDiv = refContent.DOM.ready('div[data-verse^='+'"'+"r"+(i+1)+'"'+']');
                 if (refDiv != 'undefined'){
-                    refDiv[0].style="background-color:none;font-weight:none;padding-left:10px;padding-right:10px";
+                    refDiv[0].style="background-divor:none;font-weight:none;padding-left:10px;padding-right:10px";
                 }            
             };
 
             let chunk = document.getElementById(obj).getAttribute("data-chunk-group")
             if(chunk){
-                refContent.querySelectorAll('div[data-verse^="r"]').style="background-color: '';font-weight: '';padding-left:10px;padding-right:10px";
+                refContent.querySelectorAll('div[data-verse^="r"]').style="background-divor: '';font-weight: '';padding-left:10px;padding-right:10px";
                 var limits = chunk.split("-").map(function(element) {
                     return parseInt(element, 10) - 1;
                 });
                 for(var j=limits[0]; j<=limits[1];j++){
-                    refContent.querySelectorAll("div[data-verse=r"+(j+1)+"]")[0].style = "background-color: rgba(11, 130, 255, 0.1);padding-left:10px;padding-right:10px;margin-right:10px";
+                    refContent.querySelectorAll("div[data-verse=r"+(j+1)+"]")[0].style = "background-divor: rgba(11, 130, 255, 0.1);padding-left:10px;padding-right:10px;margin-right:10px";
                                                
                 }
                // refContent.querySelectorAll("div[data-verse=r"+(limits[0] + 1) + "]").style = "border-radius: 10px 10px 0px 0px";
@@ -414,10 +414,10 @@ class Navbar extends React.Component {
             <nav className="navbar navbar-inverse navbar-fixed-top" role="navigation">
                 <div className="container-fluid">
                     <div className="navbar-header">
-                        <button className="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span className="sr-only">Toggle navigation</span><span className="icon-bar"></span><span className="icon-bar"></span><span className="icon-bar"></span></button>
+                        <button className="navbar-toggle divlapsed" type="button" data-toggle="divlapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span className="sr-only">Toggle navigation</span><span className="icon-bar"></span><span className="icon-bar"></span><span className="icon-bar"></span></button>
                         <a href="javascript:;" className="navbar-brand" ><img alt="Brand" src="../assets/images/logo.png"/></a>
                     </div>
-                    <div className="navbar-collapse collapse" id="navbar">
+                    <div className="navbar-divlapse divlapse" id="navbar">
                         <ul className="nav navbar-nav" style={{padding: "3px 0 0 0px"}}>
                             <li>
                                 <div className="btn-group navbar-btn strong verse-diff-on" role="group" aria-label="..." id="bookBtn" style={{marginLeft:"200px"}}>
@@ -429,14 +429,14 @@ class Navbar extends React.Component {
                             </li>
                         </ul>
                         <ul className="nav navbar-nav navbar-right nav-pills verse-diff-on">
-                            <li style={{padding: "17px 5px 0 0", color: "#fff", fontWeight: "bold"}}><span>OFF</span></li>
+                            <li style={{padding: "17px 5px 0 0", divor: "#fff", fontWeight: "bold"}}><span>OFF</span></li>
                             <li>
                                 <label style={{marginTop:"17px"}} className="sml-switch sml-js-switch sml-js-ripple-effect" htmlFor="switch-2" id="switchLable" data-toggle='tooltip' data-placement='bottom' title="Compare mode">
                                     <input type="checkbox" id="switch-2" className="sml-switch__input check-diff"/>
                                     <span className="sml-switch__label"></span>
                                 </label>                               
                             </li>
-                            <li style={{padding:"17px 0 0 0", color: "#fff", fontWeight: "bold"}}><span>ON</span></li>
+                            <li style={{padding:"17px 0 0 0", divor: "#fff", fontWeight: "bold"}}><span>ON</span></li>
                             <li>
                                 <a href="javascript:;" data-toggle="tooltip" data-placement="bottom" title="Find and replace" id="searchText"><i className="fa fa-search fa-2x"></i></a>
                             </li>
@@ -453,31 +453,31 @@ class Navbar extends React.Component {
                 </div>
             </nav>
             {layout == 2 &&
-                  <Grid>
-                    <Row>
-                        <Col sm={4}><TranslationPanel /></Col>
-                        <Col sm={4}><TranslationPanel /></Col>
-                        <Col sm={4}><ReferencePanel  /></Col>
-                    </Row>
-                </Grid>
+                  <div className="parentdiv">
+                    <div className="parentdiv">
+                        <div className="layout2x"><TranslationPanel /></div>
+                        <div className="layout2x"><TranslationPanel /></div>
+                        <div style={{padding: "10px"}} className="layout2x"><ReferencePanel /></div>
+                    </div>
+                </div>
                   }
             {layout == 3 &&
-                 <Grid>
-                    <Row>
-                        <Col sm={3}><TranslationPanel /></Col>
-                        <Col sm={3}><TranslationPanel /></Col>
-                        <Col sm={3}><TranslationPanel /></Col>
-                        <Col sm={3}><ReferencePanel  /></Col>                    
-                    </Row>
-                </Grid>
+                 <div className="parentdiv">
+                    <div className="parentdiv">
+                        <div className="layout3x"><TranslationPanel /></div>
+                        <div className="layout3x"><TranslationPanel /></div>
+                        <div className="layout3x"><TranslationPanel /></div>
+                        <div style={{ padding: "10px"}} className="layout3x"><ReferencePanel /></div>                    
+                    </div>
+                </div>
                 } 
                 {layout == 1   &&
-                <Grid>
-                    <Row>
-                        <Col sm={6}><TranslationPanel /></Col>
-                        <Col sm={3}><ReferencePanel /></Col>                    
-                    </Row>
-                </Grid>
+                <div className="parentdiv">
+                    <div className="parentdiv">
+                        <div className="layoutx"><TranslationPanel /></div>
+                        <div style={{padding: "10px"}} className="layoutx"><ReferencePanel /></div>                    
+                    </div>
+                </div>
                 }  
               <Footer onSave={this.saveTarget}/>
 

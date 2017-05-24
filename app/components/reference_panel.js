@@ -51,7 +51,7 @@ class ReferencePanel extends React.Component {
             verseGroup.push(<div key={i} onClick = {this.highlightRef.bind(this, vid)} ><span className='verse-num' key={i}>{i+1}</span><span contentEditable={true} id={vid} data-chunk-group={TodoStore.chunkGroup[i]}>{TodoStore.translationContent[i]}</span></div>);
         }
     return (  
-        <div className="col-editor">
+        <div className="col-editor container-fluid">
             <div className="row">
                 <div className="col-12 center-align">
                     <p className="translation">Translation</p>

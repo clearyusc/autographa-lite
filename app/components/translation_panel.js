@@ -96,7 +96,7 @@ class TranslationPanel extends React.Component {
 		return (
 		<div className="container-fluid">
             <div className="row row-col-fixed rmvflex" style={{display: 'flex'}}>
-                <div className="col-sm-6 col-fixed" id="section-0">
+                <div className="col-sm-12 col-fixed" id="section-0">
                     <div className="row">
                         <div className="col-12 center-align">
                             <div className="btn-group">
@@ -116,6 +116,7 @@ class TranslationPanel extends React.Component {
                         </div>
                     </div>
                     <div className="row">
+
                         <div type="ref" className="col-12 col-ref ref-contents">
                            <div dangerouslySetInnerHTML={{__html: refContent}}></div>
                         </div>
